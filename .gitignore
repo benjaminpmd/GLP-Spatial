@@ -1,0 +1,13 @@
+# Eclipse files
+bin/
+*.iml
+.classpath
+.project
+
+# IDEA files
+.idea
+
+# VScode files
+target/
+
+build/
