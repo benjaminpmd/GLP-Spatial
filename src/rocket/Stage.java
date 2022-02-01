@@ -24,7 +24,6 @@ public class Stage {
 		this.engine = engine;
 		this.fuelTankOne = fuelTankOne;
 		this.fuelTankTwo = fuelTankTwo;
-		weight = fuelTankOne.getCapacity()+fuelTankTwo.getCapacity()+engine.getWeight();
 	}
 
 
