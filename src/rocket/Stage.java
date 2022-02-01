@@ -13,7 +13,6 @@ public class Stage {
 	
 
 	/**
-	 * @param weight
 	 * @param engineNb
 	 * @param engine
 	 * @param fuelTankOne
