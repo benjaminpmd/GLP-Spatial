@@ -4,8 +4,13 @@ package rocket;
 public class RocketEngine {
 	
 	private float thrust;
+	
+	//kg/min
 	private float fuelFlow;
+	
 	private String name;
+	
+	//kg
 	private float weight;
 	
 	/**
