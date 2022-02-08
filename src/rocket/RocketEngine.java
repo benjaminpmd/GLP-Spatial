@@ -3,12 +3,11 @@ package rocket;
 
 public class RocketEngine {
 	
+	//kg.m.s-²
 	private float thrust;
 	
 	//kg/min
 	private float fuelFlow;
-	
-	private String name;
 	
 	//kg
 	private float weight;
@@ -16,13 +15,11 @@ public class RocketEngine {
 	/**
 	 * @param thrust
 	 * @param fuelFlow
-	 * @param name
 	 * @param weight
 	 */
-	public RocketEngine(float thrust, float fuelFlow, String name, float weight) {
+	public RocketEngine(float thrust, float fuelFlow, float weight) {
 		this.thrust = thrust;
 		this.fuelFlow = fuelFlow;
-		this.name = name;
 		this.weight = weight;
 	}
 
@@ -40,14 +37,6 @@ public class RocketEngine {
 
 	public void setFuelFlow(float fuelFlow) {
 		this.fuelFlow = fuelFlow;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public float getWeight() {
