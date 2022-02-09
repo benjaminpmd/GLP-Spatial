@@ -1,11 +1,8 @@
-package mission;
-
-import rocket.Rocket;
+package engine.mission;
 
 public class Mission {
 	
 	private SpaceCenter spaceCenter;
-	private Rocket rocket;
 	private float orbit;
 	private String launchTime;
 	private String description;
@@ -17,9 +14,8 @@ public class Mission {
 	 * @param launchTime
 	 * @param description
 	 */
-	public Mission(SpaceCenter spaceCenter, Rocket rocket, float orbit, String launchTime, String description) {
+	public Mission(SpaceCenter spaceCenter, float orbit, String launchTime, String description) {
 		this.spaceCenter = spaceCenter;
-		this.rocket = rocket;
 		this.orbit = orbit;
 		this.launchTime = launchTime;
 		this.description = description;
@@ -31,14 +27,6 @@ public class Mission {
 
 	public void setSpaceCenter(SpaceCenter spaceCenter) {
 		this.spaceCenter = spaceCenter;
-	}
-
-	public Rocket getRocket() {
-		return rocket;
-	}
-
-	public void setRocket(Rocket rocket) {
-		this.rocket = rocket;
 	}
 
 	public float getOrbit() {

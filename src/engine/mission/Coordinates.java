@@ -1,11 +1,11 @@
-package mission;
+package engine.mission;
 
 public class Coordinates {
 	
-	//north
+	// north
 	private int latitude;
 	
-	//east
+	// east
 	private int longitude;
 
 	/**

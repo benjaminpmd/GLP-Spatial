@@ -1,15 +1,13 @@
-package rocket;
+package engine.rocket;
 
 
 public class RocketEngine {
 	
-	//kg.m.s-²
+	// kg.m.s^-2
 	private float thrust;
-	
-	//kg/min
+	// kg/min
 	private float fuelFlow;
-	
-	//kg
+	// kg
 	private float weight;
 	
 	/**

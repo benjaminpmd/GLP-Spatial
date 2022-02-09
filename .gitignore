@@ -6,4 +6,4 @@ bin/
 .settings
 target/
 build/
-
+.vscode/

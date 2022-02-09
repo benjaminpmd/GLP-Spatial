@@ -1,4 +1,4 @@
-package mission;
+package engine.mission;
 
 public class SpaceCenter {
 	
