@@ -1,11 +1,11 @@
 package engine.mission;
 
 public class Mission {
-	
+
+	private String description;
 	private SpaceCenter spaceCenter;
 	private float orbit;
 	private String launchTime;
-	private String description;
 	
 	/**
 	 * @param spaceCenter
@@ -19,6 +19,16 @@ public class Mission {
 		this.orbit = orbit;
 		this.launchTime = launchTime;
 		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return "Mission{" +
+				"description='" + description + '\'' +
+				", spaceCenter=" + spaceCenter +
+				", orbit=" + orbit +
+				", launchTime='" + launchTime + '\'' +
+				'}';
 	}
 
 	public SpaceCenter getSpaceCenter() {

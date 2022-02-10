@@ -3,22 +3,30 @@ package engine.rocket;
 public class Tank {
 	
 	// fuel is in kilograms
-	private long fuel;
+	private int fuel;
 	private float density;
 	
 	/**
 	 * @param capacity
 	 * @param fuel
 	 */
-	public Tank(long fuel, float density) {
+	public Tank(int fuel, float density) {
 		this.fuel = fuel;
 	}
 
-	public long getFuel() {
+	@Override
+	public String toString() {
+		return "Tank{" +
+				"fuel=" + fuel +
+				", density=" + density +
+				'}';
+	}
+
+	public int getFuel() {
 		return fuel;
 	}
 
-	public void setFuel(long fuel) {
+	public void setFuel(int fuel) {
 		this.fuel = fuel;
 	}
 

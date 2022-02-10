@@ -4,7 +4,7 @@ import javax.swing.Icon;
 
 public class Stage {
 	
-	private float weight;
+	private int emptyWeight;
 	private int engineNb;
 	private RocketEngine engine;
 	private Tank fuelTank;
@@ -21,12 +21,23 @@ public class Stage {
 		this.fuelTank = fuelTank;
 	}
 
-	public float getWeight() {
-		return weight;
+	@Override
+	public String toString() {
+		return "Stage{" +
+				"emptyWeight=" + emptyWeight +
+				", engineNb=" + engineNb +
+				", engine=" + engine +
+				", fuelTank=" + fuelTank +
+				", icon=" + icon +
+				'}';
 	}
 
-	public void setWeight(float weight) {
-		this.weight = weight;
+	public int getEmptyWeight() {
+		return emptyWeight;
+	}
+
+	public void setEmptyWeight(int emptyWeight) {
+		this.emptyWeight = emptyWeight;
 	}
 
 	public int getEngineNb() {

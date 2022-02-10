@@ -4,36 +4,45 @@ package engine.rocket;
 public class RocketEngine {
 	
 	// kg.m.s^-2
-	private float thrust;
+	private int thrust;
 	// kg/min
-	private float fuelFlow;
+	private int fuelFlow;
 	// kg
-	private float weight;
+	private int weight;
 	
 	/**
 	 * @param thrust
 	 * @param fuelFlow
 	 * @param weight
 	 */
-	public RocketEngine(float thrust, float fuelFlow, float weight) {
+	public RocketEngine(int thrust, int fuelFlow, int weight) {
 		this.thrust = thrust;
 		this.fuelFlow = fuelFlow;
 		this.weight = weight;
 	}
 
-	public float getThrust() {
+	@Override
+	public String toString() {
+		return "RocketEngine{" +
+				"thrust=" + thrust +
+				", fuelFlow=" + fuelFlow +
+				", weight=" + weight +
+				'}';
+	}
+
+	public int getThrust() {
 		return thrust;
 	}
 
-	public void setThrust(float thrust) {
+	public void setThrust(int thrust) {
 		this.thrust = thrust;
 	}
 
-	public float getFuelFlow() {
+	public int getFuelFlow() {
 		return fuelFlow;
 	}
 
-	public void setFuelFlow(float fuelFlow) {
+	public void setFuelFlow(int fuelFlow) {
 		this.fuelFlow = fuelFlow;
 	}
 
@@ -41,10 +50,7 @@ public class RocketEngine {
 		return weight;
 	}
 
-	public void setWeight(float weight) {
+	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-
-	
-
 }

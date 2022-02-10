@@ -2,35 +2,44 @@ package engine.mission;
 
 public class Coordinates {
 	
-	// north
-	private int latitude;
-	
-	// east
-	private int longitude;
+	// km
+	private float altitude;
+	// the angle from 0 to 359 degrees from the north (top of the window), added to the altitude, it forms the location
+	// of an object in space
+	private float angle;
+	// orientation of the object
+	private float selfAngle;
 
-	/**
-	 * @param latitude
-	 * @param longitude
-	 */
-	public Coordinates(int latitude, int longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+	@Override
+	public String toString() {
+		return "Coordinates{" +
+				"altitude=" + altitude +
+				", angle=" + angle +
+				", selfAngle=" + selfAngle +
+				'}';
 	}
 
-	public int getLatitude() {
-		return latitude;
+	public float getAltitude() {
+		return altitude;
 	}
 
-	public void setLatitude(int latitude) {
-		this.latitude = latitude;
+	public void setAltitude(float altitude) {
+		this.altitude = altitude;
 	}
 
-	public int getLongitude() {
-		return longitude;
+	public float getAngle() {
+		return angle;
 	}
 
-	public void setLongitude(int longitude) {
-		this.longitude = longitude;
+	public void setAngle(float angle) {
+		this.angle = angle;
 	}
 
+	public float getSelfAngle() {
+		return selfAngle;
+	}
+
+	public void setSelfAngle(float selfAngle) {
+		this.selfAngle = selfAngle;
+	}
 }

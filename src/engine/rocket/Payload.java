@@ -4,15 +4,23 @@ package engine.rocket;
 public class Payload {
 
 	private String name;
-	private float weight;
+	private int weight;
 
 	/**
 	 * @param name
 	 * @param weight
 	 */
-	public Payload(String name, float weight) {
+	public Payload(String name, int weight) {
 		this.name = name;
 		this.weight = weight;
+	}
+
+	@Override
+	public String toString() {
+		return "Payload{" +
+				"name='" + name + '\'' +
+				", weight=" + weight +
+				'}';
 	}
 
 	public String getName() {
@@ -23,11 +31,11 @@ public class Payload {
 		this.name = name;
 	}
 
-	public float getWeight() {
+	public int getWeight() {
 		return weight;
 	}
 
-	public void setWeight(float weight) {
+	public void setWeight(int weight) {
 		this.weight = weight;
 	}
 	

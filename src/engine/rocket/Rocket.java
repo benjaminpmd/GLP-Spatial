@@ -7,6 +7,15 @@ public class Rocket {
 	private Stage secondStage;
 	private Payload payload;
 
+	@Override
+	public String toString() {
+		return "Rocket{" +
+				"firstStage=" + firstStage +
+				", secondStage=" + secondStage +
+				", payload=" + payload +
+				'}';
+	}
+
 	public Stage getFirstStage() {
 		return firstStage;
 	}

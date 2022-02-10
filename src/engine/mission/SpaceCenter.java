@@ -3,15 +3,23 @@ package engine.mission;
 public class SpaceCenter {
 	
 	private String name;
-	private float[] localisation;
+	private Coordonates coordonates;
 	
 	/**
-	 * @param name
-	 * @param localisation
+	 * @param name The name of the space center
+	 * @param coordonates location of the space center
 	 */
-	public SpaceCenter(String name, float[] localisation) {
+	public SpaceCenter(String name, Coordonates coordonates) {
 		this.name = name;
-		this.localisation = localisation;
+		this.coordonates = coordonates;
+	}
+
+	@Override
+	public String toString() {
+		return "SpaceCenter{" +
+				"name='" + name + '\'' +
+				", coordonates=" + coordonates +
+				'}';
 	}
 
 	public String getName() {
@@ -22,12 +30,11 @@ public class SpaceCenter {
 		this.name = name;
 	}
 
-	public float[] getLocalisation() {
-		return localisation;
+	public Coordonates getCoordonates() {
+		return coordonates;
 	}
 
-	public void setLocalisation(float[] localisation) {
-		this.localisation = localisation;
+	public void setCoordonates(Coordonates coordonates) {
+		this.coordonates = coordonates;
 	}
-	
 }
