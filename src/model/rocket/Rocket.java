@@ -1,6 +1,14 @@
-package engine.rocket;
+package model.rocket;
 
+// TODO: make the rocket singleton
 
+/**
+ * Class that contains informations about the rocket
+ * @author Alice M, Benjamin P
+ * @since 11.02.22
+ * @version 22.02.11 - thrust me (1.0.0)
+ * @see {@link Stage}, {@link Payload}
+ */
 public class Rocket {
 
 	private Stage firstStage;
@@ -39,5 +47,4 @@ public class Rocket {
 	public void setPayload(Payload payload) {
 		this.payload = payload;
 	}
-	
 }

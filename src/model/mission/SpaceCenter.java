@@ -1,4 +1,4 @@
-package engine.mission;
+package model.mission;
 
 public class SpaceCenter {
 	
@@ -18,7 +18,7 @@ public class SpaceCenter {
 	public String toString() {
 		return "SpaceCenter{" +
 				"name='" + name + '\'' +
-				", coordinates=" + coordinates +
+				", coordonates=" + coordinates +
 				'}';
 	}
 
@@ -30,11 +30,11 @@ public class SpaceCenter {
 		this.name = name;
 	}
 
-	public Coordinates getCoordinates() {
+	public Coordinates getCoordonates() {
 		return coordinates;
 	}
 
-	public void setCoordinates(Coordinates coordinates) {
+	public void setCoordonates(Coordinates coordinates) {
 		this.coordinates = coordinates;
 	}
 }
