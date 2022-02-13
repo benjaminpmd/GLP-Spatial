@@ -1,5 +1,12 @@
-package engine.mission;
+package engine.data;
 
+/**
+ * Class that store the location of an object in the interstellar void of deep space relative to an anchor point (our lovely earth)
+ *
+ * @author Benjamin P
+ * @version 22.02.13 - To Infinity and beyond (1.0.0)
+ * @since 11.02.22
+ */
 public class Coordinates {
 	
 	// km

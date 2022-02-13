@@ -1,50 +1,46 @@
 package engine.process.builders;
 
+import engine.data.Constants;
 import model.rocket.RocketEngine;
 
-import engine.data.Constants;
-
 /**
- * Builder for the RocketEngine it features two methods for engine creation, one with standard stettings and another simplier.
- * 
+ * Builder for the RocketEngine it features two methods for engine creation, one with standard settings and another simpler.
+ *
  * @author Benjamin P
+ * @version 22.02.13 - To Infinity and beyond (1.0.0)
+ * @see model.rocket.RocketEngine
  * @since 11.02.22
- * @version 22.02.11 - thrust me (1.0.0)
- * @see {@link model.rocket.RocketEngine}
  */
 public class RocketEngineBuilder {
-    
+
     RocketEngine rocketEngine;
-    
+
     /**
      * Create an engine with and calculates its performances
-     * @param thrust the mass output of the engine (kg.s^-1).
+     *
+     * @param thrust      the mass output of the engine (kg.s^-1).
      * @param thrustRatio the ratio thrust/weight of the engine.
-     * @param isp the Specific impule of the engine.
+     * @param isp         the Specific impulse of the engine.
      * @return the engine what have been built.
      */
-    public RocketEngine buildRocketEngine(int thrust, int thrustRatio, int isp) {
-        
+    public RocketEngine buildRocketEngine(double thrust, double thrustRatio, int isp) {
+
         // calculations, cast to int as we don't need to keep the precision
-        int engineWeight = (int) ((thrustRatio * Constants.GRAVITY) / (thrust * Constants.GRAVITY));
-        int fuelFlow = (int) (thrust / (Constants.GRAVITY * isp));
-        
-        rocketEngine = new RocketEngine(isp, thrust, engineWeight, fuelFlow);
+        double engineWeight = ((thrust * Constants.GRAVITY) / (thrustRatio * Constants.GRAVITY));
+        double propellantFlow = (thrust / (Constants.GRAVITY * isp));
+        propellantFlow += ((propellantFlow * 10) / 100);
+
+        rocketEngine = new RocketEngine(isp, thrust, propellantFlow, engineWeight);
         return rocketEngine;
     }
 
     /**
-     * Simplifed version of the engine build, it will be initiated with default values, ISP as 280 and Thrust to Ratio as 70.
+     * Simplified version of the engine build, it will be initiated with default values, ISP as 380 and Thrust to Ratio as 65.
+     *
      * @param thrust the mass output of the engine (kg.s^-1).
      * @return the engine what have been built.
      */
     public RocketEngine buildRocketEngine(int thrust) {
-        
-        // calculations using default values, cast to int as we don't need to keep the precision
-        int engineWeight = (int) ((70 * Constants.GRAVITY) / (thrust * Constants.GRAVITY));
-        int fuelFlow = (int) (thrust / (Constants.GRAVITY * 280));
-
-        rocketEngine = new RocketEngine(280, thrust, engineWeight, fuelFlow);
-        return rocketEngine;
+        return buildRocketEngine(thrust, Constants.DEFAULT_THRUST_RATIO, Constants.DEFAULT_ISP);
     }
 }
