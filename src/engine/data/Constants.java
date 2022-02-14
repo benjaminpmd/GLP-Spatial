@@ -2,7 +2,7 @@ package engine.data;
 
 import java.math.BigInteger;
 
-public final class Constants {
+public class Constants {
     // Earth values
     public static final double GRAVITY = 9.80066;
     public static final double EARTH_RADIUS = 6.371;
