@@ -24,6 +24,11 @@ public class Center {
         this.coordinates = coordinates;
     }
 
+    public Center(String name, double angle) {
+        this.name = name;
+        this.coordinates = new Coordinates(angle);
+    }
+
     @Override
     public String toString() {
         return "Center{" +

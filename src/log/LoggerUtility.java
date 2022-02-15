@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 public class LoggerUtility {
+
 	private static final String TEXT_LOG_CONFIG = "src/log/log4j-text.properties";
 	private static final String HTML_LOG_CONFIG = "src/log/log4j-html.properties";
 
@@ -13,7 +14,7 @@ public class LoggerUtility {
 		} else if (logFileType.equals("html")) {
 			PropertyConfigurator.configure(HTML_LOG_CONFIG);
 		} else {
-			throw new IllegalArgumentException("Unknown log file type!");
+			throw new IllegalArgumentException("Unknown log file type !");
 		}
 
 		String className = logClass.getName();

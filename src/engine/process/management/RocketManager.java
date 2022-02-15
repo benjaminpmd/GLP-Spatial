@@ -1,15 +1,20 @@
-package process.management;
+package engine.process.management;
 
+import engine.data.Constants;
+import engine.process.builders.StageBuilder;
 import model.rocket.Rocket;
+import model.rocket.Payload;
 import model.rocket.Stage;
 import model.rocket.Tank;
 import model.rocket.RocketEngine;
 
 public class RocketManager {
     Rocket rocket;
+    StageBuilder stageBuilder;
 
-    public void createRocket() {
-        rocket = new Rocket();
+    public RocketManager() {
+        stageBuilder = new StageBuilder();
+        Rocket rocket = new Rocket();
     }
 
     public double calculateRocketWeight() {
@@ -17,10 +22,10 @@ public class RocketManager {
         Stage secondStage = rocket.getSecondStage();
         double weight = 0;
         if (firstStage != null) {
-            weight += (firstStage.getEmptyWeight() + (firstStage.getTank().getRemainingPropellant() * firstStage.getTank().getPropellant().getDensity()) + (firstStage.getEngine() * firstStage.getEngineNb()));
+            weight += (firstStage.getEmptyWeight() + (firstStage.getTank().getRemainingPropellant() * firstStage.getTank().getPropellant().getDensity()) + (firstStage.getEngine().getWeight() * firstStage.getEngineNb()));
         }
         if (secondStage != null) {
-            weight += (secondStage.getEmptyWeight() + (secondStage.getTank().getRemainingPropellant() * secondStage.getTank().getPropellant().getDensity()) + (firstsecondStageStage.getEngine() * secondStage.getEngineNb()));
+            weight += (secondStage.getEmptyWeight() + (secondStage.getTank().getRemainingPropellant() * secondStage.getTank().getPropellant().getDensity()) + (secondStage.getEngine().getWeight() * secondStage.getEngineNb()));
         }
         return weight;
     }
@@ -36,8 +41,15 @@ public class RocketManager {
         return ((thrust * Constants.GRAVITY) > (calculateRocketWeight() + payload.getWeight()));
     }
 
+    public boolean validRocket() {
+        if ((rocket.getFirstStage() != null) && (rocket.getSecondStage() != null) && (rocket.getPayload() != null)) {
+            return true;
+        }
+        return false;
+    }
+
     public void createStage(int tankCapacity, double propellantDensity, int propellantTemperature, int engineNb, double engineThrust, double engineThrustRatio, int engineIsp, int stageNb) throws IllegalArgumentException {
-        Stage stage = new buildStage(tankCapacity, propellantDensity, propellantTemperature, engineNb, engineThrust, engineThrustRatio, engineIsp);
+        Stage stage = stageBuilder.buildStage(tankCapacity, propellantDensity, propellantTemperature, engineNb, engineThrust, engineThrustRatio, engineIsp);
         if (stageNb == 1) {
             rocket.setFirstStage(stage);
         }
@@ -48,7 +60,7 @@ public class RocketManager {
     }
 
     public void createStage(int tankCapacity, int engineNb, int engineThrust, int stageNb) throws IllegalArgumentException {
-        Stage stage = new buildStage(tankCapacity, engineNb, engineThrust);
+        Stage stage = stageBuilder.buildStage(tankCapacity, engineNb, engineThrust);
         if (stageNb == 1) {
             rocket.setFirstStage(stage);
         }
@@ -60,8 +72,8 @@ public class RocketManager {
 
     public void updateRocket(double deltaTime) {
         Stage stage;
-        if (rocket.getFirstStage() || rocket.getSecondStage()) {
-            if (rocket.getFirstStage()) {
+        if ((rocket.getFirstStage() != null) || (rocket.getSecondStage() != null)) {
+            if ((rocket.getFirstStage() != null)) {
                 // TODO: update weight (fuel consumed), remove first stage if fuel empty
                 stage = rocket.getFirstStage();                
             }
@@ -70,8 +82,8 @@ public class RocketManager {
                 stage = rocket.getSecondStage();
             }
             double remainingPropellant = stage.getTank().getRemainingPropellant();
-            double deltaPropellant = 
-            tank.setRemainingPropellant();
+            double deltaPropellant;
+            //tank.setRemainingPropellant();
         }
         else {
             // TODO: payload released

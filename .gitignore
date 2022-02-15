@@ -7,3 +7,6 @@ bin/
 target/
 build/
 .vscode/
+*.log
+*.html
+.html

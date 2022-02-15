@@ -10,12 +10,18 @@ package engine.data;
 public class Coordinates {
 	
 	// km
-	private float altitude;
+	private double altitude;
 	// the angle from 0 to 359 degrees from the north (top of the window), added to the altitude, it forms the location
-	// of an object in space
-	private float angle;
-	// orientation of the object
-	private float selfAngle;
+	// of an object in space in radian
+	private double angle;
+	// orientation of the object in radian
+	private double selfAngle;
+
+	public Coordinates(double angle) {
+		this.angle = angle;
+		selfAngle = 0;
+		altitude = Constants.EARTH_RADIUS;
+	}
 
 	@Override
 	public String toString() {
@@ -26,27 +32,27 @@ public class Coordinates {
 				'}';
 	}
 
-	public float getAltitude() {
+	public double getAltitude() {
 		return altitude;
 	}
 
-	public void setAltitude(float altitude) {
+	public void setAltitude(double altitude) {
 		this.altitude = altitude;
 	}
 
-	public float getAngle() {
+	public double getAngle() {
 		return angle;
 	}
 
-	public void setAngle(float angle) {
+	public void setAngle(double angle) {
 		this.angle = angle;
 	}
 
-	public float getSelfAngle() {
+	public double getSelfAngle() {
 		return selfAngle;
 	}
 
-	public void setSelfAngle(float selfAngle) {
+	public void setSelfAngle(double selfAngle) {
 		this.selfAngle = selfAngle;
 	}
 }
