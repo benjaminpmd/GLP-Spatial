@@ -1,9 +1,9 @@
-package model.mission;
+package data.mission;
 
 import engine.data.Coordinates;
 
 import java.math.BigInteger;
-import java.util.Objects;
+
 /**
  * The mission class is the center core of the engine, all
  *
@@ -15,10 +15,10 @@ public class Planet {
 
     private String name;
     private Coordinates coordinates;
-    private BigInteger weight;
+    private double weight;
     private int radius;
 
-    public Planet(String name, Coordinates coordinates, BigInteger weight, int radius) {
+    public Planet(String name, Coordinates coordinates, double weight, int radius) {
         this.name = name;
         this.coordinates = coordinates;
         this.weight = weight;
@@ -59,11 +59,11 @@ public class Planet {
         this.coordinates = coordinates;
     }
 
-    public BigInteger getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(BigInteger weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

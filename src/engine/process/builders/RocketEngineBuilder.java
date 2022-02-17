@@ -1,14 +1,14 @@
 package engine.process.builders;
 
 import engine.data.Constants;
-import model.rocket.RocketEngine;
+import data.rocket.RocketEngine;
 
 /**
  * Builder for the RocketEngine it features two methods for engine creation, one with standard settings and another simpler.
  *
  * @author Benjamin P
  * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see model.rocket.RocketEngine
+ * @see data.rocket.RocketEngine
  * @since 11.02.22
  */
 public class RocketEngineBuilder {

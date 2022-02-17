@@ -1,7 +1,7 @@
 package engine.process.factories;
 
 import engine.process.calculations.Calculation;
-import model.mission.Center;
+import data.mission.Center;
 import org.apache.log4j.Logger;
 import log.LoggerUtility;
 

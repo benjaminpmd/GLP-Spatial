@@ -1,6 +1,7 @@
-package model.rocket;
+package data.rocket;
 
 import javax.swing.*;
+import java.util.Objects;
 
 /**
  * Class that contains informations about the stage
@@ -41,6 +42,14 @@ public class Stage {
                 ", tank=" + tank +
                 ", icon=" + icon +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stage)) return false;
+        Stage stage = (Stage) o;
+        return Double.compare(stage.getEmptyWeight(), getEmptyWeight()) == 0 && getEngineNb() == stage.getEngineNb() && getEngine().equals(stage.getEngine()) && getTank().equals(stage.getTank()) && getIcon().equals(stage.getIcon());
     }
 
     public double getEmptyWeight() {

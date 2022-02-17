@@ -1,4 +1,4 @@
-package model.mission;
+package data.mission;
 
 import engine.data.Coordinates;
 

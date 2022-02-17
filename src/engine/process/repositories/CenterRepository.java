@@ -1,6 +1,6 @@
 package engine.process.repositories;
 
-import model.mission.Center;
+import data.mission.Center;
 
 import java.util.HashMap;
 
@@ -9,7 +9,7 @@ import java.util.HashMap;
  *
  * @author Benjamin P
  * @version 22.02.14 - Make it real! (1.0.0)
- * @see model.mission.Center
+ * @see data.mission.Center
  * @since 14.02.22
  */
 public class CenterRepository {

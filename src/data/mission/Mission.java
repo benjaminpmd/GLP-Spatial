@@ -1,7 +1,8 @@
-package model.mission;
+package data.mission;
 
+import engine.data.Constants;
 import engine.data.Coordinates;
-import model.rocket.Rocket;
+import data.rocket.Rocket;
 
 import java.util.Date;
 
@@ -11,8 +12,8 @@ import java.util.Date;
  *
  * @author Benjamin P
  * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see model.rocket.Rocket
- * @see model.mission.Center
+ * @see data.rocket.Rocket
+ * @see data.mission.Center
  * @see engine.data.Coordinates
  * @since 11.02.22
  */
@@ -27,16 +28,29 @@ public class Mission {
 	private Planet earth;
 	private Target target;
 
-	public Mission(String name, String description, Date launchTime, Center center, Rocket rocket, Coordinates rocketCoordinates, Planet earth, Target target) {
+	public Mission(String name, String description, Date launchTime, Center center, Rocket rocket, Coordinates rocketCoordinates, Target target) {
 		this.name = name;
 		this.description = description;
 		this.launchTime = launchTime;
 		this.center = center;
 		this.rocket = rocket;
 		this.rocketCoordinates = rocketCoordinates;
-		this.earth = earth;
 		this.target = target;
+		earth = new Planet("Earth", new Coordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
 	}
+
+	public Mission(Center center, Rocket rocket, Coordinates rocketCoordinates, Target target) {
+		this.center = center;
+		this.rocket = rocket;
+		this.rocketCoordinates = rocketCoordinates;
+		this.target = target;
+		earth = new Planet("Earth", new Coordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+	}
+
+	public Mission() {
+		earth = new Planet("Earth", new Coordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+	}
+
 
 	@Override
 	public String toString() {

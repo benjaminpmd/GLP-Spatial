@@ -1,4 +1,4 @@
-package model.rocket;
+package data.rocket;
 
 // TODO: make the rocket singleton
 

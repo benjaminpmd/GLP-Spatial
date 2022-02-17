@@ -1,17 +1,17 @@
 package engine.process.builders;
 
-import model.rocket.Propellant;
-import model.rocket.RocketEngine;
-import model.rocket.Stage;
-import model.rocket.Tank;
+import data.rocket.Propellant;
+import data.rocket.RocketEngine;
+import data.rocket.Stage;
+import data.rocket.Tank;
 
 /**
  * Builder class for stage object
  *
  * @author Benjamin P
  * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see model.rocket.Tank
- * @see model.rocket.Propellant
+ * @see data.rocket.Tank
+ * @see data.rocket.Propellant
  * @since 11.02.22
  */
 public class StageBuilder {

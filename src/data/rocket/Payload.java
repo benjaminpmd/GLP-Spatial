@@ -1,4 +1,4 @@
-package model.rocket;
+package data.rocket;
 
 /**
  * Class that contains information about the payload

@@ -2,16 +2,16 @@ package engine.process.builders;
 
 import engine.data.Constants;
 import exceptions.PayloadWeightTooHighException;
-import model.rocket.Payload;
-import model.rocket.Rocket;
-import model.rocket.Stage;
+import data.rocket.Payload;
+import data.rocket.Rocket;
+import data.rocket.Stage;
 
 /**
  * Builder for the rocket it features two methods for rocket creation, one with standard settings and another simpler.
  *
  * @author Benjamin P
  * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see model.rocket.RocketEngine
+ * @see data.rocket.RocketEngine
  * @see engine.process.builders.RocketEngineBuilder
  * @since 11.02.22
  */

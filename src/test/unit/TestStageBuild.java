@@ -1,8 +1,8 @@
 package unit;
 
 import engine.process.builders.StageBuilder;
-import model.rocket.Stage;
-import model.rocket.Tank;
+import data.rocket.Stage;
+import data.rocket.Tank;
 
 import org.junit.Before;
 import org.junit.Test;

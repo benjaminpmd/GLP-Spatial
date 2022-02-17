@@ -1,4 +1,4 @@
-package model.rocket;
+package data.rocket;
 
 /**
  * Class that contains informations about the tank
@@ -13,8 +13,8 @@ public class Tank {
     private Propellant propellant;
     // maximum propellant that can be stored in the tank, the unit is a volume (L)
     private int capacity;
-    // the remaining volume of fuel in the tank (L)
-    private int remainingPropellant;
+    // the remaining volume of fuel in the tank (kg)
+    private double remainingPropellant;
 
     public Tank(Propellant propellant, int capacity, int remainingPropellant) {
         this.propellant = propellant;
@@ -51,11 +51,11 @@ public class Tank {
         this.capacity = capacity;
     }
 
-    public int getRemainingPropellant() {
+    public double getRemainingPropellant() {
         return remainingPropellant;
     }
 
-    public void setRemainingPropellant(int remainingPropellant) {
+    public void setRemainingPropellant(double remainingPropellant) {
         this.remainingPropellant = remainingPropellant;
     }
 }

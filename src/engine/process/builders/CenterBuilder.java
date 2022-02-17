@@ -2,7 +2,7 @@ package engine.process.builders;
 
 import engine.process.factories.CenterFactory;
 import engine.process.repositories.CenterRepository;
-import model.mission.Center;
+import data.mission.Center;
 
 import log.LoggerUtility;
 import org.apache.log4j.Logger;

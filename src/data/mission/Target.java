@@ -1,4 +1,4 @@
-package model.mission;
+package data.mission;
 
 /**
  * Target contains the planet and the altitude of the orbit targeted, the planet can be the earth in the case of the mission
@@ -6,7 +6,7 @@ package model.mission;
  *
  * @author Benjamin P
  * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see model.mission.Planet
+ * @see data.mission.Planet
  * @since 11.02.22
  */
 public class Target {
