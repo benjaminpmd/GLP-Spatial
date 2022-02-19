@@ -22,9 +22,20 @@ public class Mission {
 	private String name;
 	private String description;
 	private Date launchTime;
+	private Rocket rocket;
 	private Center center;
-	private Planet earth;
+	private Planet earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
 	private Target target;
+
+	// TODO: invert, use this() with the smallest value input
+	public Mission(String name, String description, Date launchTime, Center center, Target target, Rocket rocket) {
+		this.name = name;
+		this.description = description;
+		this.launchTime = launchTime;
+		this.center = center;
+		this.target = target;
+		this.rocket = rocket;
+	}
 
 	public Mission(String name, String description, Date launchTime, Center center, Target target) {
 		this.name = name;
@@ -32,23 +43,18 @@ public class Mission {
 		this.launchTime = launchTime;
 		this.center = center;
 		this.target = target;
-		earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+	}
+
+
+	public Mission(String name, Center center, Target target) {
+		this(name, null, null, center, target);
 	}
 
 	public Mission(Center center, Target target) {
-		this.center = center;
-		this.target = target;
-		earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+		this(null, null, null, center, target);
 	}
 
-	public Mission() {
-		earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
-	}
-
-	public Mission(String name, Center center, Target target) {
-		earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
-	}
-
+	public Mission() {}
 
 	@Override
 	public String toString() {
@@ -108,5 +114,13 @@ public class Mission {
 
 	public void setTarget(Target target) {
 		this.target = target;
+	}
+
+	public Rocket getRocket() {
+		return rocket;
+	}
+
+	public void setRocket(Rocket rocket) {
+		this.rocket = rocket;
 	}
 }

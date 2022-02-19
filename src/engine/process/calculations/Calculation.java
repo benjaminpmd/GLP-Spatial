@@ -69,6 +69,7 @@ public class Calculation {
      */
     public double accelerationFromThrust(double mass, double thrust) {
         // TODO: Adapt to variable gravity
+        // TODO: Improve to 2D trajectory
         return (thrust - (mass * Constants.GRAVITY));
     }
 
@@ -81,6 +82,7 @@ public class Calculation {
      * @return a double, the new velocity of the object in m.s^-1.
      */
     public double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
+        // TODO: Improve to 2D trajectory
         return initialVelocity + (acceleration * deltaTime);
     }
 
@@ -93,6 +95,7 @@ public class Calculation {
      * @return a double, the new position of the object.
      */
     public double positionFromVelocity(double velocity, double x, double d) {
+        // TODO: Improve to 2D trajectory
         return (x + (velocity * d));
     }
 }

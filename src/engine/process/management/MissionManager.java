@@ -5,10 +5,7 @@ import data.mission.Mission;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 import data.rocket.Tank;
-import engine.data.CartesianCoordinates;
 import engine.process.calculations.Calculation;
-
-import java.util.ArrayList;
 
 /**
  * Class that contains all methods to manage a rocket.
@@ -19,43 +16,43 @@ import java.util.ArrayList;
  */
 public class MissionManager {
 
-    private static MissionManager instance = new MissionManager();
-    private Mission mission;
-    private Rocket rocket;
-    private Calculation calculation;
-    private ArrayList<CartesianCoordinates>trajectory;
+    private static final MissionManager instance = new MissionManager();
     private final double DELTA_TIME = (SimConfig.SIMULATION_SPEED / 1000);
+    private Simulation simulation;
+    private Mission mission;
+    private final Calculation calculation;
 
     // private constructor
     private MissionManager() {
         calculation = new Calculation();
-        trajectory = new ArrayList<CartesianCoordinates>();
+        simulation = new Simulation();
     }
 
     public static MissionManager getInstance() {
         return instance;
     }
 
-    public void setMission(Mission mission) {
-        this.mission = mission;
-    }
-
     public Mission getMission() {
         return mission;
     }
 
-    public void setRocket(Rocket rocket) {
-        this.rocket = rocket;
+    public void setMission(Mission mission) {
+        this.mission = mission;
     }
 
-    public Rocket getRocket() {
-        return rocket;
+    public Simulation getSimulation() {
+        return simulation;
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
     }
 
     /**
      * Method that updates the rocket. It removes the used propellant mass and manage stage once the tank is empty.
      */
     public void updateRocket() {
+        Rocket rocket = mission.getRocket();
         Stage stage;
         Tank tank;
         if ((rocket.getFirstStage() != null) || (rocket.getSecondStage() != null)) {
@@ -80,11 +77,15 @@ public class MissionManager {
     }
 
     public void updateRocketPosition() {
-        double a = calculation.accelerationFromThrust(rocket.getWeight(), rocket.getThrust());
-        double v = calculation.velocityFromAcceleration(a, rocket.getVelocity(), DELTA_TIME);
-        double x = calculation.positionFromVelocity(v, rocket.getCoordinates().getR(), DELTA_TIME);
-        rocket.getCoordinates().setR(x);
-        trajectory.add(calculation.polarToCartesian(rocket.getCoordinates()));
+        // TODO: Improve to 2D trajectory
+        Rocket rocket = mission.getRocket();
+        double acceleration = calculation.accelerationFromThrust(rocket.getWeight(), rocket.getThrust());
+        double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), DELTA_TIME);
+        double altitude = calculation.positionFromVelocity(velocity, rocket.getCoordinates().getR(), DELTA_TIME);
+        rocket.getCoordinates().setR(altitude);
+        simulation.addAcceleration((int) acceleration);
+        simulation.addVelocity((int) velocity);
+        simulation.addTrajectory(calculation.polarToCartesian(rocket.getCoordinates()));
     }
 
     public void next() {

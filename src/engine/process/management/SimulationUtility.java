@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class SimulationUtility {
 	
 	/**
-	 * Reads a image from an image file.
+	 * Reads an image from an image file.
 	 * 
 	 * @param filePath the path (from "src") of the image file
 	 * @return the read file

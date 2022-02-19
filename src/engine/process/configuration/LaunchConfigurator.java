@@ -1,13 +1,18 @@
 package engine.process.configuration;
 
+import config.SimConfig;
 import data.mission.Center;
 import data.mission.Mission;
 import data.mission.Planet;
 import data.mission.Target;
+import data.rocket.Rocket;
 import engine.data.Constants;
 import engine.data.PolarCoordinates;
+import engine.process.builders.CenterBuilder;
 import engine.process.builders.RocketBuilder;
 import engine.process.management.MissionManager;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,32 +20,20 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class LaunchConfigurator {
-    private final String SEPARATOR = ";";
 
-    public void createFromFile(String filePath) {
-        MissionManager simulation = MissionManager.getInstance();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
-            String line;
-            String content = "";
-            while ((line = reader.readLine()) != null) {
-                content = line;
-            }
-            String[] values = content.split(SEPARATOR);
-            for (String v: values) {
-                System.out.println(v);
-            }
-            Planet earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
-            MissionManager.getInstance().setMission(new Mission(values[0], new Center("test-center", 0), new Target(200, earth)));
-            RocketBuilder rocketBuilder = new RocketBuilder();
-            rocketBuilder.addStage(Integer.valueOf(values[4]), Integer.valueOf(values[6]), Integer.valueOf(values[7]), 1);
-            rocketBuilder.addStage(Integer.valueOf(values[8]), Integer.valueOf(values[10]), Integer.valueOf(values[11]), 2);
-            rocketBuilder.addPayload(values[0], Integer.valueOf(values[12]));
+    private final Logger logger = LoggerUtility.getLogger(LaunchConfigurator.class, "html");
+    private final Planet earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+    private MissionManager missionManager = MissionManager.getInstance();
 
+    public void createLaunch(String name, String description, String centerName, Rocket rocket) {
+        CenterBuilder centerBuilder = new CenterBuilder(SimConfig.CENTERS_PATH);
 
-            reader.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        }
+    }
+
+    public void createLaunch(String filePath) {
+        FileManager fileManager = new FileManager();
+        CenterBuilder centerBuilder = new CenterBuilder(SimConfig.CENTERS_PATH);
+        Mission mission = fileManager.importMission(filePath);
+        missionManager.setMission(mission);
     }
 }
