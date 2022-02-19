@@ -1,8 +1,8 @@
 package data.mission;
 
-import engine.data.Coordinates;
+import java.util.Objects;
 
-import java.math.BigInteger;
+import engine.data.PolarCoordinates;
 
 /**
  * The mission class is the center core of the engine, all
@@ -14,13 +14,13 @@ import java.math.BigInteger;
 public class Planet {
 
     private String name;
-    private Coordinates coordinates;
+    private PolarCoordinates polarCoordinates;
     private double weight;
     private int radius;
 
-    public Planet(String name, Coordinates coordinates, double weight, int radius) {
+    public Planet(String name, PolarCoordinates polarCoordinates, double weight, int radius) {
         this.name = name;
-        this.coordinates = coordinates;
+        this.polarCoordinates = polarCoordinates;
         this.weight = weight;
         this.radius = radius;
     }
@@ -29,21 +29,26 @@ public class Planet {
     public String toString() {
         return "Planet{" +
                 "name='" + name + '\'' +
-                ", coordinates=" + coordinates +
+                ", coordinates=" + polarCoordinates +
                 ", weight=" + weight +
                 ", radius=" + radius +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Planet)) return false;
-        Planet planet = (Planet) o;
-        return getRadius() == planet.getRadius() && getName().equals(planet.getName()) && getCoordinates().equals(planet.getCoordinates()) && getWeight().equals(planet.getWeight());
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Planet other = (Planet) obj;
+		return Objects.equals(polarCoordinates, other.polarCoordinates) && Objects.equals(name, other.name)
+				&& radius == other.radius && Double.doubleToLongBits(weight) == Double.doubleToLongBits(other.weight);
+	}
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 
@@ -51,12 +56,12 @@ public class Planet {
         this.name = name;
     }
 
-    public Coordinates getCoordinates() {
-        return coordinates;
+    public PolarCoordinates getCoordinates() {
+        return polarCoordinates;
     }
 
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
+    public void setCoordinates(PolarCoordinates polarCoordinates) {
+        this.polarCoordinates = polarCoordinates;
     }
 
     public double getWeight() {

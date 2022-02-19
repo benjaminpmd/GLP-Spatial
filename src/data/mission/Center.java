@@ -1,6 +1,6 @@
 package data.mission;
 
-import engine.data.Coordinates;
+import engine.data.PolarCoordinates;
 
 /**
  * Space center is the location of the center on earth, its position follows earth rotation. Space centers are usually
@@ -13,27 +13,27 @@ import engine.data.Coordinates;
 public class Center {
 
     private String name;
-    private Coordinates coordinates;
+    private PolarCoordinates polarCoordinates;
 
     /**
      * @param name        The name of the space center
-     * @param coordinates location of the space center
+     * @param polarCoordinates location of the space center
      */
-    public Center(String name, Coordinates coordinates) {
+    public Center(String name, PolarCoordinates polarCoordinates) {
         this.name = name;
-        this.coordinates = coordinates;
+        this.polarCoordinates = polarCoordinates;
     }
 
     public Center(String name, double angle) {
         this.name = name;
-        this.coordinates = new Coordinates(angle);
+        this.polarCoordinates = new PolarCoordinates(angle);
     }
 
     @Override
     public String toString() {
         return "Center{" +
                 "name='" + name + '\'' +
-                ", coordinates=" + coordinates +
+                ", coordinates=" + polarCoordinates +
                 '}';
     }
 
@@ -45,11 +45,11 @@ public class Center {
         this.name = name;
     }
 
-    public Coordinates getCoordinates() {
-        return coordinates;
+    public PolarCoordinates getCoordinates() {
+        return polarCoordinates;
     }
 
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
+    public void setCoordinates(PolarCoordinates polarCoordinates) {
+        this.polarCoordinates = polarCoordinates;
     }
 }

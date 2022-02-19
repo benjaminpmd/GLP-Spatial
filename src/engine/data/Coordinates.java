@@ -1,51 +1,31 @@
 package engine.data;
 
-/**
- * Class that store the location of an object in the interstellar void of deep space relative to an anchor point (our lovely earth)
- *
- * @author Benjamin P
- * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @since 11.02.22
- */
 public class Coordinates {
-	
-	// km
-	private double altitude;
-	// the angle from 0 to 359 degrees from the north (top of the window), added to the altitude, it forms the location
-	// of an object in space in radian
-	private double angle;
-	// orientation of the object in radian
+	// in radian
 	private double selfAngle;
 
-	public Coordinates(double angle) {
-		this.angle = angle;
-		selfAngle = 0;
-		altitude = Constants.EARTH_RADIUS;
+	Coordinates(double selfAngle) {
+		this.selfAngle = selfAngle;
 	}
 
 	@Override
-	public String toString() {
+	public java.lang.String toString() {
 		return "Coordinates{" +
-				"altitude=" + altitude +
-				", angle=" + angle +
-				", selfAngle=" + selfAngle +
+				"selfAngle=" + selfAngle +
 				'}';
 	}
 
-	public double getAltitude() {
-		return altitude;
-	}
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) return true;
+		if (!(object instanceof Coordinates)) return false;
+		if (!super.equals(object)) return false;
 
-	public void setAltitude(double altitude) {
-		this.altitude = altitude;
-	}
+		Coordinates that = (Coordinates) object;
 
-	public double getAngle() {
-		return angle;
-	}
+		if (java.lang.Double.compare(that.getSelfAngle(), getSelfAngle()) != 0) return false;
 
-	public void setAngle(double angle) {
-		this.angle = angle;
+		return true;
 	}
 
 	public double getSelfAngle() {

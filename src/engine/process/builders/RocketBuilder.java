@@ -1,10 +1,10 @@
 package engine.process.builders;
 
 import engine.data.Constants;
-import exceptions.PayloadWeightTooHighException;
 import data.rocket.Payload;
 import data.rocket.Rocket;
 import data.rocket.Stage;
+import engine.process.builders.StageBuilder;
 
 /**
  * Builder for the rocket it features two methods for rocket creation, one with standard settings and another simpler.
@@ -17,13 +17,8 @@ import data.rocket.Stage;
  */
 public class RocketBuilder {
 
-    private Rocket rocket;
-
-    private double calculateRocketWeight() {
-        double firstStageWeight = rocket.getFirstStage().getEmptyWeight() + rocket.getFirstStage().getTank().getRemainingPropellant() + (rocket.getFirstStage().getEngineNb() * rocket.getFirstStage().getEngine().getWeight());
-        double secondStageWeight = rocket.getSecondStage().getEmptyWeight() + rocket.getSecondStage().getTank().getRemainingPropellant() + (rocket.getSecondStage().getEngineNb() * rocket.getSecondStage().getEngine().getWeight());
-        return firstStageWeight + secondStageWeight;
-    }
+    private Rocket rocket = new Rocket();
+    private StageBuilder stageBuilder = new StageBuilder();
 
     /**
      * Check if the payload can be launched by the rocket
@@ -31,29 +26,44 @@ public class RocketBuilder {
      * @param payload The weight of the payload (in kg).
      * @return boolean, true if the weight is correct, false in the other case.
      */
-    private boolean validPayloadWeight(Payload payload) {
+    private boolean validPayload(Payload payload) throws IllegalArgumentException {
         double thrust = rocket.getFirstStage().getEngineNb() * rocket.getFirstStage().getEngine().getThrust();
-        return (thrust * Constants.GRAVITY) > (calculateRocketWeight() + payload.getWeight());
+        return (thrust * Constants.GRAVITY) > (rocket.getWeight() + payload.getWeight());
     }
 
     /**
-     * Builds and returns a rocket
+     * Method that creates a stage with limited values and add it to the rocket.
      *
-     * @param firstStage  the first stage of the rocket
-     * @param secondStage the second stage of the rocket
-     * @param payload     the payload to send, caution, the mass of the payload will be check to ensure that the rocket is able to lift it off.
-     * @return a Rocket object with a first and second stage plus a payload that have been checked.
-     * @throws PayloadWeightTooHighException in case the payload weight is too high an exception is thrown
+     * @param tankCapacity the tank capacity in L.
+     * @param engineNb     the number of engines.
+     * @param engineThrust the thrust output per engine in N.
+     * @param stageNb      the stage to create 1 or 2.
+     * @throws IllegalArgumentException in case the stageNb is not 1 or 2.
      */
-    public Rocket buildRocket(Stage firstStage, Stage secondStage, Payload payload) throws PayloadWeightTooHighException {
-        rocket = new Rocket();
-        rocket.setFirstStage(firstStage);
-        rocket.setSecondStage(secondStage);
-        if (validPayloadWeight(payload)) {
-            rocket.setPayload(payload);
-        } else {
-            throw new PayloadWeightTooHighException();
-        }
+    public void addStage(int tankCapacity, int engineNb, int engineThrust, int stageNb) throws IllegalArgumentException {
+        Stage stage = stageBuilder.buildStage(tankCapacity, engineNb, engineThrust);
+        if (stageNb == 1) {
+            rocket.setFirstStage(stage);
+        } else if (stageNb == 2) {
+            rocket.setSecondStage(stage);
+        } else throw new IllegalArgumentException("The stage number must be 1 or 2");
+    }
+
+    public void addPayload(String name, int weight) {
+        Payload payload = new Payload(name, weight);
+        rocket.setPayload(payload);
+    }
+
+    /**
+     * Method to check if the rocket is complete or not and is able to lift off the pad.
+     *
+     * @return a boolean, true if the rocket is correct, false in others cases.
+     */
+    public boolean validRocket() {
+        return (rocket.getFirstStage() != null) && (rocket.getSecondStage() != null) && (rocket.getPayload() != null) && (rocket.getThrust() > rocket.getWeight() * Constants.GRAVITY);
+    }
+
+    public Rocket getBuiltRocket() {
         return rocket;
     }
 }

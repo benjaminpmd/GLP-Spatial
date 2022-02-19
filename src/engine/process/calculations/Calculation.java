@@ -1,7 +1,8 @@
 package engine.process.calculations;
 
 import engine.data.Constants;
-import engine.data.Coordinates;
+import engine.data.PolarCoordinates;
+import engine.data.CartesianCoordinates;
 
 /**
  * Class that contains all equations to use for objects movements.
@@ -27,21 +28,32 @@ public class Calculation {
     /**
      * Calculates the cartesian coordinates from polar ones.
      *
-     * @param coordinates A coordinates objects to get the polar coordinates from.
-     * @return an int array containing two values like this: [x, y].
+     * @param polarCoordinates A coordinates objects to get the Cartesian coordinates from.
+     * @return a CartesianCoordinates object.
      */
-    public int[] polarToCartesian(Coordinates coordinates) {
-        int[] tab = new int[2];
-        tab[0] = (int) (coordinates.getAltitude() * Math.cos(coordinates.getAngle()));
-        tab[1] = (int) (coordinates.getAltitude() * Math.sin(coordinates.getAngle()));
-        return tab;
+    public CartesianCoordinates polarToCartesian(PolarCoordinates polarCoordinates) {
+        int x = (int) (polarCoordinates.getR() * Math.cos(polarCoordinates.getAngle()));
+        int y = (int) (polarCoordinates.getR() * Math.sin(polarCoordinates.getAngle()));
+        return new CartesianCoordinates(x, y);
+    }
+    
+    /**
+     * Calculates the polar coordinates from cartesian ones.
+     *
+     * @param cartesianCoordinates A coordinates objects to get the polar coordinates from.
+     * @return a PolarCoordinates object.
+     */
+    public PolarCoordinates cartesianToPolar(CartesianCoordinates cartesianCoordinates) {
+        double r = Math.sqrt(Math.pow(cartesianCoordinates.getX(), 2) + Math.pow(cartesianCoordinates.getY(), 2));
+        double angle = Math.atan2(cartesianCoordinates.getX(), cartesianCoordinates.getY());
+        return new PolarCoordinates(r, angle);
     }
 
     /**
      * Method that calculates the gravity of an object using the gravity formula.
      *
-     * @param mass the mass in kg of the object emitting the gravity you want to get.
-     * @param distance the distance of the attracted object in m.
+     * @param mass      the mass in kg of the object emitting the gravity you want to get.
+     * @param distance  the distance of the attracted object in m.
      * @return a double, gravity value in N.
      */
     public double gravity(double mass, double distance) {
@@ -66,7 +78,7 @@ public class Calculation {
      * @param acceleration    the acceleration of the object in m.s^-2.
      * @param initialVelocity its initial velocity in m.s^-1.
      * @param deltaTime       the delta time to use in s.
-     * @return a double, the new speed of the object in m.s^-1.
+     * @return a double, the new velocity of the object in m.s^-1.
      */
     public double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
         return initialVelocity + (acceleration * deltaTime);
@@ -77,10 +89,10 @@ public class Calculation {
      *
      * @param velocity  the velocity of the object.
      * @param x         the initial position of the object.
-     * @param deltaTime the delta time to use in s.
+     * @param d         the delta time to use in s.
      * @return a double, the new position of the object.
      */
-    public double positionFromSpeed(double velocity, double x, int deltaTime) {
-        return (x + (velocity * deltaTime));
+    public double positionFromVelocity(double velocity, double x, double d) {
+        return (x + (velocity * d));
     }
 }
