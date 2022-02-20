@@ -92,6 +92,14 @@ public class MissionManager {
         simulation.addTrajectory(calculation.polarToCartesian(rocket.getCoordinates()));
     }
 
+    /**
+     * Get the altitude of the rocket from the earth surface
+     * @return a double, the rocket altitude
+     */
+    public double getRocketAltitude() {
+        return mission.getRocket().getCoordinates().getR() - Constants.EARTH_RADIUS;
+    }
+
     public void next() {
         updateRocket();
         updateRocketPosition();
