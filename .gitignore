@@ -6,4 +6,8 @@ bin/
 .settings
 target/
 build/
-
+.vscode/
+*.log
+*.html
+.html
+libs/
