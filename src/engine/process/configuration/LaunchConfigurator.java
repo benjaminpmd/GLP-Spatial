@@ -33,7 +33,9 @@ public class LaunchConfigurator {
     public void createLaunch(String filePath) {
         FileManager fileManager = new FileManager();
         CenterBuilder centerBuilder = new CenterBuilder(SimConfig.CENTERS_PATH);
+        centerBuilder.buildCenters();
         Mission mission = fileManager.importMission(filePath);
+        mission.getRocket().setCoordinates(mission.getCenter().getCoordinates());
         missionManager.setMission(mission);
     }
 }

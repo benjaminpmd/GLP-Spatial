@@ -5,6 +5,7 @@ import data.mission.Mission;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 import data.rocket.Tank;
+import engine.data.Constants;
 import engine.process.calculations.Calculation;
 
 /**
@@ -17,7 +18,7 @@ import engine.process.calculations.Calculation;
 public class MissionManager {
 
     private static final MissionManager instance = new MissionManager();
-    private final double DELTA_TIME = (SimConfig.SIMULATION_SPEED / 1000);
+    private final double DELTA_TIME = (SimConfig.DELTA_TIME);
     private Simulation simulation;
     private Mission mission;
     private final Calculation calculation;
@@ -82,7 +83,10 @@ public class MissionManager {
         double acceleration = calculation.accelerationFromThrust(rocket.getWeight(), rocket.getThrust());
         double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), DELTA_TIME);
         double altitude = calculation.positionFromVelocity(velocity, rocket.getCoordinates().getR(), DELTA_TIME);
-        rocket.getCoordinates().setR(altitude);
+        System.out.println(altitude - Constants.EARTH_RADIUS);
+        if (altitude >= Constants.EARTH_RADIUS) {
+            rocket.getCoordinates().setR(altitude);
+        }
         simulation.addAcceleration((int) acceleration);
         simulation.addVelocity((int) velocity);
         simulation.addTrajectory(calculation.polarToCartesian(rocket.getCoordinates()));

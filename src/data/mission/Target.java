@@ -10,28 +10,33 @@ package data.mission;
  * @since 11.02.22
  */
 public class Target {
-    private int altitude;
+    private int orbit;
     private Planet planet;
 
-    public Target(int altitude, Planet planet) {
-        this.altitude = altitude;
+    public Target(Planet planet) {
+        this.orbit = 0;
         this.planet = planet;
+    }
+
+    public Target(int orbit) {
+        this.orbit = orbit;
+        this.planet = null;
     }
 
     @Override
     public String toString() {
         return "Target{" +
-                "altitude=" + altitude +
+                "altitude=" + orbit +
                 ", planet=" + planet +
                 '}';
     }
 
-    public int getAltitude() {
-        return altitude;
+    public int getOrbit() {
+        return orbit;
     }
 
-    public void setAltitude(int altitude) {
-        this.altitude = altitude;
+    public void setAltitude(int orbit) {
+        this.orbit = orbit;
     }
 
     public Planet getPlanet() {

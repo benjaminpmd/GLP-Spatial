@@ -11,7 +11,7 @@ public class Constants {
     public static final double GRAVITATIONAL_CONST = 0.000000000006674184;
     // Earth values
     public static final double GRAVITY = 9.80066;
-    public static final int EARTH_RADIUS = 6371;
+    public static final int EARTH_RADIUS = 6371000;
     public static final double EARTH_MASS = 5972000000000000000000000D;
     // Engines default values
     public static final int DEFAULT_THRUST_RATIO = 65;

@@ -45,6 +45,13 @@ public class Mission {
 		this.target = target;
 	}
 
+	public Mission(String name, String description, Center center, Target target, Rocket rocket) {
+		this.name = name;
+		this.description = description;
+		this.center = center;
+		this.target = target;
+		this.rocket = rocket;
+	}
 
 	public Mission(String name, Center center, Target target) {
 		this(name, null, null, center, target);
@@ -65,6 +72,7 @@ public class Mission {
 				", center=" + center +
 				", earth=" + earth +
 				", target=" + target +
+				", rocket=" + rocket +
 				'}';
 	}
 

@@ -89,10 +89,10 @@ public class Rocket {
     }
 
     public double getThrust() {
-        if (firstStage.equals(null)) {
+        if (!firstStage.equals(null)) {
             return (firstStage.getEngine().getThrust() * firstStage.getEngineNb());
         }
-        else if (secondStage.equals(null)) {
+        else if (!secondStage.equals(null)) {
             return (secondStage.getEngine().getThrust() * secondStage.getEngineNb());
         }
         else return 0;
