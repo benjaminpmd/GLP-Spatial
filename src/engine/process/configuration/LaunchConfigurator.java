@@ -1,23 +1,15 @@
 package engine.process.configuration;
 
 import config.SimConfig;
-import data.mission.Center;
 import data.mission.Mission;
 import data.mission.Planet;
-import data.mission.Target;
 import data.rocket.Rocket;
 import engine.data.Constants;
 import engine.data.PolarCoordinates;
 import engine.process.builders.CenterBuilder;
-import engine.process.builders.RocketBuilder;
 import engine.process.management.MissionManager;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class LaunchConfigurator {
 
@@ -31,11 +23,17 @@ public class LaunchConfigurator {
     }
 
     public void createLaunch(String filePath) {
+        logger.info(filePath);
         FileManager fileManager = new FileManager();
         CenterBuilder centerBuilder = new CenterBuilder(SimConfig.CENTERS_PATH);
         centerBuilder.buildCenters();
         Mission mission = fileManager.importMission(filePath);
         mission.getRocket().setCoordinates(mission.getCenter().getCoordinates());
         missionManager.setMission(mission);
+    }
+
+    public void createLaunch() {
+        CenterBuilder centerBuilder = new CenterBuilder(SimConfig.CENTERS_PATH);
+        centerBuilder.buildCenters();
     }
 }

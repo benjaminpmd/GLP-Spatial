@@ -83,12 +83,17 @@ public class MissionManager {
         double acceleration = calculation.accelerationFromThrust(rocket.getWeight(), rocket.getThrust());
         double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), DELTA_TIME);
         double altitude = calculation.positionFromVelocity(velocity, rocket.getCoordinates().getR(), DELTA_TIME);
-        System.out.println(altitude - Constants.EARTH_RADIUS);
         if (altitude >= Constants.EARTH_RADIUS) {
             rocket.getCoordinates().setR(altitude);
         }
-        simulation.addAcceleration((int) acceleration);
-        simulation.addVelocity((int) velocity);
+        if (acceleration >= 0) {
+            simulation.addAcceleration((int) acceleration);
+        }
+        else simulation.addAcceleration(0);
+        if (velocity >= 0) {
+            simulation.addVelocity((int) velocity);
+        }
+        else simulation.addVelocity(0);
         simulation.addTrajectory(calculation.polarToCartesian(rocket.getCoordinates()));
     }
 

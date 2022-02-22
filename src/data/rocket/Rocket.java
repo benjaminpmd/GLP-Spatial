@@ -76,23 +76,23 @@ public class Rocket {
 
     public double getWeight() {
         double weight = 0;
-        if (!firstStage.equals(null)) {
+        if (firstStage != null) {
             weight += (firstStage.getEmptyWeight() + (firstStage.getTank().getRemainingPropellant() * firstStage.getTank().getPropellant().getDensity()) + (firstStage.getEngine().getWeight() * firstStage.getEngineNb()));
         }
-        if (!secondStage.equals(null)) {
+        if (secondStage != null) {
             weight += (secondStage.getEmptyWeight() + (secondStage.getTank().getRemainingPropellant() * secondStage.getTank().getPropellant().getDensity()) + (secondStage.getEngine().getWeight() * secondStage.getEngineNb()));
         }
-        if (!payload.equals(null)) {
+        if (payload != null) {
             weight += payload.getWeight();
         }
         return weight;
     }
 
     public double getThrust() {
-        if (!firstStage.equals(null)) {
+        if (firstStage != null) {
             return (firstStage.getEngine().getThrust() * firstStage.getEngineNb());
         }
-        else if (!secondStage.equals(null)) {
+        else if (secondStage != null) {
             return (secondStage.getEngine().getThrust() * secondStage.getEngineNb());
         }
         else return 0;

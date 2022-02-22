@@ -6,8 +6,14 @@ bin/
 .settings
 target/
 build/
+<<<<<<< Updated upstream
 .vscode/
 *.log
 *.html
 .html
 libs/
+=======
+libs/
+*.html
+
+>>>>>>> Stashed changes

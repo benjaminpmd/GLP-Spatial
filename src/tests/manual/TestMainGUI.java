@@ -1,9 +1,9 @@
 package tests.manual;
 
-import gui.windows.LaunchGUI;
+import gui.MainGUI;
 
 public class TestMainGUI {
     public static void main(String[] args) {
-        new LaunchGUI("GLP-Spatial");
+        new MainGUI("GLP-Spatial");
     }
 }

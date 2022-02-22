@@ -12,6 +12,23 @@ import engine.data.CartesianCoordinates;
  * @since 17.02.22
  */
 public class Calculation {
+    double deltaTime;
+
+    public Calculation() {
+        this(1);
+    }
+
+    public Calculation(double deltaTime) {
+        this.deltaTime = deltaTime;
+    }
+
+    public double getDeltaTime() {
+        return deltaTime;
+    }
+
+    public void setDeltaTime(double deltaTime) {
+        this.deltaTime = deltaTime;
+    }
 
     /**
      * Convert from degree to radian

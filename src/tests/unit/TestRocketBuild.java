@@ -2,7 +2,7 @@ package tests.unit;
 
 
 import data.rocket.Rocket;
-import engine.process.builders.RocketBuilder;
+import engine.process.factories.RocketFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,11 +14,11 @@ public class TestRocketBuild {
 
     @Before
     public void prepareStage() {
-    	RocketBuilder rocketBuilder = new RocketBuilder();
-        rocketBuilder.addStage(10000, 3, 2000, 1);
-        rocketBuilder.addStage(7000, 1, 2200, 2);
-        rocketBuilder.addPayload("test", 200);
-        rocket = rocketBuilder.getBuiltRocket();
+    	RocketFactory rocketFactory = new RocketFactory();
+        rocketFactory.createStage(10000, 3, 2000, 1);
+        rocketFactory.createStage(7000, 1, 2200, 2);
+        rocketFactory.createPayload("test", 200);
+        rocket = rocketFactory.getBuiltRocket();
     }
 
     @Test

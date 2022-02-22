@@ -22,6 +22,13 @@ public class Payload {
         this.weight = weight;
     }
 
+    /**
+     * @param weight Weight (kg) of the payload
+     */
+    public Payload(int weight) {
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
         return "Payload{" +
