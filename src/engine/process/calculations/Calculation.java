@@ -1,8 +1,8 @@
 package engine.process.calculations;
 
+import data.coordinate.CartesianCoordinate;
+import data.coordinate.PolarCoordinate;
 import engine.data.Constants;
-import engine.data.PolarCoordinates;
-import engine.data.CartesianCoordinates;
 
 /**
  * Class that contains all equations to use for objects movements.
@@ -19,7 +19,7 @@ public class Calculation {
      * @param angle the angle in degree, must be in [0, 360].
      * @return if the angle is in [0, 360], returns the radian value. return 0 in others cases.
      */
-    public double degreeToRadian(double angle) {
+    public static double degreeToRadian(double angle) {
         if ((angle >= 0) && (angle <= 360)) {
             return ((angle * Math.PI) / 180);
         } else return 0;
@@ -29,24 +29,24 @@ public class Calculation {
      * Calculates the cartesian coordinates from polar ones.
      *
      * @param polarCoordinates A coordinates objects to get the Cartesian coordinates from.
-     * @return a CartesianCoordinates object.
+     * @return a CartesianCoordinate object.
      */
-    public CartesianCoordinates polarToCartesian(PolarCoordinates polarCoordinates) {
+    public static CartesianCoordinate polarToCartesian(PolarCoordinate polarCoordinates) {
         int x = (int) (polarCoordinates.getR() * Math.cos(polarCoordinates.getAngle()));
         int y = (int) (polarCoordinates.getR() * Math.sin(polarCoordinates.getAngle()));
-        return new CartesianCoordinates(x, y);
+        return new CartesianCoordinate(x, y);
     }
     
     /**
      * Calculates the polar coordinates from cartesian ones.
      *
-     * @param cartesianCoordinates A coordinates objects to get the polar coordinates from.
-     * @return a PolarCoordinates object.
+     * @param cartesianCoordinate A coordinates objects to get the polar coordinates from.
+     * @return a PolarCoordinate object.
      */
-    public PolarCoordinates cartesianToPolar(CartesianCoordinates cartesianCoordinates) {
-        double r = Math.sqrt(Math.pow(cartesianCoordinates.getX(), 2) + Math.pow(cartesianCoordinates.getY(), 2));
-        double angle = Math.atan2(cartesianCoordinates.getX(), cartesianCoordinates.getY());
-        return new PolarCoordinates(r, angle);
+    public static PolarCoordinate cartesianToPolar(CartesianCoordinate cartesianCoordinate) {
+        double r = Math.sqrt(Math.pow(cartesianCoordinate.getX(), 2) + Math.pow(cartesianCoordinate.getY(), 2));
+        double angle = Math.atan2(cartesianCoordinate.getX(), cartesianCoordinate.getY());
+        return new PolarCoordinate(r, angle);
     }
 
     /**
@@ -56,7 +56,7 @@ public class Calculation {
      * @param distance  the distance of the attracted object in m.
      * @return a double, gravity value in N.
      */
-    public double gravity(double mass, double distance) {
+    public static double gravity(double mass, double distance) {
         return ((Constants.GRAVITATIONAL_CONST * mass) / Math.pow(distance, 2));
     }
 
@@ -67,7 +67,7 @@ public class Calculation {
      * @param thrust the thrust in N.
      * @return a double, the acceleration in m.s^-2.
      */
-    public double accelerationFromThrust(double mass, double thrust) {
+    public static double accelerationFromThrust(double mass, double thrust) {
         // TODO: Adapt to variable gravity
         // TODO: Improve to 2D trajectory
         return (thrust - (mass * Constants.GRAVITY));
@@ -81,7 +81,7 @@ public class Calculation {
      * @param deltaTime       the delta time to use in s.
      * @return a double, the new velocity of the object in m.s^-1.
      */
-    public double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
+    public static double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
         // TODO: Improve to 2D trajectory
         return initialVelocity + (acceleration * deltaTime);
     }
@@ -94,7 +94,7 @@ public class Calculation {
      * @param d         the delta time to use in s.
      * @return a double, the new position of the object.
      */
-    public double positionFromVelocity(double velocity, double x, double d) {
+    public static double positionFromVelocity(double velocity, double x, double d) {
         // TODO: Improve to 2D trajectory
         return (x + (velocity * d));
     }

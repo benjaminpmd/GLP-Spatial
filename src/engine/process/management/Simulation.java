@@ -1,16 +1,16 @@
 package engine.process.management;
 
-import engine.data.CartesianCoordinates;
+import data.coordinate.CartesianCoordinate;
 
 import java.util.ArrayList;
 
 public class Simulation {
 
-    private ArrayList<CartesianCoordinates>trajectories = new ArrayList<CartesianCoordinates>();
+    private ArrayList<CartesianCoordinate>trajectories = new ArrayList<CartesianCoordinate>();
     private ArrayList<Integer>velocities = new ArrayList<Integer>();
     private ArrayList<Integer>accelerations = new ArrayList<Integer>();
 
-    public ArrayList<CartesianCoordinates> getTrajectories() {
+    public ArrayList<CartesianCoordinate> getTrajectories() {
         return trajectories;
     }
 
@@ -22,8 +22,8 @@ public class Simulation {
         return accelerations;
     }
 
-    public void addTrajectory(CartesianCoordinates cartesianCoordinates) {
-        trajectories.add(cartesianCoordinates);
+    public void addTrajectory(CartesianCoordinate cartesianCoordinate) {
+        trajectories.add(cartesianCoordinate);
     }
 
     public void addVelocity(int velocity) {

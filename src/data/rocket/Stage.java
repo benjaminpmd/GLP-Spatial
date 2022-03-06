@@ -1,63 +1,35 @@
 package data.rocket;
 
-import javax.swing.*;
-import java.util.Objects;
+import data.MobileElement;
 
 /**
- * Class that contains informations about the stage
+ * Class that contains information about the stage
  *
  * @author Alice M, Benjamin P
- * @version 22.02.11 - thrust me (1.0.0)
+ * @version 22.03.06
  * @see RocketEngine
  * @see Tank
  * @since 11.02.22
  */
-public class Stage {
+public class Stage extends MobileElement {
 
-    private double emptyWeight;
-    private int engineNb;
-    private RocketEngine engine;
     private Tank tank;
-    private Icon icon;
+    private RocketEngine engine;
+    private int engineNb;
 
-    /**
-     * Constructor of the Stage object
-     *
-     * @param engineNb the number of engine that power the stage
-     * @param engine   the engine type that are used {@link RocketEngine}
-     * @param tank     the tank that contains the propellant {@link Tank}
-     */
-    public Stage(int engineNb, RocketEngine engine, Tank tank) {
+    public Stage(Tank tank, RocketEngine engine, int engineNb) {
+        super();
         this.engineNb = engineNb;
         this.engine = engine;
         this.tank = tank;
     }
 
-    @Override
-    public String toString() {
-        return "Stage{" +
-                "emptyWeight=" + emptyWeight +
-                ", engineNb=" + engineNb +
-                ", engine=" + engine +
-                ", tank=" + tank +
-                ", icon=" + icon +
-                '}';
-    }
+    public Stage(Tank tank, RocketEngine engine, int engineNb, double mass) {
+        super(mass);
+        this.tank = tank;
+        this.engine = engine;
+        this.engineNb = engineNb;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Stage)) return false;
-        Stage stage = (Stage) o;
-        return Double.compare(stage.getEmptyWeight(), getEmptyWeight()) == 0 && getEngineNb() == stage.getEngineNb() && getEngine().equals(stage.getEngine()) && getTank().equals(stage.getTank()) && getIcon().equals(stage.getIcon());
-    }
-
-    public double getEmptyWeight() {
-        return emptyWeight;
-    }
-
-    public void setEmptyWeight(double emptyWeight) {
-        this.emptyWeight = emptyWeight;
     }
 
     public int getEngineNb() {
@@ -82,13 +54,5 @@ public class Stage {
 
     public void setTank(Tank tank) {
         this.tank = tank;
-    }
-
-    public Icon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Icon icon) {
-        this.icon = icon;
     }
 }

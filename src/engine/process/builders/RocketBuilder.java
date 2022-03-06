@@ -4,13 +4,13 @@ import engine.data.Constants;
 import data.rocket.Payload;
 import data.rocket.Rocket;
 import data.rocket.Stage;
-import engine.process.builders.StageBuilder;
 
 /**
  * Builder for the rocket it features two methods for rocket creation, one with standard settings and another simpler.
+ * TODO: add logging
  *
  * @author Benjamin P
- * @version 22.02.13 - To Infinity and beyond (1.0.0)
+ * @version 22.03.06
  * @see data.rocket.RocketEngine
  * @see engine.process.builders.RocketEngineBuilder
  * @since 11.02.22
@@ -18,6 +18,7 @@ import engine.process.builders.StageBuilder;
 public class RocketBuilder {
 
     private Rocket rocket = new Rocket();
+
     private StageBuilder stageBuilder = new StageBuilder();
 
     /**
@@ -26,10 +27,13 @@ public class RocketBuilder {
      * @param payload The weight of the payload (in kg).
      * @return boolean, true if the weight is correct, false in the other case.
      */
+    /*
     private boolean validPayload(Payload payload) throws IllegalArgumentException {
         double thrust = rocket.getFirstStage().getEngineNb() * rocket.getFirstStage().getEngine().getThrust();
         return (thrust * Constants.GRAVITY) > (rocket.getWeight() + payload.getWeight());
     }
+
+     */
 
     /**
      * Method that creates a stage with limited values and add it to the rocket.
@@ -59,10 +63,13 @@ public class RocketBuilder {
      *
      * @return a boolean, true if the rocket is correct, false in others cases.
      */
+    /*
     public boolean validRocket() {
         return (rocket.getFirstStage() != null) && (rocket.getSecondStage() != null) && (rocket.getPayload() != null) && (rocket.getThrust() > rocket.getWeight() * Constants.GRAVITY);
     }
 
+
+     */
     public Rocket getBuiltRocket() {
         return rocket;
     }

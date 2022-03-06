@@ -22,13 +22,12 @@ public class MissionManager {
     private Simulation simulation;
     private Mission mission;
     private final Calculation calculation;
-
     // private constructor
     private MissionManager() {
         calculation = new Calculation();
         simulation = new Simulation();
     }
-
+    /*
     public static MissionManager getInstance() {
         return instance;
     }
@@ -51,7 +50,6 @@ public class MissionManager {
 
     /**
      * Method that updates the rocket. It removes the used propellant mass and manage stage once the tank is empty.
-     */
     public void updateRocket() {
         Rocket rocket = mission.getRocket();
         Stage stage;
@@ -96,4 +94,5 @@ public class MissionManager {
         updateRocket();
         updateRocketPosition();
     }
+    */
 }

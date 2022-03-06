@@ -1,8 +1,7 @@
 package data.rocket;
 
-// TODO: make the rocket singleton
-
-import engine.data.PolarCoordinates;
+import data.MobileElement;
+import data.coordinate.CartesianCoordinate;
 
 /**
  * Class that contains information about the rocket
@@ -13,15 +12,20 @@ import engine.data.PolarCoordinates;
  * @see Payload
  * @since 11.02.22
  */
-public class Rocket {
+public class Rocket extends MobileElement {
 
     private Stage firstStage;
     private Stage secondStage;
     private Payload payload;
-    private PolarCoordinates polarCoordinates;
     private double velocity;
 
     public Rocket() {
+        super();
+        velocity = 0;
+    }
+
+    public Rocket(CartesianCoordinate cartesianCoordinate) {
+        super(0, cartesianCoordinate);
         velocity = 0;
     }
 
@@ -58,14 +62,6 @@ public class Rocket {
         this.payload = payload;
     }
 
-    public PolarCoordinates getCoordinates() {
-        return polarCoordinates;
-    }
-
-    public void setCoordinates(PolarCoordinates polarCoordinates) {
-        this.polarCoordinates = polarCoordinates;
-    }
-
     public double getVelocity() {
         return velocity;
     }
@@ -74,6 +70,7 @@ public class Rocket {
         this.velocity = velocity;
     }
 
+    /*
     public double getWeight() {
         double weight = 0;
         if (!firstStage.equals(null)) {
@@ -87,6 +84,8 @@ public class Rocket {
         }
         return weight;
     }
+
+     */
 
     public double getThrust() {
         if (!firstStage.equals(null)) {

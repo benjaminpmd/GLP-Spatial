@@ -10,7 +10,7 @@ package data.rocket;
 public class Payload {
 
     private String name;
-    //kg
+    // in kg
     private int weight;
 
     /**

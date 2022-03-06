@@ -23,6 +23,7 @@ public class TestStageBuild {
         simpleStage = stageBuilder.buildStage(24000, 4, 24000);
     }
 
+    /*
     @Test
     public void testStage () {
         double emptyWeight = stage.getEmptyWeight();;
@@ -39,4 +40,6 @@ public class TestStageBuild {
         assertNotNull(emptyWeight);
         assertEquals(2100, emptyWeight, 200);
     }
+
+     */
 }

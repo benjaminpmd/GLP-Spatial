@@ -17,7 +17,7 @@ public class SimConfig {
 
     public static final int MIN_ENGINES = 1;
     public static final int MAX_ENGINES = 32;
-    
-    public static final String CENTERS_PATH = "./centers/centers.csv";
-    public static final boolean beginnerMode = false;
+
+    public static final String CENTERS_PATH = "./src/config/centers.csv";
+    public static final String CELESTIAL_OBJECTS_PATH = "./src/config/celestialObjects.csv";
 }

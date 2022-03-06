@@ -1,78 +1,64 @@
 package data.mission;
 
-import engine.data.Constants;
-import engine.data.PolarCoordinates;
-import data.rocket.Rocket;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * The mission class is the center core of the engine, all important information like target of the mission, rocket etc.
- * are stored in this object.
+ * The mission object contains all information like target of the mission, the center where the rocket will be launched.
  *
  * @author Benjamin P
- * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see data.rocket.Rocket
- * @see data.mission.Center
- * @see engine.data.PolarCoordinates
+ * @version 22.03.06
+ * @see SpaceCenter
  * @since 11.02.22
  */
 public class Mission {
 
 	private String name;
 	private String description;
-	private Date launchTime;
-	private Rocket rocket;
-	private Center center;
-	private Planet earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
+	private SpaceCenter spaceCenter;
 	private Target target;
+	private Date launchTime;
 
-	// TODO: invert, use this() with the smallest value input
-	public Mission(String name, String description, Date launchTime, Center center, Target target, Rocket rocket) {
+	public Mission(SpaceCenter spaceCenter, Target target) {
+		this.spaceCenter = spaceCenter;
+		this.target = target;
+		name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
+		description = "No description provided.";
+		launchTime = new Date();
+	}
+
+	public Mission(String name, SpaceCenter spaceCenter, Target target) {
+		this.name = name;
+		this.spaceCenter = spaceCenter;
+		this.target = target;
+		description = "No description provided.";
+		launchTime = new Date();
+	}
+
+	public Mission(String name, String description, SpaceCenter spaceCenter, Target target) {
 		this.name = name;
 		this.description = description;
+		this.spaceCenter = spaceCenter;
+		this.target = target;
+		launchTime = new Date();
+	}
+
+	public Mission(String name, String description, SpaceCenter spaceCenter, Target target, Date launchTime) {
+		this.name = name;
+		this.description = description;
+		this.spaceCenter = spaceCenter;
+		this.target = target;
 		this.launchTime = launchTime;
-		this.center = center;
-		this.target = target;
-		this.rocket = rocket;
 	}
-
-	public Mission(String name, String description, Date launchTime, Center center, Target target) {
-		this.name = name;
-		this.description = description;
-		this.launchTime = launchTime;
-		this.center = center;
-		this.target = target;
-	}
-
-	public Mission(String name, String description, Center center, Target target, Rocket rocket) {
-		this.name = name;
-		this.description = description;
-		this.center = center;
-		this.target = target;
-		this.rocket = rocket;
-	}
-
-	public Mission(String name, Center center, Target target) {
-		this(name, null, null, center, target);
-	}
-
-	public Mission(Center center, Target target) {
-		this(null, null, null, center, target);
-	}
-
-	public Mission() {}
 
 	@Override
 	public String toString() {
 		return "Mission{" +
 				"name='" + name + '\'' +
 				", description='" + description + '\'' +
-				", launchTime=" + launchTime +
-				", center=" + center +
-				", earth=" + earth +
+				", spaceCenter=" + spaceCenter +
 				", target=" + target +
-				", rocket=" + rocket +
+				", launchTime=" + launchTime +
 				'}';
 	}
 
@@ -92,28 +78,12 @@ public class Mission {
 		this.description = description;
 	}
 
-	public Date getLaunchTime() {
-		return launchTime;
+	public SpaceCenter getSpaceCenter() {
+		return spaceCenter;
 	}
 
-	public void setLaunchTime(Date launchTime) {
-		this.launchTime = launchTime;
-	}
-
-	public Center getCenter() {
-		return center;
-	}
-
-	public void setCenter(Center center) {
-		this.center = center;
-	}
-
-	public Planet getEarth() {
-		return earth;
-	}
-
-	public void setEarth(Planet earth) {
-		this.earth = earth;
+	public void setSpaceCenter(SpaceCenter spaceCenter) {
+		this.spaceCenter = spaceCenter;
 	}
 
 	public Target getTarget() {
@@ -124,11 +94,11 @@ public class Mission {
 		this.target = target;
 	}
 
-	public Rocket getRocket() {
-		return rocket;
+	public Date getLaunchTime() {
+		return launchTime;
 	}
 
-	public void setRocket(Rocket rocket) {
-		this.rocket = rocket;
+	public void setLaunchTime(Date launchTime) {
+		this.launchTime = launchTime;
 	}
 }
