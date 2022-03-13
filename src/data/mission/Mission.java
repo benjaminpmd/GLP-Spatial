@@ -4,10 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * The mission object contains all information like target of the mission, the center where the rocket will be launched.
+ * The mission object contains all information like destination of the mission, orbit target or the center where the
+ * rocket will be launched.
  *
  * @author Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @see SpaceCenter
  * @since 11.02.22
  */
@@ -16,38 +17,37 @@ public class Mission {
 	private String name;
 	private String description;
 	private SpaceCenter spaceCenter;
-	private Target target;
+	private CelestialObject destination;
+	private int orbitAltitude;
 	private Date launchTime;
 
-	public Mission(SpaceCenter spaceCenter, Target target) {
+	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude) {
 		this.spaceCenter = spaceCenter;
-		this.target = target;
+		this.destination = destination;
+		this.orbitAltitude = orbitAltitude;
 		name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
 		description = "No description provided.";
 		launchTime = new Date();
 	}
 
-	public Mission(String name, SpaceCenter spaceCenter, Target target) {
+	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name) {
 		this.name = name;
 		this.spaceCenter = spaceCenter;
-		this.target = target;
 		description = "No description provided.";
 		launchTime = new Date();
 	}
 
-	public Mission(String name, String description, SpaceCenter spaceCenter, Target target) {
+	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name, String description) {
 		this.name = name;
 		this.description = description;
 		this.spaceCenter = spaceCenter;
-		this.target = target;
 		launchTime = new Date();
 	}
 
-	public Mission(String name, String description, SpaceCenter spaceCenter, Target target, Date launchTime) {
+	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name, String description, Date launchTime) {
 		this.name = name;
 		this.description = description;
 		this.spaceCenter = spaceCenter;
-		this.target = target;
 		this.launchTime = launchTime;
 	}
 
@@ -57,7 +57,8 @@ public class Mission {
 				"name='" + name + '\'' +
 				", description='" + description + '\'' +
 				", spaceCenter=" + spaceCenter +
-				", target=" + target +
+				", destination=" + destination +
+				", orbitAltitude=" + orbitAltitude +
 				", launchTime=" + launchTime +
 				'}';
 	}
@@ -86,12 +87,20 @@ public class Mission {
 		this.spaceCenter = spaceCenter;
 	}
 
-	public Target getTarget() {
-		return target;
+	public CelestialObject getDestination() {
+		return destination;
 	}
 
-	public void setTarget(Target target) {
-		this.target = target;
+	public void setDestination(CelestialObject destination) {
+		this.destination = destination;
+	}
+
+	public int getOrbitAltitude() {
+		return orbitAltitude;
+	}
+
+	public void setOrbitAltitude(int orbitAltitude) {
+		this.orbitAltitude = orbitAltitude;
 	}
 
 	public Date getLaunchTime() {

@@ -3,10 +3,10 @@ package data.rocket;
 import data.MobileElement;
 
 /**
- * Class that contains information about the stage
+ * Class that contains information about the stage.
  *
  * @author Alice M, Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @see RocketEngine
  * @see Tank
  * @since 11.02.22
@@ -17,19 +17,23 @@ public class Stage extends MobileElement {
     private RocketEngine engine;
     private int engineNb;
 
-    public Stage(Tank tank, RocketEngine engine, int engineNb) {
-        super();
-        this.engineNb = engineNb;
-        this.engine = engine;
-        this.tank = tank;
-    }
-
+    /**
+     * Constructor of the Stage.
+     */
     public Stage(Tank tank, RocketEngine engine, int engineNb, double mass) {
         super(mass);
         this.tank = tank;
         this.engine = engine;
         this.engineNb = engineNb;
+    }
 
+    @Override
+    public String toString() {
+        return "Stage{" +
+                "tank=" + tank +
+                ", engine=" + engine +
+                ", engineNb=" + engineNb +
+                "} " + super.toString();
     }
 
     public int getEngineNb() {

@@ -1,17 +1,31 @@
-package engine.process.calculations;
+package process.management;
 
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
-import engine.data.Constants;
+import config.Constants;
 
 /**
  * Class that contains all equations to use for objects movements.
  *
  * @author Benjamin P
- * @version 22.02.17 - I like math (1.0.0)
+ * @version 22.03.13 (0.1.0 WIP)
+ * @see data.coordinate.CartesianCoordinate
+ * @see data.coordinate.PolarCoordinate
  * @since 17.02.22
+ *
+ * TODO: Add all calculs for rocket trajectories and orbital mechanics.
  */
 public class Calculation {
+
+    private double deltaTime;
+
+    public Calculation(double deltaTime) {
+        this.deltaTime = deltaTime;
+    }
+
+    public Calculation() {
+        deltaTime = 1;
+    }
 
     /**
      * Convert from degree to radian
@@ -19,7 +33,7 @@ public class Calculation {
      * @param angle the angle in degree, must be in [0, 360].
      * @return if the angle is in [0, 360], returns the radian value. return 0 in others cases.
      */
-    public static double degreeToRadian(double angle) {
+    public double degreeToRadian(double angle) {
         if ((angle >= 0) && (angle <= 360)) {
             return ((angle * Math.PI) / 180);
         } else return 0;
@@ -28,12 +42,12 @@ public class Calculation {
     /**
      * Calculates the cartesian coordinates from polar ones.
      *
-     * @param polarCoordinates A coordinates objects to get the Cartesian coordinates from.
+     * @param polarCoordinate A coordinates objects to get the Cartesian coordinates from.
      * @return a CartesianCoordinate object.
      */
-    public static CartesianCoordinate polarToCartesian(PolarCoordinate polarCoordinates) {
-        int x = (int) (polarCoordinates.getR() * Math.cos(polarCoordinates.getAngle()));
-        int y = (int) (polarCoordinates.getR() * Math.sin(polarCoordinates.getAngle()));
+    public CartesianCoordinate polarToCartesian(PolarCoordinate polarCoordinate) {
+        int x = (int) (polarCoordinate.getR() * Math.cos(polarCoordinate.getAngle()));
+        int y = (int) (polarCoordinate.getR() * Math.sin(polarCoordinate.getAngle()));
         return new CartesianCoordinate(x, y);
     }
     
@@ -43,7 +57,7 @@ public class Calculation {
      * @param cartesianCoordinate A coordinates objects to get the polar coordinates from.
      * @return a PolarCoordinate object.
      */
-    public static PolarCoordinate cartesianToPolar(CartesianCoordinate cartesianCoordinate) {
+    public PolarCoordinate cartesianToPolar(CartesianCoordinate cartesianCoordinate) {
         double r = Math.sqrt(Math.pow(cartesianCoordinate.getX(), 2) + Math.pow(cartesianCoordinate.getY(), 2));
         double angle = Math.atan2(cartesianCoordinate.getX(), cartesianCoordinate.getY());
         return new PolarCoordinate(r, angle);
@@ -53,11 +67,11 @@ public class Calculation {
      * Method that calculates the gravity of an object using the gravity formula.
      *
      * @param mass      the mass in kg of the object emitting the gravity you want to get.
-     * @param distance  the distance of the attracted object in m.
+     * @param radius  the radius of the object in m.
      * @return a double, gravity value in N.
      */
-    public static double gravity(double mass, double distance) {
-        return ((Constants.GRAVITATIONAL_CONST * mass) / Math.pow(distance, 2));
+    public double gravity(double mass, double radius) {
+        return ((Constants.GRAVITATIONAL_CONST * mass) / Math.pow(radius, 2));
     }
 
     /**
@@ -67,7 +81,7 @@ public class Calculation {
      * @param thrust the thrust in N.
      * @return a double, the acceleration in m.s^-2.
      */
-    public static double accelerationFromThrust(double mass, double thrust) {
+    public double accelerationFromThrust(double mass, double thrust) {
         // TODO: Adapt to variable gravity
         // TODO: Improve to 2D trajectory
         return (thrust - (mass * Constants.GRAVITY));
@@ -81,7 +95,7 @@ public class Calculation {
      * @param deltaTime       the delta time to use in s.
      * @return a double, the new velocity of the object in m.s^-1.
      */
-    public static double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
+    public double velocityFromAcceleration(double acceleration, double initialVelocity, double deltaTime) {
         // TODO: Improve to 2D trajectory
         return initialVelocity + (acceleration * deltaTime);
     }
@@ -94,7 +108,7 @@ public class Calculation {
      * @param d         the delta time to use in s.
      * @return a double, the new position of the object.
      */
-    public static double positionFromVelocity(double velocity, double x, double d) {
+    public double positionFromVelocity(double velocity, double x, double d) {
         // TODO: Improve to 2D trajectory
         return (x + (velocity * d));
     }

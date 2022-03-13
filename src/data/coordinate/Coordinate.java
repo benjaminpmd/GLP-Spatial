@@ -4,7 +4,7 @@ package data.coordinate;
  * Class containing the base of a coordinate, the angle of the object in radian.
  *
  * @author Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @since 11.02.22
  */
 public class Coordinate {
@@ -20,7 +20,7 @@ public class Coordinate {
 	}
 
 	@Override
-	public java.lang.String toString() {
+	public String toString() {
 		return "Coordinate{" +
 				"selfAngle=" + selfAngle +
 				'}';

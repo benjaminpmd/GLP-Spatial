@@ -1,4 +1,4 @@
-package engine.process.management;
+package process.management;
 
 import config.SimConfig;
 
@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * TODO: add documentation
+ */
 public class SimulationUtility {
 	
 	/**

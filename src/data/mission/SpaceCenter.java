@@ -8,7 +8,7 @@ import data.coordinate.CartesianCoordinate;
  * located near the equator to use the full benefit of earth rotation velocity.
  *
  * @author Benjamin P
- * @version 22.03.16
+ * @version 22.03.16 (1.0.0)
  * @since 11.02.22
  */
 public class SpaceCenter {
@@ -16,13 +16,10 @@ public class SpaceCenter {
     private String name;
     private CartesianCoordinate cartesianCoordinate;
 
-
     public SpaceCenter(String name, CartesianCoordinate cartesianCoordinate) {
         this.name = name;
         this.cartesianCoordinate = cartesianCoordinate;
     }
-
-    public SpaceCenter() {}
 
     @Override
     public String toString() {

@@ -1,12 +1,12 @@
 package data.rocket;
 
-import engine.data.Constants;
+import config.Constants;
 
 /**
  * Class that contains information about the propellant.
  *
  * @author Alice M, Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @since 11.02.22
  */
 public class Propellant {
@@ -17,7 +17,7 @@ public class Propellant {
     private double density;
 
     /**
-     * Constructor of the propellant object.
+     * Constructor of the propellant.
      */
     public Propellant() {
         density = Constants.DEFAULT_PROPELLANT_DENSITY;
@@ -25,14 +25,19 @@ public class Propellant {
     }
 
     /**
-     * Constructor of the Propellant object.
-     *
-     * @param density     in kg.L^-1.
-     * @param temperature in C.
+     * Constructor of the Propellant.
      */
     public Propellant(double density, int temperature) {
         this.density = density;
         this.temperature = temperature;
+    }
+
+    @Override
+    public String toString() {
+        return "Propellant{" +
+                "temperature=" + temperature +
+                ", density=" + density +
+                '}';
     }
 
     public int getTemperature() {

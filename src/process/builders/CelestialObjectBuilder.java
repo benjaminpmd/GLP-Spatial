@@ -1,8 +1,7 @@
-package engine.process.builders;
+package process.builders;
 
 import data.mission.CelestialObject;
-import engine.process.repositories.CelestialObjectRepository;
-
+import process.repositories.CelestialObjectRepository;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
 
@@ -14,21 +13,26 @@ import java.io.IOException;
 /**
  * Class to build various celestial objects. All the objects must be registered in the CSV file passed to the constructor.
  * Once the object is initialized, the build method allows to get a built celestial object stored in the CelestialObjectRepository.
- * TODO: add logging
  *
  * @author Benjamin P
- * @version 22.03.06 (0.9.0)
+ * @version 22.03.13 (0.1.0)
  * @see CelestialObject
  * @see CelestialObjectRepository
  * @since 14.02.22
  */
 public class CelestialObjectBuilder {
 
-    private Logger logger = LoggerUtility.getLogger(SpaceCenterBuilder.class, "html");
+    private final Logger logger = LoggerUtility.getLogger(CelestialObjectBuilder.class, "html");
 
-    private String SEPARATOR = ";";
-    private CelestialObjectRepository celestialObjectRepository = CelestialObjectRepository.getInstance();
+    private final String SEPARATOR = ";";
 
+    private final CelestialObjectRepository celestialObjectRepository = CelestialObjectRepository.getInstance();
+
+    /**
+     * Constructor of the CelestialObjectBuilder.
+     *
+     * @param filePath {@link String} the path of the CSV file where the celestials object data are stored.
+     */
     public CelestialObjectBuilder(String filePath) {
 
         try {
@@ -44,7 +48,7 @@ public class CelestialObjectBuilder {
 
                 // registering them into the repository
                 celestialObjectRepository.register(values[0], props);
-                logger.info("New CelestialObject data registered: " + values[0]);
+                logger.trace("New CelestialObject data registered: " + values[0]);
             }
             reader.close();
 
@@ -56,10 +60,10 @@ public class CelestialObjectBuilder {
     }
 
     /**
-     * Build a celestial object registered in the {@link engine.process.repositories.CelestialObjectRepository}
+     * Build a celestial object registered in the {@link process.repositories.CelestialObjectRepository}.
      *
-     * @param name the name of the celestial object you want to build
-     * @return a CelestialObject
+     * @param name {@link String} the name of the celestial object you want to build.
+     * @return {@link CelestialObject}
      */
     public CelestialObject buildCelestialObject(String name) {
 
@@ -67,9 +71,7 @@ public class CelestialObjectBuilder {
         try {
             // try to get the String array with the provided name.
             String[] props = celestialObjectRepository.getValue(name);
-            celestialObject = new CelestialObject(name, Integer.valueOf(props[0]), Double.valueOf(props[1]));
-
-            return celestialObject;
+            return new CelestialObject(name, Integer.valueOf(props[0]), Double.valueOf(props[1]));
 
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());

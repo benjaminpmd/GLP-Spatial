@@ -1,4 +1,4 @@
-package engine.data;
+package config;
 
 /**
  * Class containing all scientific constants for calculations.

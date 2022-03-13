@@ -1,6 +1,6 @@
 package tests.manual;
 
-import engine.process.builders.CelestialObjectBuilder;
+import process.builders.CelestialObjectBuilder;
 
 public class ManualTestCelestialObjectBuild {
     public static void main(String[] args) {

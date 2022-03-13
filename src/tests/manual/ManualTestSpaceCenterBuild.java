@@ -1,6 +1,6 @@
 package tests.manual;
 
-import engine.process.builders.SpaceCenterBuilder;
+import process.builders.SpaceCenterBuilder;
 
 public class ManualTestSpaceCenterBuild {
     public static void main(String[] args) {

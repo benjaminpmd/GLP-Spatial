@@ -1,10 +1,10 @@
 package data.rocket;
 
 /**
- * Class that contains information about the rocket engine
+ * Class that contains information about the rocket engine.
  *
  * @author Alice M, Benjamin P
- * @version 22.02.11 - thrust me (1.0.0)
+ * @version 22.02.11 (1.0.0)
  * @since 11.02.22
  */
 public class RocketEngine {
@@ -19,10 +19,12 @@ public class RocketEngine {
     private int isp;
 
     /**
-     * @param thrust         the thrust of the engine in Kg/s
-     * @param propellantFlow the amont of fuel in kg used per second
-     * @param weight         the weight of the engine
-     * @param isp            the specific impulse of the engine
+     * Constructor of RocketEngine.
+     *
+     * @param thrust         the thrust of the engine in Kg/s.
+     * @param propellantFlow the amont of fuel in kg used per second.
+     * @param weight         the weight of the engine.
+     * @param isp            the specific impulse of the engine.
      */
     public RocketEngine(int isp, double thrust, double propellantFlow, double weight) {
         this.isp = isp;
@@ -31,13 +33,13 @@ public class RocketEngine {
         this.weight = weight;
     }
 
-
     @Override
     public String toString() {
         return "RocketEngine{" +
                 "thrust=" + thrust +
                 ", propellantFlow=" + propellantFlow +
                 ", weight=" + weight +
+                ", isp=" + isp +
                 '}';
     }
 

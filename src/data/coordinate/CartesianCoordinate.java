@@ -4,7 +4,7 @@ package data.coordinate;
  * Class that store the cartesian location of an object relative to a reference anchor point.
  *
  * @author Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @see data.coordinate.Coordinate
  * @since 11.02.22
  */

@@ -3,10 +3,10 @@ package data;
 import data.coordinate.CartesianCoordinate;
 
 /**
- * Class that contains a coordinate to standardize coordinate management of different objects to show.
+ * Class that contains a coordinate, a weight and a velocity of a MobileElement.
  *
  * @author Benjamin P
- * @version 22.03.06
+ * @version 22.03.13 (1.0.0)
  * @see data.coordinate.CartesianCoordinate
  * @since 06/03/22
  */
@@ -14,14 +14,29 @@ public class MobileElement {
 
     // in kg
     private double mass;
+    private double velocity;
     private CartesianCoordinate cartesianCoordinate;
 
+    /**
+     * Constructor of the MobileElement.
+     */
+    public MobileElement(double mass, double velocity, CartesianCoordinate cartesianCoordinate) {
+        this.mass = mass;
+        this.velocity = velocity;
+        this.cartesianCoordinate = cartesianCoordinate;
+    }
 
+    /**
+     * Constructor of the MobileElement.
+     */
     public MobileElement(double mass, CartesianCoordinate cartesianCoordinate) {
         this.mass = mass;
         this.cartesianCoordinate = cartesianCoordinate;
     }
 
+    /**
+     * Constructor of the MobileElement.
+     */
     public MobileElement(double mass) {
         this.mass = mass;
         cartesianCoordinate = new CartesianCoordinate();
@@ -36,6 +51,7 @@ public class MobileElement {
     public String toString() {
         return "MobileElement{" +
                 "mass=" + mass +
+                ", velocity=" + velocity +
                 ", cartesianCoordinate=" + cartesianCoordinate +
                 '}';
     }
@@ -54,5 +70,13 @@ public class MobileElement {
 
     public void setMass(double mass) {
         this.mass = mass;
+    }
+
+    public double getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
     }
 }

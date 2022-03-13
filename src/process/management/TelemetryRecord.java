@@ -1,17 +1,15 @@
-package engine.process.management;
-
-import data.coordinate.CartesianCoordinate;
+package process.management;
 
 import java.util.ArrayList;
 
-public class Simulation {
+public class TelemetryRecord {
 
-    private ArrayList<CartesianCoordinate>trajectories = new ArrayList<CartesianCoordinate>();
+    private ArrayList<Integer>altitudes = new ArrayList<Integer>();
     private ArrayList<Integer>velocities = new ArrayList<Integer>();
     private ArrayList<Integer>accelerations = new ArrayList<Integer>();
 
-    public ArrayList<CartesianCoordinate> getTrajectories() {
-        return trajectories;
+    public ArrayList<Integer> getAltitudes() {
+        return altitudes;
     }
 
     public ArrayList<Integer> getVelocities() {
@@ -22,8 +20,8 @@ public class Simulation {
         return accelerations;
     }
 
-    public void addTrajectory(CartesianCoordinate cartesianCoordinate) {
-        trajectories.add(cartesianCoordinate);
+    public void addAltitude(int altitude) {
+        altitudes.add(altitude);
     }
 
     public void addVelocity(int velocity) {

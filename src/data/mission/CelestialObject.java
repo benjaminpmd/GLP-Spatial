@@ -9,7 +9,7 @@ import data.coordinate.CartesianCoordinate;
  * in the observable universe. It can be a star, planet, moon, asteroid etc...
  *
  * @author Benjamin P
- * @version 22.03.06
+ * @version 22.03.06 (1.0.0)
  * @see data.MobileElement
  * @since 11.02.22
  */
