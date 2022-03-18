@@ -1,6 +1,8 @@
 package process.builders;
 
 import data.mission.Mission;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
 
 /**
  * Class to transfer input data from the user input to a new Mission Object.
@@ -11,6 +13,8 @@ import data.mission.Mission;
  * @since 07.03.22
  */
 public class MissionBuilder {
+
+    private final Logger logger = LoggerUtility.getLogger(MissionBuilder.class, "html");
 
     private final CelestialObjectBuilder celestialObjectBuilder;
     private final SpaceCenterBuilder spaceCenterBuilder;
@@ -30,7 +34,7 @@ public class MissionBuilder {
      * @param orbit           {@link String} the orbit targeted.
      * @return {@link Mission}
      */
-    public Mission buildMission(String name, String spaceCenterName, String destinationName, String orbit) {
+    public Mission buildMission(String name, String spaceCenterName, String destinationName, int orbit) {
         Mission mission;
         if (name.equals("Name your mission here")) {
             mission = new Mission(
@@ -45,6 +49,7 @@ public class MissionBuilder {
                     name
             );
         }
+        logger.trace("Mission successfully built");
         return mission;
     }
 }

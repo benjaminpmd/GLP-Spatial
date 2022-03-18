@@ -1,8 +1,8 @@
 package process.management;
 
+import config.Constants;
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
-import config.Constants;
 
 /**
  * Class that contains all equations to use for objects movements.
@@ -12,12 +12,12 @@ import config.Constants;
  * @see data.coordinate.CartesianCoordinate
  * @see data.coordinate.PolarCoordinate
  * @since 17.02.22
- *
+ * <p>
  * TODO: Add all calculs for rocket trajectories and orbital mechanics.
  */
 public class Calculation {
 
-    private double deltaTime;
+    private final double deltaTime;
 
     public Calculation(double deltaTime) {
         this.deltaTime = deltaTime;
@@ -50,7 +50,7 @@ public class Calculation {
         int y = (int) (polarCoordinate.getR() * Math.sin(polarCoordinate.getAngle()));
         return new CartesianCoordinate(x, y);
     }
-    
+
     /**
      * Calculates the polar coordinates from cartesian ones.
      *
@@ -66,8 +66,8 @@ public class Calculation {
     /**
      * Method that calculates the gravity of an object using the gravity formula.
      *
-     * @param mass      the mass in kg of the object emitting the gravity you want to get.
-     * @param radius  the radius of the object in m.
+     * @param mass   the mass in kg of the object emitting the gravity you want to get.
+     * @param radius the radius of the object in m.
      * @return a double, gravity value in N.
      */
     public double gravity(double mass, double radius) {
@@ -103,13 +103,16 @@ public class Calculation {
     /**
      * Method that calculates the position from the velocity.
      *
-     * @param velocity  the velocity of the object.
-     * @param x         the initial position of the object.
-     * @param d         the delta time to use in s.
+     * @param velocity     the velocity of the object.
+     * @param acceleration the acceleration of the object.
      * @return a double, the new position of the object.
      */
-    public double positionFromVelocity(double velocity, double x, double d) {
+    public CartesianCoordinate calculateNewPosition(CartesianCoordinate cartesianCoordinate, double velocity, double acceleration, double rotationAngle) {
         // TODO: Improve to 2D trajectory
-        return (x + (velocity * d));
+        int x = cartesianCoordinate.getX();
+        cartesianCoordinate.setX( (int) (x + (velocity * deltaTime)));
+        return cartesianCoordinate;
     }
+
+
 }

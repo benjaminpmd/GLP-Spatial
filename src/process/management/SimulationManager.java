@@ -29,11 +29,12 @@ import java.util.List;
  */
 public class SimulationManager {
 
-    private double DELTA_TIME = SimConfig.DELTA_TIME;
-    private final Calculation calculation;
+    private double deltaTime;
+    private Calculation calculation;
+    private TelemetryRecord telemetry;
+
     private Mission mission;
     private Rocket rocket;
-    private TelemetryRecord telemetry;
 
     // record the last 100 postions of the rocket.
     private List<CartesianCoordinate>coordinatesHistory = new ArrayList<>();
@@ -41,8 +42,8 @@ public class SimulationManager {
     // celestial objects that will interact with the mission
     private HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>();
 
-    // rocket elements : separated stages
-    private List<Stage>rocketElements = new ArrayList<>();
+    // separated stages
+    private List<Stage>releasedStages = new ArrayList<>();
 
 
     public SimulationManager(Rocket rocket, Mission mission, CelestialObjectBuilder celestialObjectBuilder) {
@@ -51,6 +52,7 @@ public class SimulationManager {
 
         calculation = new Calculation();
         telemetry = new TelemetryRecord();
+        deltaTime = SimConfig.DELTA_TIME;
 
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
         if (!mission.getDestination().getName().equals("Earth")) {
@@ -63,6 +65,8 @@ public class SimulationManager {
     public void next() {
         updateRocketMass();
         updateRocketPosition();
+        updateReleasedStagesPosition();
+        updateCelestialObjectsPosition();
     }
 
     public Rocket getRocket() {
@@ -96,8 +100,8 @@ public class SimulationManager {
 
     private void updateRocketPosition() {
 
-        double acceleration = calculation.accelerationFromThrust(rocket.getMass(), calculateThrust());
-        double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), DELTA_TIME);
+        double acceleration = calculation.accelerationFromThrust(rocket.getMass(), calculateRocketThrust());
+        double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), deltaTime);
         double altitude;
 
         if (rocket.getCartesianCoordinate().getX() > rocket.getCartesianCoordinate().getY()) {
@@ -106,7 +110,18 @@ public class SimulationManager {
         else {
             altitude = rocket.getCartesianCoordinate().getY() - celestialObjects.get("Earth").getRadius();
         }
+        rocket.getCartesianCoordinate().setX((int) altitude);
         updateTelemetry((int) acceleration, (int) velocity, (int) altitude);
+    }
+
+    private double calculateRocketThrust() {
+        if (rocket.getFirstStage() != null) {
+            return (rocket.getFirstStage().getEngine().getThrust() * rocket.getFirstStage().getEngineNb());
+        }
+        else if (!rocket.getSecondStage().equals(null)) {
+            return (rocket.getSecondStage().getEngine().getThrust() * rocket.getSecondStage().getEngineNb());
+        }
+        else return 0;
     }
 
     private void updateTelemetry(int acceleration, int velocity, int altitude) {
@@ -115,13 +130,15 @@ public class SimulationManager {
         telemetry.addAltitude(altitude);
     }
 
-    private double calculateThrust() {
-        if (rocket.getFirstStage() != null) {
-            return (rocket.getFirstStage().getEngine().getThrust() * rocket.getFirstStage().getEngineNb());
+    private void updateReleasedStagesPosition() {
+        for (Stage stage: releasedStages) {
+            stage.setCartesianCoordinate(calculation.calculateNewPosition(stage.getCartesianCoordinate(), stage.getVelocity(), 0, 0));
         }
-        else if (!rocket.getSecondStage().equals(null)) {
-            return (rocket.getSecondStage().getEngine().getThrust() * rocket.getSecondStage().getEngineNb());
+    }
+
+    private void updateCelestialObjectsPosition() {
+        for (CelestialObject celestialObject : celestialObjects.values()) {
+            celestialObject.setCartesianCoordinate(calculation.calculateNewPosition(celestialObject.getCartesianCoordinate(), celestialObject.getVelocity(), 0, 0));
         }
-        else return 0;
     }
 }

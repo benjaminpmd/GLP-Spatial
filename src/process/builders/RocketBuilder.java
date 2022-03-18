@@ -7,6 +7,8 @@ import data.rocket.Rocket;
 import data.rocket.Stage;
 import exceptions.MissingPartException;
 import exceptions.TooLowThrustException;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 
@@ -19,6 +21,8 @@ import java.util.HashMap;
  * @since 11.02.22
  */
 public class RocketBuilder {
+
+    private final Logger logger = LoggerUtility.getLogger(RocketBuilder.class, "html");
 
     private Rocket rocket;
     private final StageBuilder stageBuilder;
@@ -76,6 +80,7 @@ public class RocketBuilder {
         } else if (!validPayloadMass()) {
             throw new TooLowThrustException();
         }
+        logger.trace("Rocket successfully built.");
         return rocket;
     }
 

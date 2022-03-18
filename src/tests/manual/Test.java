@@ -3,6 +3,7 @@ package tests.manual;
 import data.coordinate.CartesianCoordinate;
 import data.mission.Mission;
 import data.rocket.Rocket;
+import gui.MainGUI;
 import process.builders.CelestialObjectBuilder;
 import process.builders.RocketBuilder;
 import process.builders.SpaceCenterBuilder;
@@ -30,7 +31,7 @@ public class Test {
         secondStageParam.put("engineThrustRatio", "65");
         secondStageParam.put("isp", "280");
 
-
+        /**
         RocketBuilder rb = new RocketBuilder();
         try {
             Rocket rocket = rb.buildRocket(firstStageParam, secondStageParam, 1500, new CartesianCoordinate());
@@ -38,5 +39,7 @@ public class Test {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+         */
+        new MainGUI("Test");
     }
 }

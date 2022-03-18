@@ -24,6 +24,15 @@ import java.util.HashMap;
 public class FileManager {
 
     private final Logger logger = LoggerUtility.getLogger(FileManager.class, "html");
+    private CelestialObjectBuilder celestialObjectBuilder;
+
+    public FileManager(CelestialObjectBuilder celestialObjectBuilder) {
+        this.celestialObjectBuilder = celestialObjectBuilder;
+    }
+
+    public FileManager() {
+         celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
+    }
 
     /**
      * Method that export a simulation settings into a file.
@@ -62,9 +71,8 @@ public class FileManager {
      * @throws IllegalArgumentException in case the simulation could not be correctly initiated
      */
     public SimulationManager importSimulation(String filePath) throws IllegalArgumentException {
-        CelestialObjectBuilder celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
-        try {
 
+        try {
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(filePath));
             logger.trace("ObjectInputStream created");
             HashMap<String, Object> saveMap;
