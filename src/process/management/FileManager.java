@@ -1,12 +1,14 @@
 package process.management;
 
 import config.SimConfig;
-import data.mission.Mission;
-import data.rocket.Rocket;
+import exceptions.MissingPartException;
+import exceptions.TooLowThrustException;
 import process.builders.CelestialObjectBuilder;
+import process.builders.SimulationBuilder;
 
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
+import process.builders.SpaceCenterBuilder;
 
 import java.io.*;
 import java.util.HashMap;
@@ -14,6 +16,8 @@ import java.util.HashMap;
 /**
  * Class to manage the import and export of a simulation settings including the rocket and all the information about
  * the mission itself.
+ *
+ * //TODO: fix import/export system.
  *
  * @author Benjamin P
  * @version 22.03.13 (1.0.0)
@@ -25,9 +29,11 @@ public class FileManager {
 
     private final Logger logger = LoggerUtility.getLogger(FileManager.class, "html");
     private CelestialObjectBuilder celestialObjectBuilder;
+    private SpaceCenterBuilder spaceCenterBuilder;
 
-    public FileManager(CelestialObjectBuilder celestialObjectBuilder) {
+    public FileManager(CelestialObjectBuilder celestialObjectBuilder, SpaceCenterBuilder spaceCenterBuilder) {
         this.celestialObjectBuilder = celestialObjectBuilder;
+        this.spaceCenterBuilder = spaceCenterBuilder;
     }
 
     public FileManager() {
@@ -37,29 +43,32 @@ public class FileManager {
     /**
      * Method that export a simulation settings into a file.
      *
-     * @param mission    {@link Mission} the mission to save.
-     * @param rocket     {@link Rocket} the rocket that should be saved.
      * @param outputPath {@link String} the path of the file to create, a ".launch" extension will be added to the path.
      */
-    public void exportSimulation(Mission mission, Rocket rocket, String outputPath) {
+    public void exportSimulation(HashMap<String, String>firstStageParam, HashMap<String, String>secondStageParam, HashMap<String, String>payloadParam, HashMap<String, String>missionParam, String outputPath) {
+        HashMap<String, HashMap<String, String>> save = new HashMap<>();
 
-        HashMap<String, Object> saveMap = new HashMap<>();
-        saveMap.put("mission", mission);
-        saveMap.put("rocket", rocket);
+        save.put("firstStageParam", firstStageParam);
+        save.put("secondStageParam", secondStageParam);
+        save.put("payloadParam", payloadParam);
+        save.put("missionParam", missionParam);
+
         logger.trace("Object map has been created and filled.");
         ObjectOutputStream oos;
 
+        outputPath += ".launch";
         try {
-            new File(outputPath + ".launch").createNewFile();
+            new File(outputPath).createNewFile();
             logger.trace("File has been created.");
             oos = new ObjectOutputStream(new FileOutputStream(outputPath));
-            oos.writeObject(saveMap);
+            oos.writeObject(save);
+            logger.trace("map has been saved.");
             oos.close();
-            logger.trace("save map has been saved.");
+            logger.trace("oos closed.");
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e);
         }
     }
 
@@ -70,23 +79,28 @@ public class FileManager {
      * @return {@link SimulationManager} a SimulationManager object ready to be used.
      * @throws IllegalArgumentException in case the simulation could not be correctly initiated
      */
-    public SimulationManager importSimulation(String filePath) throws IllegalArgumentException {
+    public SimulationManager importSimulation(String filePath) throws IllegalArgumentException, MissingPartException, TooLowThrustException {
 
+        HashMap<String, HashMap<String, String>> save = null;
         try {
             ObjectInputStream oos = new ObjectInputStream(new FileInputStream(filePath));
             logger.trace("ObjectInputStream created");
-            HashMap<String, Object> saveMap;
+            save = new HashMap<>();
 
             while (oos.readObject() != null) {
-                saveMap = (HashMap<String, Object>) oos.readObject();
+                save = (HashMap<String, HashMap<String, String>>) oos.readObject();
+                System.out.println("t");
+                for (HashMap<String, String> map : save.values()) {
+                    for (String val : map.values()) {
+                        System.out.println(val);
+                    }
+                }
                 oos.close();
                 logger.trace("map successfully read");
-
-                return new SimulationManager((Rocket) saveMap.get("rocket"), (Mission) saveMap.get("mission"), celestialObjectBuilder);
             }
-
         } catch (EOFException e) {
-            logger.error(e.getMessage());
+            System.err.println(e.getMessage());
+            logger.error(e);
 
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
@@ -100,6 +114,19 @@ public class FileManager {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-        return null;
+        SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);
+
+
+        String payloadMass = save.get("payloadParam").get("mass");
+
+        String missionName = save.get("missionParam").get("missionName");
+        String spaceCenterName = save.get("missionParam").get("spaceCenterName");
+        String destinationName = save.get("missionParam").get("destinationName");
+        String orbit = save.get("missionParam").get("orbit");
+
+        SimulationManager manager = simulationBuilder.buildSimulation(save.get("firstStageParam"), save.get("secondStageParam"), payloadMass, missionName, spaceCenterName, destinationName, Integer.valueOf(orbit));
+
+
+        return manager;
     }
 }

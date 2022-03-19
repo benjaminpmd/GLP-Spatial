@@ -1,6 +1,7 @@
 package process.builders;
 
 import config.SimConfig;
+import data.coordinate.CartesianCoordinate;
 import data.mission.Mission;
 import data.rocket.Rocket;
 import exceptions.MissingPartException;
@@ -79,11 +80,10 @@ public class SimulationBuilder {
         Rocket rocket;
 
         try {
-            rocket = rocketBuilder.buildRocket(firstStageParam, secondStageParam, pMass, mission.getSpaceCenter().getCartesianCoordinate());
-        } catch (MissingPartException e) {
-            logger.error(e.getMessage());
-            throw e;
-        } catch (TooLowThrustException e) {
+            CartesianCoordinate coordinate = spaceCenterBuilder.buildSpaceCenter(mission.getSpaceCenterName()).getCartesianCoordinate();
+            rocket = rocketBuilder.buildRocket(firstStageParam, secondStageParam, pMass, coordinate);
+
+        } catch (MissingPartException | TooLowThrustException e) {
             logger.error(e.getMessage());
             throw e;
         }

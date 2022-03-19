@@ -37,17 +37,9 @@ public class MissionBuilder {
     public Mission buildMission(String name, String spaceCenterName, String destinationName, int orbit) {
         Mission mission;
         if (name.equals("Name your mission here")) {
-            mission = new Mission(
-                    spaceCenterBuilder.buildSpaceCenter(spaceCenterName),
-                    celestialObjectBuilder.buildCelestialObject(destinationName),
-                    Integer.valueOf(orbit)
-            );
+            mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit));
         } else {
-            mission = new Mission(spaceCenterBuilder.buildSpaceCenter(spaceCenterName),
-                    celestialObjectBuilder.buildCelestialObject(destinationName),
-                    Integer.valueOf(orbit),
-                    name
-            );
+            mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name);
         }
         logger.trace("Mission successfully built");
         return mission;

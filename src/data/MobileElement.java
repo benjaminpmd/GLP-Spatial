@@ -2,6 +2,8 @@ package data;
 
 import data.coordinate.CartesianCoordinate;
 
+import java.io.Serializable;
+
 /**
  * Class that contains a coordinate, a weight and a velocity of a MobileElement.
  *

@@ -55,11 +55,10 @@ public class SimulationManager {
         deltaTime = SimConfig.DELTA_TIME;
 
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
-        if (!mission.getDestination().getName().equals("Earth")) {
-            celestialObjects.put(mission.getDestination().getName(), mission.getDestination());
+        if (!mission.getDestinationName().equals("Earth")) {
+            CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
+            celestialObjects.put(destination.getName(), destination);
         }
-
-        rocket.setCartesianCoordinate(mission.getSpaceCenter().getCartesianCoordinate());
     }
 
     public void next() {
@@ -75,6 +74,14 @@ public class SimulationManager {
 
     public Mission getMission() {
         return mission;
+    }
+
+    public TelemetryRecord getTelemetry() {
+        return telemetry;
+    }
+
+    public List<CartesianCoordinate> getCoordinateHistory() {
+        return coordinatesHistory;
     }
 
     /**

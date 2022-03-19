@@ -16,38 +16,38 @@ public class Mission {
 
 	private String name;
 	private String description;
-	private SpaceCenter spaceCenter;
-	private CelestialObject destination;
+	private String spaceCenterName;
+	private String destinationName;
 	private int orbitAltitude;
 	private Date launchTime;
 
-	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude) {
-		this.spaceCenter = spaceCenter;
-		this.destination = destination;
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude) {
+		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
 		this.orbitAltitude = orbitAltitude;
 		name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
 		description = "No description provided.";
 		launchTime = new Date();
 	}
 
-	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name) {
+	public Mission(String spaceCenterName, String destination, int orbitAltitude, String name) {
 		this.name = name;
-		this.spaceCenter = spaceCenter;
+		this.spaceCenterName = spaceCenterName;
 		description = "No description provided.";
 		launchTime = new Date();
 	}
 
-	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name, String description) {
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.spaceCenter = spaceCenter;
+		this.spaceCenterName = spaceCenterName;
 		launchTime = new Date();
 	}
 
-	public Mission(SpaceCenter spaceCenter, CelestialObject destination, int orbitAltitude, String name, String description, Date launchTime) {
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description, Date launchTime) {
 		this.name = name;
 		this.description = description;
-		this.spaceCenter = spaceCenter;
+		this.spaceCenterName = spaceCenterName;
 		this.launchTime = launchTime;
 	}
 
@@ -56,11 +56,39 @@ public class Mission {
 		return "Mission{" +
 				"name='" + name + '\'' +
 				", description='" + description + '\'' +
-				", spaceCenter=" + spaceCenter +
-				", destination=" + destination +
+				", spaceCenterName='" + spaceCenterName + '\'' +
+				", destinationName='" + destinationName + '\'' +
 				", orbitAltitude=" + orbitAltitude +
 				", launchTime=" + launchTime +
 				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Mission)) return false;
+
+		Mission mission = (Mission) o;
+
+		if (orbitAltitude != mission.orbitAltitude) return false;
+		if (name != null ? !name.equals(mission.name) : mission.name != null) return false;
+		if (description != null ? !description.equals(mission.description) : mission.description != null) return false;
+		if (spaceCenterName != null ? !spaceCenterName.equals(mission.spaceCenterName) : mission.spaceCenterName != null)
+			return false;
+		if (destinationName != null ? !destinationName.equals(mission.destinationName) : mission.destinationName != null)
+			return false;
+		return launchTime != null ? launchTime.equals(mission.launchTime) : mission.launchTime == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (description != null ? description.hashCode() : 0);
+		result = 31 * result + (spaceCenterName != null ? spaceCenterName.hashCode() : 0);
+		result = 31 * result + (destinationName != null ? destinationName.hashCode() : 0);
+		result = 31 * result + orbitAltitude;
+		result = 31 * result + (launchTime != null ? launchTime.hashCode() : 0);
+		return result;
 	}
 
 	public String getName() {
@@ -79,20 +107,20 @@ public class Mission {
 		this.description = description;
 	}
 
-	public SpaceCenter getSpaceCenter() {
-		return spaceCenter;
+	public String getSpaceCenterName() {
+		return spaceCenterName;
 	}
 
-	public void setSpaceCenter(SpaceCenter spaceCenter) {
-		this.spaceCenter = spaceCenter;
+	public void setSpaceCenterName(String spaceCenterName) {
+		this.spaceCenterName = spaceCenterName;
 	}
 
-	public CelestialObject getDestination() {
-		return destination;
+	public String getDestinationName() {
+		return destinationName;
 	}
 
-	public void setDestination(CelestialObject destination) {
-		this.destination = destination;
+	public void setDestinationName(String destinationName) {
+		this.destinationName = destinationName;
 	}
 
 	public int getOrbitAltitude() {

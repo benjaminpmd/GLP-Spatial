@@ -13,6 +13,8 @@ import java.util.HashMap;
 public class Test {
     public static void main(String[] args) {
 
+        Double.valueOf("70.8");
+
         HashMap<String, String>firstStageParam = new HashMap<>();
         firstStageParam.put("tankCapacity", "20000");
         firstStageParam.put("propellantDensity", "0.72");
