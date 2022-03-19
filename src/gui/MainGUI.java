@@ -1,10 +1,13 @@
 package gui;
 
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -26,7 +29,7 @@ import process.management.SimulationManager;
 import process.repositories.CelestialObjectRepository;
 
 /**
- * This is the second window. It allows the user to configure their rocket.
+ * This is the first window. It allows the user to configure their rocket.
  * Leads to the Launch window {@link SimulationGUI}
  * 
  * @author Alice Mabille
@@ -57,6 +60,9 @@ public class MainGUI extends JFrame {
 	private final int TOP = 0;
 	private final int MIDDLE_BOTTOM = 3;
 	private final int BOTTOM = 4;
+	private final Color MISSION_COLOR = new Color(60,61,64);
+	public final static Color ROCKET_COLOR = new Color(71,72,75);
+	private final Color TEXT_COLOR = new Color(240, 240, 240);
 
 	private Container contentPane;
 
@@ -99,20 +105,24 @@ public class MainGUI extends JFrame {
 	
 	public void init() {
 		contentPane = getContentPane();
+		contentPane.setBackground(new Color(61, 62, 64));
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
 		//top banner
-		c.weightx = 1;
-		c.weighty = 0;
 		c.gridx = TOP;
 		c.gridy = LEFT;
-		c.gridwidth = 3;
+		c.gridwidth = 7;
 		c.gridheight = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		
+		topBanner.setBackground(new Color(89,90,93));
 		JLabel topLabel = new JLabel("Setup your simulation");
+		topLabel.setForeground(TEXT_COLOR);
 		topBanner.add(topLabel);
+		JButton launchButton = new JButton("Launch");
+		launchButton.setBackground(new Color(0, 204, 0));
+		launchButton.addActionListener(new LaunchAction());
+		topBanner.add(launchButton);
 		
 		contentPane.add(topBanner, c);
 
@@ -135,19 +145,19 @@ public class MainGUI extends JFrame {
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.gridheight = 3;
-		c.fill = GridBagConstraints.VERTICAL;
+		c.fill = GridBagConstraints.BOTH;
+		spaceCentersPanel.setBackground(MISSION_COLOR);
 		contentPane.add(spaceCentersPanel, c);
 		
 		
 		//middle panel : rocket schema
 		JPanel rocketPanel = new JPanel();
-		c.weightx = 0.3;
-		c.weighty = rocketSchemaWeightY;
 		c.gridx = MIDDLE;
 		c.gridy = MIDDLE;
 		c.gridwidth = 2;
 		c.gridheight = 2;
-		
+		c.fill = GridBagConstraints.BOTH;
+		rocketPanel.setBackground(ROCKET_COLOR);
 		JLabel rocketLabel = new JLabel("Rocket schema");
 		rocketPanel.add(rocketLabel);
 		
@@ -156,20 +166,19 @@ public class MainGUI extends JFrame {
 		
 		//below the middle panel : choose your destination
 		JPanel orbitPanel = new JPanel();
-		c.weightx = 0.5;
-		c.weighty = orbitPanelWeightY;
 		c.gridx = MIDDLE;
 		c.gridy = MIDDLE_BOTTOM;
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		c.gridheight = 1;
-				
+		orbitPanel.setBackground(MISSION_COLOR);
+		orbitPanel.setForeground(TEXT_COLOR);
 		JLabel orbitLabel = new JLabel("Orbit :");
 		orbitPanel.add(orbitLabel);
 		
 		orbitField = new JTextField();
 		orbitPanel.add(orbitField);
 
-		// destination
+		//destination
 		JLabel destinationLabel = new JLabel("Destination");
 		orbitPanel.add(destinationLabel);
 		Collection<String> celestialObjectCollection = CelestialObjectRepository.getInstance().getKeys();
@@ -177,58 +186,42 @@ public class MainGUI extends JFrame {
 		celestialObjectCollection.toArray(planetArray);
 		destinationMenu = new JComboBox<String>(planetArray);
 		orbitPanel.add(destinationMenu);
-		
+		orbitPanel.setBackground(MISSION_COLOR);
+		orbitPanel.setForeground(TEXT_COLOR);
 		contentPane.add(orbitPanel, c);
 		
 		
 		//bottom panel : choose your payload
 		payloadPanel = new PayloadPanel();
-		c.weightx = 0.3;
-		c.weighty = 0.15;
-		c.gridx = MIDDLE;
-		c.gridy = BOTTOM;
-		c.gridwidth = 2;
+		c.gridx = MIDDLE_RIGHT;
+		c.gridy = MIDDLE_BOTTOM;
+		c.gridwidth = 3;
 		c.gridheight = 1;
+		payloadPanel.setBackground(ROCKET_COLOR);
+		payloadPanel.setForeground(TEXT_COLOR);
 		contentPane.add(payloadPanel, c);
 		
 		
 		//right panel : stage panel 1
-		c.weightx = 0.25;
-		c.weighty = stagePanelWeightY;
 		c.gridx = MIDDLE_RIGHT;
 		c.gridy = MIDDLE;
 		c.gridwidth = 1;
 		c.gridheight = 2;
+		stagePanel1.setBackground(ROCKET_COLOR);
+		stagePanel1.setFieldsBackground(new Color(89,90,93));
+		stagePanel1.setForeground(TEXT_COLOR);
 		contentPane.add(stagePanel1, c);
 		
 		
 		//right panel : stage panel 2
-		c.weightx = 0.25;
-		c.weighty = stagePanelWeightY;
 		c.gridx = RIGHT;
 		c.gridy = MIDDLE;
 		c.gridwidth = 1;
 		c.gridheight = 2;
+		stagePanel2.setBackground(ROCKET_COLOR);
+		stagePanel2.setFieldsBackground(new Color(89,90,93));
+		stagePanel2.setForeground(TEXT_COLOR);
 		contentPane.add(stagePanel2, c);
-		
-		
-		//bottom right panel: save and run buttons
-		JPanel launchPanel = new JPanel();
-		c.weightx = 0.3;
-		c.gridx = RIGHT;
-		c.gridy = BOTTOM;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		
-		launchPanel.setLayout(new BoxLayout(launchPanel, BoxLayout.PAGE_AXIS));
-		
-		JButton saveButton = new JButton("Save");
-		launchPanel.add(saveButton);
-		JButton launchButton = new JButton("Launch");
-		launchButton.addActionListener(new LaunchAction());
-		launchPanel.add(launchButton);
-		
-		contentPane.add(launchPanel, c);
 
 				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

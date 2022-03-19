@@ -8,6 +8,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import config.SimConfig;
+import gui.MainGUI;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -22,13 +23,13 @@ public class StagePanel extends JPanel {
 	private int stage;
 	private int maxEngines;
 	// fields
-	private JTextField capacityField;
-	private JTextField densityField;
-	private JTextField thrustToWeightField;
-	private JTextField engineThrustField;
-	private JTextField ispField;
-	private JTextField propelTemperatureField;
-	private JSlider engNumSlider;
+	private JTextField capacityField = new JTextField();
+	private JTextField densityField = new JTextField();
+	private JTextField thrustToWeightField = new JTextField();
+	private JTextField engineThrustField = new JTextField();
+	private JTextField ispField = new JTextField();
+	private JTextField propelTemperatureField = new JTextField();
+	private JSlider engNumSlider = new JSlider(1, maxEngines);
 	private String defaultCapacity;
 	private String defaultDensity;
 	private String defaultTWRatio;
@@ -36,8 +37,6 @@ public class StagePanel extends JPanel {
 	private String defaultISP;
 	private String defaultPropelTemp;
 	private int defaultEngNb;
-
-	private final Color BACKGROUND_COLOR = Color.DARK_GRAY;
 
 
 	/**
@@ -59,27 +58,22 @@ public class StagePanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		
 		JLabel titleLabel = new JLabel("Stage " + stage);
-		titleLabel.setBackground(BACKGROUND_COLOR);
 		add(titleLabel);
 		
 		JLabel capacityLabel = new JLabel("Propellant Volume (L)");
 		add(capacityLabel);
-		capacityField = new JTextField();
 		add(capacityField);
 		
 		JLabel densityLabel = new JLabel("Propellant density (kg/L)");
 		add(densityLabel);
-		densityField = new JTextField();
 		add(densityField);
 		
 		JLabel propelTemperatureLabel = new JLabel("Propellant temperature");
 		add(propelTemperatureLabel);
-		propelTemperatureField = new JTextField();
 		add(propelTemperatureField);
 		
 		JLabel engNumLabel = new JLabel("Number of engines");
 		add(engNumLabel);
-		engNumSlider = new JSlider(1, maxEngines);
 		engNumSlider.setMajorTickSpacing(10);
 		engNumSlider.setMinorTickSpacing(1);
 		engNumSlider.setPaintTicks(true);
@@ -89,24 +83,41 @@ public class StagePanel extends JPanel {
 		
 		JLabel thrustToWeightLabel = new JLabel("Thrust To Weight");
 		add(thrustToWeightLabel);
-		thrustToWeightField = new JTextField();
 		add(thrustToWeightField);
 		//fuelFlowLabel.setVisible(!SimConfig.beginnerMode);
 		//fuelFlowField.setVisible(!SimConfig.beginnerMode);
 		
 		JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
 		add(engineThrustLabel);
-		engineThrustField = new JTextField();
 		add(engineThrustField);
 		
 		JLabel ispLabel = new JLabel("ISP (s)");
 		add(ispLabel);
-		ispField = new JTextField();
 		add(ispField);
 		//ispLabel.setVisible(!SimConfig.beginnerMode);
 		//ispField.setVisible(!SimConfig.beginnerMode);
 		
 		setDefaultValues();
+	}
+	
+	public void setFieldsBackground(Color c) {
+		capacityField.setBackground(c);
+		densityField.setBackground(c);
+		thrustToWeightField.setBackground(c);
+		engNumSlider.setBackground(c);
+		engineThrustField.setBackground(c);
+		propelTemperatureField.setBackground(c);
+		ispField.setBackground(c);
+	}
+	
+	public void setForeground(Color c) {
+		capacityField.setForeground(c);
+		densityField.setForeground(c);
+		thrustToWeightField.setForeground(c);
+		engNumSlider.setForeground(c);
+		engineThrustField.setForeground(c);
+		propelTemperatureField.setForeground(c);
+		ispField.setForeground(c);
 	}
 	
 	/**
