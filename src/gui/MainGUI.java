@@ -208,7 +208,8 @@ public class MainGUI extends JFrame {
 		c.gridwidth = 1;
 		c.gridheight = 2;
 		stagePanel1.setBackground(ROCKET_COLOR);
-		stagePanel1.setFieldsBackground(new Color(89,90,93));
+		stagePanel1.setElementsBackground(new Color(89,90,93));
+		stagePanel1.setElementsForeground(TEXT_COLOR);
 		stagePanel1.setForeground(TEXT_COLOR);
 		contentPane.add(stagePanel1, c);
 		
@@ -219,8 +220,8 @@ public class MainGUI extends JFrame {
 		c.gridwidth = 1;
 		c.gridheight = 2;
 		stagePanel2.setBackground(ROCKET_COLOR);
-		stagePanel2.setFieldsBackground(new Color(89,90,93));
-		stagePanel2.setForeground(TEXT_COLOR);
+		stagePanel2.setElementsBackground(new Color(89,90,93));
+		stagePanel2.setElementsForeground(TEXT_COLOR);
 		contentPane.add(stagePanel2, c);
 
 				
