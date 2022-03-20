@@ -7,9 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import config.SimConfig;
-import gui.MainGUI;
-
 import java.awt.*;
 import java.util.HashMap;
 
@@ -105,9 +102,9 @@ public class StagePanel extends JPanel {
 	public void setElementsBackground(Color c) {
 		capacityField.setBackground(c);
 		densityField.setBackground(c);
-		thrustToWeightField.setBackground(c);
-		engNumSlider.setBackground(c);
 		engineThrustField.setBackground(c);
+		engNumSlider.setBackground(c);
+		thrustToWeightField.setBackground(c);
 		propelTemperatureField.setBackground(c);
 		ispField.setBackground(c);
 	}
