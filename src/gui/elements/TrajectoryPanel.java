@@ -59,7 +59,9 @@ public class TrajectoryPanel extends JPanel {
 
 			paintStrategy.paint(coordinate, nextCoordinate, colorOpacity, scale, g);
 			logger.trace("painting : " + coordinate + nextCoordinate);
-			//colorOpacity -= 2;
+			if ((i % 2) == 0) {
+				colorOpacity --;
+			}
 		}
 
 		paintStrategy.paint(manager.getRocket(), scale, g);

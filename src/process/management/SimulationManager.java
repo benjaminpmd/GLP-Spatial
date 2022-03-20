@@ -148,10 +148,11 @@ public class SimulationManager {
     }
 
     private void updateCoordinateHistory() {
-         if (coordinatesHistory.size() >= 100) {
+         if (coordinatesHistory.size() >= 510) {
              coordinatesHistory.remove(0);
          }
-         coordinatesHistory.add(rocket.getCartesianCoordinate());
+         CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+         coordinatesHistory.add(coordinate);
     }
 
     private void updateReleasedStagesPosition() {

@@ -19,7 +19,7 @@ public class PaintStrategy {
 
 	public void paint(CartesianCoordinate origin, CartesianCoordinate end, int opacity, int scale, Graphics g) {
 
-		g.setColor(new Color(255, 255, 0));
+		g.setColor(new Color(255, 255, 0, opacity));
 
 		int originX = (int) SimConfig.GRAPHIC_CENTER_X + (origin.getX() / scale);
 		int originY = (int) SimConfig.GRAPHIC_CENTER_Y + (origin.getY() / scale);
