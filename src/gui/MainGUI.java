@@ -36,15 +36,14 @@ import process.repositories.CelestialObjectRepository;
  *
  */
 public class MainGUI extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private final static Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
 
 	// since values from files are registered in the repositories, we init the builder before anything else
 	private CelestialObjectBuilder celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
 	private SpaceCenterBuilder spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
-	private RocketBuilder rocketBuilder = new RocketBuilder();
 	private MissionBuilder missionBuilder = new MissionBuilder(celestialObjectBuilder, spaceCenterBuilder);
 	private SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);
 
@@ -63,6 +62,7 @@ public class MainGUI extends JFrame {
 	private final Color MISSION_COLOR = new Color(60,61,64);
 	public final static Color ROCKET_COLOR = new Color(71,72,75);
 	private final Color TEXT_COLOR = new Color(240, 240, 240);
+	private final Color TOP_BANNER_COLOR = new Color(89,90,93);
 
 	private Container contentPane;
 
@@ -102,28 +102,32 @@ public class MainGUI extends JFrame {
 		super(title);
 		init();
 	}
-	
+
 	public void init() {
 		contentPane = getContentPane();
 		contentPane.setBackground(new Color(61, 62, 64));
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		
+
 		//top banner
 		c.gridx = TOP;
 		c.gridy = LEFT;
 		c.gridwidth = 7;
 		c.gridheight = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		topBanner.setBackground(new Color(89,90,93));
+		topBanner.setBackground(TOP_BANNER_COLOR);
 		JLabel topLabel = new JLabel("Setup your simulation");
 		topLabel.setForeground(TEXT_COLOR);
 		topBanner.add(topLabel);
+
 		JButton launchButton = new JButton("Launch");
 		launchButton.setBackground(new Color(0, 204, 0));
 		launchButton.addActionListener(new LaunchAction());
 		topBanner.add(launchButton);
-		
+
+		errorTextPane.setBackground(TOP_BANNER_COLOR);
+		errorTextPane.setForeground(Color.YELLOW);
+
 		contentPane.add(topBanner, c);
 
 		// top menu
@@ -147,9 +151,11 @@ public class MainGUI extends JFrame {
 		c.gridheight = 3;
 		c.fill = GridBagConstraints.BOTH;
 		spaceCentersPanel.setBackground(MISSION_COLOR);
+		spaceCentersPanel.setElementsBackground(MISSION_COLOR);
+		spaceCentersPanel.setElementsForeground(TEXT_COLOR);
 		contentPane.add(spaceCentersPanel, c);
-		
-		
+
+
 		//middle panel : rocket schema
 		JPanel rocketPanel = new JPanel();
 		c.gridx = MIDDLE;
@@ -160,37 +166,56 @@ public class MainGUI extends JFrame {
 		rocketPanel.setBackground(ROCKET_COLOR);
 		JLabel rocketLabel = new JLabel("Rocket schema");
 		rocketPanel.add(rocketLabel);
-		
+
 		contentPane.add(rocketPanel, c);
-		
-		
+
+
 		//below the middle panel : choose your destination
 		JPanel orbitPanel = new JPanel();
+		orbitPanel.setLayout(new BoxLayout(orbitPanel, BoxLayout.PAGE_AXIS));
 		c.gridx = MIDDLE;
 		c.gridy = MIDDLE_BOTTOM;
 		c.gridwidth = 3;
 		c.gridheight = 1;
 		orbitPanel.setBackground(MISSION_COLOR);
 		orbitPanel.setForeground(TEXT_COLOR);
+
+		orbitPanel.add(Box.createRigidArea(new Dimension(300, 20)));
+
 		JLabel orbitLabel = new JLabel("Orbit :");
+		orbitLabel.setBackground(MISSION_COLOR);
+		orbitLabel.setForeground(TEXT_COLOR);
 		orbitPanel.add(orbitLabel);
-		
+
 		orbitField = new JTextField();
+		orbitField.setMinimumSize(new Dimension(100,50));
+		orbitField.setMaximumSize(new Dimension(400,50));
+		orbitField.setBackground(ROCKET_COLOR);
+		orbitField.setForeground(TEXT_COLOR);
 		orbitPanel.add(orbitField);
 
+		orbitPanel.add(Box.createRigidArea(new Dimension(300, 20)));
+
 		//destination
-		JLabel destinationLabel = new JLabel("Destination");
+		JLabel destinationLabel = new JLabel("Destination :");
+		destinationLabel.setBackground(MISSION_COLOR);
+		destinationLabel.setForeground(TEXT_COLOR);
 		orbitPanel.add(destinationLabel);
 		Collection<String> celestialObjectCollection = CelestialObjectRepository.getInstance().getKeys();
 		String[] planetArray = new String[celestialObjectCollection.size()];
 		celestialObjectCollection.toArray(planetArray);
 		destinationMenu = new JComboBox<String>(planetArray);
+		destinationMenu.setMinimumSize(new Dimension(100,50));
+		destinationMenu.setMaximumSize(new Dimension(400,50));
 		orbitPanel.add(destinationMenu);
+
+		orbitPanel.add(Box.createRigidArea(new Dimension(300, 20)));
+
 		orbitPanel.setBackground(MISSION_COLOR);
 		orbitPanel.setForeground(TEXT_COLOR);
 		contentPane.add(orbitPanel, c);
-		
-		
+
+
 		//bottom panel : choose your payload
 		payloadPanel = new PayloadPanel();
 		c.gridx = MIDDLE_RIGHT;
@@ -198,10 +223,11 @@ public class MainGUI extends JFrame {
 		c.gridwidth = 3;
 		c.gridheight = 1;
 		payloadPanel.setBackground(ROCKET_COLOR);
-		payloadPanel.setForeground(TEXT_COLOR);
+		payloadPanel.setElementsBackground(ROCKET_COLOR);
+		payloadPanel.setElementsForeground(TEXT_COLOR);
 		contentPane.add(payloadPanel, c);
-		
-		
+
+
 		//right panel : stage panel 1
 		c.gridx = MIDDLE_RIGHT;
 		c.gridy = MIDDLE;
@@ -210,10 +236,9 @@ public class MainGUI extends JFrame {
 		stagePanel1.setBackground(ROCKET_COLOR);
 		stagePanel1.setElementsBackground(new Color(89,90,93));
 		stagePanel1.setElementsForeground(TEXT_COLOR);
-		stagePanel1.setForeground(TEXT_COLOR);
 		contentPane.add(stagePanel1, c);
-		
-		
+
+
 		//right panel : stage panel 2
 		c.gridx = RIGHT;
 		c.gridy = MIDDLE;
@@ -224,7 +249,7 @@ public class MainGUI extends JFrame {
 		stagePanel2.setElementsForeground(TEXT_COLOR);
 		contentPane.add(stagePanel2, c);
 
-				
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setMinimumSize(preferredSize);
 		pack();
@@ -253,7 +278,7 @@ public class MainGUI extends JFrame {
 					String spaceCenterName = spaceCentersPanel.getSelectedCenter();
 					SimulationManager manager = simulationBuilder.buildSimulation(stage1Values, stage2Values, payloadMass, missionName, spaceCenterName, destination, orbit);
 
-					new SimulationGUI(getTitle(), manager);
+					new SimulationGUI(getTitle(), manager, fileManager);
 					setVisible(false);
 					dispose();
 				}
@@ -336,7 +361,7 @@ public class MainGUI extends JFrame {
 				try {
 
 					SimulationManager manager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
-					new SimulationGUI(getTitle(), manager);
+					new SimulationGUI(getTitle(), manager, fileManager);
 					setVisible(false);
 					dispose();
 				} catch (MissingPartException ex) {

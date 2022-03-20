@@ -1,7 +1,11 @@
 package gui.elements;
 
+import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
+import data.mission.CelestialObject;
 import gui.instruments.PaintStrategy;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
 import process.management.SimulationManager;
 
 import java.awt.*;
@@ -17,13 +21,9 @@ import javax.swing.JPanel;
 public class TrajectoryPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final int LENGTH = 300;
-	private final int WIDTH = 300;
-	private final int FRAME_CENTER_X = LENGTH/2;
-	private final int FRAME_CENTER_Y = WIDTH/2;
-	private double ratio = 1;
-	
+	private final Logger logger = LoggerUtility.getLogger(TrajectoryPanel.class, "html");
+
+	private int scale = 21236;
 	private SimulationManager manager;
 	private PaintStrategy paintStrategy;
 	private double max=0.00000001;
@@ -35,17 +35,6 @@ public class TrajectoryPanel extends JPanel {
 		paintStrategy = new PaintStrategy();
 		setBackground(Color.DARK_GRAY);
 	}
-
-	private void calculateRatio() {
-		CartesianCoordinate rocketCoordinate = manager.getRocket().getCartesianCoordinate();
-		if (rocketCoordinate.getX() > rocketCoordinate.getY()) {
-			ratio = (int) (rocketCoordinate.getX() / LENGTH);
-		}
-		else {
-			ratio = (int) (rocketCoordinate.getY() / WIDTH);
-		}
-	}
-
 	/**
 	 * Draws the trajectory using an array of data from {@link SimulationManager} at t=0
 	 *
@@ -54,22 +43,33 @@ public class TrajectoryPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		calculateRatio();
+		logger.trace("painting elements");
+
+		// painting celestial objects
+		for (CelestialObject celestialObject : manager.getCelestialObjects().values()) {
+			paintStrategy.paint(celestialObject, scale, g);
+		}
 
 		// paining trajectory
 		int colorOpacity = 255;
-		for (int i = manager.getCoordinateHistory().size(); i - 1 > 0; i--) {
+		for (int i = manager.getCoordinateHistory().size()-1; i - 1 > 0; i--) {
+
 			CartesianCoordinate coordinate = manager.getCoordinateHistory().get(i);
 			CartesianCoordinate nextCoordinate = manager.getCoordinateHistory().get(i - 1);
 
-			CartesianCoordinate origin = new CartesianCoordinate((int) (coordinate.getX() * ratio), (int) (coordinate.getY() * ratio));
-			CartesianCoordinate end = new CartesianCoordinate((int) (nextCoordinate.getX() * ratio), (int) (nextCoordinate.getY() * ratio));
-
-			paintStrategy.paint(origin, end, colorOpacity, g);
-			colorOpacity -= 2;
+			paintStrategy.paint(coordinate, nextCoordinate, colorOpacity, scale, g);
+			logger.trace("painting : " + coordinate + nextCoordinate);
+			//colorOpacity -= 2;
 		}
 
-		// painting celestial objects
+		paintStrategy.paint(manager.getRocket(), scale, g);
+	}
 
+	public int getScale() {
+		return scale;
+	}
+
+	public void setScale(int scale) {
+		this.scale = scale;
 	}
 }

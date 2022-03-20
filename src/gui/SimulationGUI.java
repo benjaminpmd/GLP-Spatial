@@ -7,18 +7,19 @@ import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.io.File;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import config.SimConfig;
+import exceptions.MissingPartException;
+import exceptions.TooLowThrustException;
 import gui.elements.GraphPanel;
 import gui.elements.TrajectoryPanel;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
+import process.management.FileManager;
 import process.management.SimulationManager;
-import process.management.TelemetryRecord;
 
 /**
  * This is the third window. It shows the trajectory and telemetry of the rocket.
@@ -28,17 +29,34 @@ import process.management.TelemetryRecord;
  */
 public class SimulationGUI extends JFrame implements Runnable {
 
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
+	private final Logger logger = LoggerUtility.getLogger(SimulationGUI.class, "html");
 	
 	private SimulationManager manager;
+	private FileManager fileManager;
+
+	private Container contentPane;
 
 	private GraphPanel speedGraph;
 	private GraphPanel accelerationGraph;
 	//private GraphPanel altitudeGraph = new GraphPanel("Altitude");
 
 	private JPanel graphPanel = new JPanel();
-	
 	Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+
+
+	private JPanel topBanner = new JPanel();
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu fileMenu = new JMenu("File");
+	private JMenu helpMenu = new JMenu("Help");
+
+	private JMenuItem importSimulationItem = new JMenuItem("Import");
+	private JMenuItem exportSimulationItem = new JMenuItem("Export");
+	private JMenuItem exitItem = new JMenuItem("Exit");
+	private JMenuItem fileHelpItem = new JMenuItem("Import/Export");
+	private JMenuItem paramHelpItem = new JMenuItem("Simulation parameters");
+
+	private JFileChooser fileChooser = new JFileChooser("./");
 	
 	/*total width = 7
 	*total height = 6
@@ -55,6 +73,8 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JButton delayButton = new JButton("Delay start");
 	private JButton speedupButton = new JButton("Speed up");
 	private JButton slowdownButton = new JButton("Slow down");
+	private JButton zoomInButton = new JButton("Zoom in");
+	private JButton zoomOutButton = new JButton("Zoom out");
 
 	private TrajectoryPanel trajectoryPanel;
 	private GridBagConstraints c = new GridBagConstraints();
@@ -62,12 +82,15 @@ public class SimulationGUI extends JFrame implements Runnable {
 	/**
 	 * Initial status of the start button.
 	 */
-	private boolean pause = true;
+	private boolean stop = true;
+	private SimulationGUI instance = this;
+	private int simulationSpeed = SimConfig.SIMULATION_SPEED;
 
 
-	public SimulationGUI(String title, SimulationManager manager) {
+	public SimulationGUI(String title, SimulationManager manager, FileManager fileManager) {
 		super(title);
 		this.manager = manager;
+		this.fileManager = fileManager;
 		speedGraph = new GraphPanel("Speed", manager.getTelemetry());
 		accelerationGraph = new GraphPanel("Acceleration", manager.getTelemetry());
 		trajectoryPanel = new TrajectoryPanel(manager);
@@ -75,10 +98,21 @@ public class SimulationGUI extends JFrame implements Runnable {
 	}
 	
 	private void init() {
-		Container contentPane = getContentPane();
+		contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		contentPane.setBackground(Color.DARK_GRAY);
 		c.fill = GridBagConstraints.BOTH;
+
+		// top menu
+		exportSimulationItem.addActionListener(new exportAction());
+		importSimulationItem.addActionListener(new importAction());
+		exitItem.addActionListener(new exitAction());
+		fileMenu.add(importSimulationItem);
+		fileMenu.add(exportSimulationItem);
+		fileMenu.add(exitItem);
+		menuBar.add(fileMenu);
+		menuBar.add(helpMenu);
+		setJMenuBar(menuBar);
 		
 		
 		//top banner
@@ -90,7 +124,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		c.weightx = 1;
 		c.weighty = 0;
 		
-		JLabel topLabel = new JLabel("(nom de la mission)");//TODO
+		JLabel topLabel = new JLabel(manager.getMission().getName());
 		topBanner.add(topLabel);
 		
 		contentPane.add(topBanner, c);
@@ -160,10 +194,16 @@ public class SimulationGUI extends JFrame implements Runnable {
 		c.gridwidth = 1;
 		c.gridheight = 4;
 		startButton.addActionListener(new StartStopAction());
+		speedupButton.addActionListener(new IncreaseSpeedAction());
+		slowdownButton.addActionListener(new DecreaseSpeedAction());
+		zoomInButton.addActionListener(new ZoomInAction());
+		zoomOutButton.addActionListener(new ZoomOutAction());
 		rightPanel.add(delayButton);
 		rightPanel.add(startButton);
 		rightPanel.add(speedupButton);
 		rightPanel.add(slowdownButton);
+		rightPanel.add(zoomInButton);
+		rightPanel.add(zoomOutButton);
 		
 		contentPane.add(rightPanel, c);
 		
@@ -199,9 +239,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 	@Override
 	public void run() {
-		while (!pause) {
+		while (!stop) {
 			try {
-				Thread.sleep(SimConfig.SIMULATION_SPEED);
+				Thread.sleep(simulationSpeed);
 			} catch (InterruptedException e) {
 				System.out.println(e.getMessage());
 			}
@@ -209,26 +249,100 @@ public class SimulationGUI extends JFrame implements Runnable {
 			accelerationGraph.repaint();
 			//altitudeGraph.repaint();
 			trajectoryPanel.repaint();
-			
+
 			// Ensure that the simulation is not stopped during the iteration.
-			if (!pause) {
+			if (!stop) {
 				updateValues();
 			}
 		}
 	}
-	
+
 	private class StartStopAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (!pause) {
-				pause = true;
+			if (!stop) {
+				stop = true;
 				startButton.setText(" Play ");
 			} else {
-				pause = false;
+				stop = false;
 				startButton.setText(" Pause ");
-				Thread simThread = new Thread((Runnable) this);
+				Thread simThread = new Thread(instance);
 				simThread.start();
 			}
+		}
+	}
+
+	private class exportAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		}
+	}
+
+	private class importAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			fileChooser.setDialogTitle("Export simulation");
+
+			int userSelection = fileChooser.showOpenDialog(contentPane);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToOpen = fileChooser.getSelectedFile();
+				try {
+
+					SimulationManager manager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
+					new SimulationGUI(getTitle(), manager, fileManager);
+					setVisible(false);
+					dispose();
+				} catch (MissingPartException ex) {
+					ex.printStackTrace();
+				} catch (TooLowThrustException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private class exitAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setVisible(false);
+			dispose();
+		}
+	}
+
+	private class IncreaseSpeedAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			simulationSpeed /= 2;
+		}
+	}
+
+	private class DecreaseSpeedAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			simulationSpeed *= 2;
+		}
+	}
+
+	private class ZoomInAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			trajectoryPanel.setScale(trajectoryPanel.getScale() / 2);
+		}
+	}
+
+	private class ZoomOutAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			trajectoryPanel.setScale(trajectoryPanel.getScale() * 2);
 		}
 	}
 }

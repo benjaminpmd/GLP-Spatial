@@ -1,4 +1,3 @@
-
 package gui.elements;
 
 import javax.swing.BoxLayout;
@@ -6,9 +5,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-
-import config.SimConfig;
-import gui.MainGUI;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -60,7 +56,7 @@ public class StagePanel extends JPanel {
 		init();
 
 	}
-	
+
 	/**
 	 * Adds every label, text field, slider and button necessary.
 	 */
@@ -69,10 +65,10 @@ public class StagePanel extends JPanel {
 		engNumSlider = new JSlider(1, maxEngines);
 
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
+
 		titleLabel = new JLabel("Stage " + stage);
 		add(titleLabel);
-		
+
 
 		add(capacityLabel);
 		add(capacityField);
@@ -105,9 +101,9 @@ public class StagePanel extends JPanel {
 	public void setElementsBackground(Color c) {
 		capacityField.setBackground(c);
 		densityField.setBackground(c);
-		thrustToWeightField.setBackground(c);
-		engNumSlider.setBackground(c);
 		engineThrustField.setBackground(c);
+		engNumSlider.setBackground(c);
+		thrustToWeightField.setBackground(c);
 		propelTemperatureField.setBackground(c);
 		ispField.setBackground(c);
 	}
@@ -129,7 +125,7 @@ public class StagePanel extends JPanel {
 		engineThrustLabel.setForeground(c);
 		ispLabel.setForeground(c);
 	}
-	
+
 	/**
 	 * Sets the texts in the text fields based on Falcon 9.
 	 */
@@ -160,7 +156,7 @@ public class StagePanel extends JPanel {
 		propelTemperatureField.setText(defaultPropelTemp);
 		engNumSlider.setValue(defaultEngNb);
 	}
-	
+
 	/**
 	 * Gets the text from the text fields and slider. Used in {@link gui.MainGUI}.
 	 * @author Benjamin Paumard, Alice Mabille
@@ -178,5 +174,5 @@ public class StagePanel extends JPanel {
 	}
 
 
-	
+
 }

@@ -110,7 +110,7 @@ public class Calculation {
     public CartesianCoordinate calculateNewPosition(CartesianCoordinate cartesianCoordinate, double velocity, double acceleration, double rotationAngle) {
         // TODO: Improve to 2D trajectory
         int x = cartesianCoordinate.getX();
-        cartesianCoordinate.setX( (int) (x + (velocity * deltaTime)));
+        cartesianCoordinate.setX( (int) (x + 10));
         return cartesianCoordinate;
     }
 

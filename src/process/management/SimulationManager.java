@@ -55,6 +55,7 @@ public class SimulationManager {
         deltaTime = SimConfig.DELTA_TIME;
 
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
+        System.out.println(celestialObjects.get("Earth"));
         if (!mission.getDestinationName().equals("Earth")) {
             CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
             celestialObjects.put(destination.getName(), destination);
@@ -66,6 +67,7 @@ public class SimulationManager {
         updateRocketPosition();
         updateReleasedStagesPosition();
         updateCelestialObjectsPosition();
+        updateCoordinateHistory();
     }
 
     public Rocket getRocket() {
@@ -82,6 +84,14 @@ public class SimulationManager {
 
     public List<CartesianCoordinate> getCoordinateHistory() {
         return coordinatesHistory;
+    }
+
+    public HashMap<String, CelestialObject> getCelestialObjects() {
+        return celestialObjects;
+    }
+
+    public List<Stage> getReleasedStages() {
+        return releasedStages;
     }
 
     /**
@@ -117,7 +127,7 @@ public class SimulationManager {
         else {
             altitude = rocket.getCartesianCoordinate().getY() - celestialObjects.get("Earth").getRadius();
         }
-        rocket.getCartesianCoordinate().setX((int) altitude);
+        rocket.getCartesianCoordinate().setX(rocket.getCartesianCoordinate().getX() +1000);
         updateTelemetry((int) acceleration, (int) velocity, (int) altitude);
     }
 
@@ -135,6 +145,13 @@ public class SimulationManager {
         telemetry.addAcceleration(acceleration);
         telemetry.addVelocity(velocity);
         telemetry.addAltitude(altitude);
+    }
+
+    private void updateCoordinateHistory() {
+         if (coordinatesHistory.size() >= 100) {
+             coordinatesHistory.remove(0);
+         }
+         coordinatesHistory.add(rocket.getCartesianCoordinate());
     }
 
     private void updateReleasedStagesPosition() {
