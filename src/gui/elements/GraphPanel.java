@@ -97,4 +97,13 @@ public class GraphPanel extends JPanel {
 		}
 		chartPanel.setChart(getEvolutionChart());
 	}
+
+	public void setElementsBackground(Color color) {
+		chartPanel.getChart().getPlot().setBackgroundPaint(color);
+		chartPanel.getChart().setBackgroundPaint(color);
+	}
+
+	public void setElementsForeground(Color color) {
+		chartPanel.getChart().getTitle().setPaint(color);
+	}
 }
