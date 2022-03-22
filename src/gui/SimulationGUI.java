@@ -147,15 +147,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		c.gridwidth = 2;
 		c.gridheight = 6;
 
-		speedGraph.setBackground(BACKGROUND_COLOR);
-		speedGraph.setElementsBackground(BACKGROUND_COLOR);
-		speedGraph.setElementsForeground(BACKGROUND_COLOR);
-
 		graphPanel.add(speedGraph);
-
-		accelerationGraph.setBackground(BACKGROUND_COLOR);
-		accelerationGraph.setElementsBackground(BACKGROUND_COLOR);
-		accelerationGraph.setElementsForeground(BACKGROUND_COLOR);
 
 		graphPanel.add(accelerationGraph);
 		//graphPanel.add(altitudeGraph);
@@ -413,7 +405,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		public void actionPerformed(ActionEvent e) {
 			CartesianCoordinate coordinate = manager.getRocket().getCartesianCoordinate();
 
-			trajectoryDisplay.setScale(21236);
+			trajectoryDisplay.setScale(SimConfig.DEFAULT_SCALE);
 
 			int rocketX = SimConfig.GRAPHIC_CENTER_X - (coordinate.getX() / trajectoryDisplay.getScale());
 			int rocketY = SimConfig.GRAPHIC_CENTER_Y - (coordinate.getY() / trajectoryDisplay.getScale());

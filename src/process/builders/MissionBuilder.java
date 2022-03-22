@@ -36,7 +36,7 @@ public class MissionBuilder {
      */
     public Mission buildMission(String name, String spaceCenterName, String destinationName, int orbit) {
         Mission mission;
-        if (name.equals("Name your mission here")) {
+        if (name.equals("")) {
             mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit));
         } else {
             mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name);

@@ -6,6 +6,8 @@ import data.mission.CelestialObject;
 import data.mission.Mission;
 import data.rocket.Rocket;
 import data.rocket.Stage;
+import log.LoggerUtility;
+import org.apache.log4j.Logger;
 import process.builders.CelestialObjectBuilder;
 
 import java.util.ArrayList;
@@ -36,14 +38,19 @@ public class SimulationManager {
     private Mission mission;
     private Rocket rocket;
 
-    // record the last 100 postions of the rocket.
+    // record the last 255 postions of the rocket.
     private List<CartesianCoordinate>coordinatesHistory = new ArrayList<>();
+    private List<CartesianCoordinate>trajectoryHistory = new ArrayList<>();
+
+    private int recordCycle = 0;
 
     // celestial objects that will interact with the mission
     private HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>();
 
     // separated stages
     private List<Stage>releasedStages = new ArrayList<>();
+
+    private final Logger logger = LoggerUtility.getLogger(SimulationManager.class, "html");
 
 
     public SimulationManager(Rocket rocket, Mission mission, CelestialObjectBuilder celestialObjectBuilder) {
@@ -60,6 +67,8 @@ public class SimulationManager {
             CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
             celestialObjects.put(destination.getName(), destination);
         }
+
+        logger.trace(rocket);
     }
 
     public void next() {
@@ -68,6 +77,7 @@ public class SimulationManager {
         updateReleasedStagesPosition();
         updateCelestialObjectsPosition();
         updateCoordinateHistory();
+        updateTrajectoryHistory();
     }
 
     public Rocket getRocket() {
@@ -92,6 +102,10 @@ public class SimulationManager {
 
     public List<Stage> getReleasedStages() {
         return releasedStages;
+    }
+
+    public List<CartesianCoordinate> getTrajectoryHistory() {
+        return trajectoryHistory;
     }
 
     /**
@@ -135,16 +149,17 @@ public class SimulationManager {
         if (rocket.getFirstStage() != null) {
             return (rocket.getFirstStage().getEngine().getThrust() * rocket.getFirstStage().getEngineNb());
         }
-        else if (!rocket.getSecondStage().equals(null)) {
+        else if (rocket.getSecondStage() != null) {
             return (rocket.getSecondStage().getEngine().getThrust() * rocket.getSecondStage().getEngineNb());
         }
         else return 0;
     }
 
     private void updateTelemetry(int acceleration, int velocity, int altitude) {
-        telemetry.addAcceleration(acceleration);
-        telemetry.addVelocity(velocity);
-        telemetry.addAltitude(altitude);
+         logger.trace(acceleration + " " + velocity + " " + altitude);
+         telemetry.addAcceleration(acceleration);
+         telemetry.addVelocity(velocity);
+         telemetry.addAltitude(altitude);
     }
 
     private void updateCoordinateHistory() {
@@ -153,6 +168,16 @@ public class SimulationManager {
          }
          CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
          coordinatesHistory.add(coordinate);
+    }
+
+    private void updateTrajectoryHistory() {
+         if (recordCycle == 1000) {
+             CartesianCoordinate tempCoordinate = coordinatesHistory.get(0);
+             CartesianCoordinate coordinate = new CartesianCoordinate(tempCoordinate.getX(), tempCoordinate.getY());
+             trajectoryHistory.add(coordinate);
+             recordCycle = 0;
+         }
+         else recordCycle++;
     }
 
     private void updateReleasedStagesPosition() {

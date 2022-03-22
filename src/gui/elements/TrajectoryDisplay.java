@@ -22,7 +22,7 @@ public class TrajectoryDisplay extends JPanel {
     private static final long serialVersionUID = 1L;
     private final Logger logger = LoggerUtility.getLogger(TrajectoryDisplay.class, "html");
 
-    private int scale = 21236;
+    private int scale = SimConfig.DEFAULT_SCALE;
     private boolean lock = false;
     private int centerX = SimConfig.GRAPHIC_CENTER_X;
     private int centerY = SimConfig.GRAPHIC_CENTER_Y;
@@ -61,11 +61,19 @@ public class TrajectoryDisplay extends JPanel {
         }
 
         // paining trajectory
+        for (int i = manager.getTrajectoryHistory().size() - 1; i > 0; i--) {
+
+            CartesianCoordinate coordinate = manager.getTrajectoryHistory().get(i);
+
+            paintStrategy.paint(coordinate, scale, centerX, centerY, g);
+        }
+
+        // paining trajectory
         int colorOpacity = 255;
         for (int i = manager.getCoordinateHistory().size() - 1; i - 1 > 0; i--) {
 
             CartesianCoordinate coordinate = manager.getCoordinateHistory().get(i);
-            CartesianCoordinate nextCoordinate = manager.getCoordinateHistory().get(i - 1);
+            CartesianCoordinate nextCoordinate = manager.getCoordinateHistory().get(i);
 
             paintStrategy.paint(coordinate, nextCoordinate, colorOpacity, scale, centerX, centerY, g);
             if ((i % 2) == 0) {

@@ -79,13 +79,16 @@ public class MainGUI extends JFrame {
 
 	// stage panels
 	private StagePanel stagePanel1 = new StagePanel(1, 32);
-	private StagePanel stagePanel2 = new StagePanel(1,6);
+	private StagePanel stagePanel2 = new StagePanel(2,6);
 
 	// payload panel
 	private PayloadPanel payloadPanel;
 
 	// space centers panel
 	private SpaceCentersPanel spaceCentersPanel = new SpaceCentersPanel();
+
+	// mission data
+	private JPanel infoPanel = new JPanel();
 
 	private JTextField missionNameField = new JTextField("Name your mission here");
 	private JTextPane errorTextPane = new JTextPane();
@@ -154,6 +157,35 @@ public class MainGUI extends JFrame {
 		spaceCentersPanel.setElementsBackground(MISSION_COLOR);
 		spaceCentersPanel.setElementsForeground(TEXT_COLOR);
 		contentPane.add(spaceCentersPanel, c);
+
+		c.weightx = 0.2;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = MIDDLE_BOTTOM;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
+		JLabel missionNameLabel = new JLabel("Mission name :");
+		JLabel missionDescriptionLabel = new JLabel("Description :");
+		JTextField missionNameField = new JTextField("");
+		JTextField missionDescriptionField = new JTextField("\n");
+
+		missionNameLabel.setForeground(TEXT_COLOR);
+		missionDescriptionLabel.setForeground(TEXT_COLOR);
+		missionNameField.setForeground(TEXT_COLOR);
+		missionDescriptionField.setForeground(TEXT_COLOR);
+
+		missionNameField.setBackground(MISSION_COLOR);
+		missionDescriptionField.setBackground(MISSION_COLOR);
+		infoPanel.setBackground(MISSION_COLOR);
+
+		infoPanel.add(missionNameLabel);
+		infoPanel.add(missionNameField);
+		infoPanel.add(missionDescriptionLabel);
+		infoPanel.add(missionDescriptionField);
+
+		contentPane.add(infoPanel, c);
 
 
 		//middle panel : rocket schema

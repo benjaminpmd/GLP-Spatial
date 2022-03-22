@@ -29,6 +29,11 @@ public class GraphPanel extends JPanel {
 	private TelemetryRecord telemetryRecord;
 	private ArrayList<Integer> dataArray = new ArrayList<Integer>();
 	private ChartPanel chartPanel;
+
+	private final Color BACKGROUND_COLOR = new Color(60,61,64);
+	private final Color TEXT_COLOR = new Color(240, 240, 240);
+	private final Color LINES_COLOR = new Color(255, 10, 10);
+
 	
 	private String title;
 	
@@ -56,6 +61,9 @@ public class GraphPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		chartPanel.getChart().setBackgroundPaint(BACKGROUND_COLOR);
+		chartPanel.getChart().getTitle().setPaint(TEXT_COLOR);
+
 	}
 
 	/**
@@ -96,14 +104,7 @@ public class GraphPanel extends JPanel {
 			throw new IllegalArgumentException("Cannot draw a graph about "+title);
 		}
 		chartPanel.setChart(getEvolutionChart());
-	}
-
-	public void setElementsBackground(Color color) {
-		chartPanel.getChart().getPlot().setBackgroundPaint(color);
-		chartPanel.getChart().setBackgroundPaint(color);
-	}
-
-	public void setElementsForeground(Color color) {
-		chartPanel.getChart().getTitle().setPaint(color);
+		chartPanel.getChart().setBackgroundPaint(BACKGROUND_COLOR);
+		chartPanel.getChart().getTitle().setPaint(TEXT_COLOR);
 	}
 }
