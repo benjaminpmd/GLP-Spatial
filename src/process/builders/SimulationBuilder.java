@@ -60,7 +60,7 @@ public class SimulationBuilder {
      * @throws MissingPartException  in case a part of the rocket is missing.
      * @throws IllegalArgumentException in case the data passed are not correct.
      */
-    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, String name, String spaceCenterName, String destinationName, int orbit) throws TooLowThrustException, MissingPartException, IllegalArgumentException {
+    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, String name, String description, String spaceCenterName, String destinationName, int orbit) throws TooLowThrustException, MissingPartException, IllegalArgumentException {
 
         // checking mass of the payload
         if (payloadMass == null) {
@@ -76,7 +76,7 @@ public class SimulationBuilder {
             throw new IllegalArgumentException("You must choose a space center.");
         }
 
-        Mission mission = missionBuilder.buildMission(name, spaceCenterName, destinationName, orbit);
+        Mission mission = missionBuilder.buildMission(name, description, spaceCenterName, destinationName, orbit);
         Rocket rocket;
 
         try {

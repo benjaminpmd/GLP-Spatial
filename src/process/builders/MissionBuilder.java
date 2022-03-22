@@ -4,6 +4,9 @@ import data.mission.Mission;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Class to transfer input data from the user input to a new Mission Object.
  *
@@ -34,13 +37,17 @@ public class MissionBuilder {
      * @param orbit           {@link String} the orbit targeted.
      * @return {@link Mission}
      */
-    public Mission buildMission(String name, String spaceCenterName, String destinationName, int orbit) {
+    public Mission buildMission(String name, String description, String spaceCenterName, String destinationName, int orbit) {
         Mission mission;
         if (name.equals("")) {
-            mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit));
-        } else {
-            mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name);
+            name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
         }
+
+        if (description.equals("")) {
+            description = "No description provided.";
+        }
+
+        mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name, description);
         logger.trace("Mission successfully built");
         return mission;
     }

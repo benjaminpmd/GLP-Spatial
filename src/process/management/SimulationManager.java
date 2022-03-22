@@ -56,6 +56,7 @@ public class SimulationManager {
     public SimulationManager(Rocket rocket, Mission mission, CelestialObjectBuilder celestialObjectBuilder) {
         this.rocket = rocket;
         this.mission = mission;
+        logger.trace(mission);
 
         calculation = new Calculation();
         telemetry = new TelemetryRecord();

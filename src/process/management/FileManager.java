@@ -120,11 +120,12 @@ public class FileManager {
         String payloadMass = save.get("payloadParam").get("mass");
 
         String missionName = save.get("missionParam").get("missionName");
+        String missionDescription = save.get("missionParam").get("missionDescription");
         String spaceCenterName = save.get("missionParam").get("spaceCenterName");
         String destinationName = save.get("missionParam").get("destinationName");
         String orbit = save.get("missionParam").get("orbit");
 
-        SimulationManager manager = simulationBuilder.buildSimulation(save.get("firstStageParam"), save.get("secondStageParam"), payloadMass, missionName, spaceCenterName, destinationName, Integer.valueOf(orbit));
+        SimulationManager manager = simulationBuilder.buildSimulation(save.get("firstStageParam"), save.get("secondStageParam"), payloadMass, missionName, missionDescription, spaceCenterName, destinationName, Integer.valueOf(orbit));
 
 
         return manager;

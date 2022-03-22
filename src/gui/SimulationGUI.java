@@ -46,11 +46,15 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JMenu fileMenu = new JMenu("File");
 	private JMenu helpMenu = new JMenu("Help");
 
+	private JMenuItem newSimulationItem = new JMenuItem("New");
 	private JMenuItem importSimulationItem = new JMenuItem("Import");
 	private JMenuItem exportSimulationItem = new JMenuItem("Export");
 	private JMenuItem exitItem = new JMenuItem("Exit");
 	private JMenuItem fileHelpItem = new JMenuItem("Import/Export");
 	private JMenuItem paramHelpItem = new JMenuItem("Simulation parameters");
+	private JMenuItem simulationHelpItem = new JMenuItem("About the mission");
+	private JMenuItem softwareHelpItem = new JMenuItem("About SimLaunch");
+
 
 	private JFileChooser fileChooser = new JFileChooser("./");
 	
@@ -111,17 +115,24 @@ public class SimulationGUI extends JFrame implements Runnable {
 		contentPane.setBackground(BACKGROUND_COLOR);
 		c.fill = GridBagConstraints.BOTH;
 
-		// top menu
+		newSimulationItem.addActionListener(new NewSimulationAction());
 		exportSimulationItem.addActionListener(new exportAction());
-		importSimulationItem.addActionListener(new importAction());
-		exitItem.addActionListener(new exitAction());
+		importSimulationItem.addActionListener(new ImportAction());
+		exitItem.addActionListener(new ExitAction());
+		fileMenu.add(newSimulationItem);
 		fileMenu.add(importSimulationItem);
 		fileMenu.add(exportSimulationItem);
 		fileMenu.add(exitItem);
+
 		menuBar.add(fileMenu);
+
+		helpMenu.add(paramHelpItem);
+		helpMenu.add(fileHelpItem);
+		helpMenu.add(simulationHelpItem);
+		helpMenu.add(softwareHelpItem);
+
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
-		
 		
 		//top banner
 		JPanel topBanner = new JPanel();
@@ -325,7 +336,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		}
 	}
 
-	private class importAction implements ActionListener {
+	private class ImportAction implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -351,10 +362,20 @@ public class SimulationGUI extends JFrame implements Runnable {
 		}
 	}
 
-	private class exitAction implements ActionListener {
+	private class ExitAction implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			setVisible(false);
+			dispose();
+		}
+	}
+
+	private class NewSimulationAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			new MainGUI("Space Simulation");
 			setVisible(false);
 			dispose();
 		}
@@ -460,10 +481,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 			int rocketX = trajectoryDisplay.getCenterX() + (coordinate.getX() / trajectoryDisplay.getScale()) + deltaX;
 			int rocketY = trajectoryDisplay.getCenterY() + (coordinate.getY() / trajectoryDisplay.getScale()) + deltaY;
 
-			if (((0 <= rocketX) && (rocketX <= SimConfig.GRAPHIC_WIDTH)) && ((0 <= rocketY) && (rocketY <= SimConfig.GRAPHIC_HEIGHT))) {
-				trajectoryDisplay.setCenterX(trajectoryDisplay.getCenterX() + deltaX);
-				trajectoryDisplay.setCenterY(trajectoryDisplay.getCenterY() + deltaY);
-			}
+			trajectoryDisplay.setCenterX(trajectoryDisplay.getCenterX() + deltaX);
+			trajectoryDisplay.setCenterY(trajectoryDisplay.getCenterY() + deltaY);
+
 			trajectoryDisplay.repaint();
 		}
 	}

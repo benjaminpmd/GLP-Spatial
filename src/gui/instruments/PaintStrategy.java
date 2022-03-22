@@ -2,6 +2,7 @@ package gui.instruments;
 import data.coordinate.CartesianCoordinate;
 import data.mission.CelestialObject;
 import data.rocket.Rocket;
+import data.rocket.Stage;
 
 import java.awt.*;
 import java.awt.Color;
@@ -52,6 +53,14 @@ public class PaintStrategy {
 	public void paint(Rocket rocket, int scale, int centerX, int centerY, Graphics g) {
 		g.setColor(Color.RED);
 		CartesianCoordinate coordinate = rocket.getCartesianCoordinate();
+		int x = centerX + (coordinate.getX() / scale) - 3;
+		int y = centerY + (coordinate.getY() / scale) - 3;
+		g.fillOval(x, y, 6, 6);
+	}
+
+	public void paint(Stage stage, int scale, int centerX, int centerY, Graphics g) {
+		g.setColor(Color.GREEN );
+		CartesianCoordinate coordinate = stage.getCartesianCoordinate();
 		int x = centerX + (coordinate.getX() / scale) - 3;
 		int y = centerY + (coordinate.getY() / scale) - 3;
 		g.fillOval(x, y, 6, 6);

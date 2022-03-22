@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,7 @@ import process.repositories.CelestialObjectRepository;
 /**
  * This is the first window. It allows the user to configure their rocket.
  * Leads to the Launch window {@link SimulationGUI}
- * 
+ *
  * @author Alice Mabille
  *
  */
@@ -67,19 +68,23 @@ public class MainGUI extends JFrame {
 	private Container contentPane;
 
 	private JPanel topBanner = new JPanel();
+	private JPanel infoPanel = new JPanel();
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu fileMenu = new JMenu("File");
 	private JMenu helpMenu = new JMenu("Help");
 
+	private JMenuItem newSimulationItem = new JMenuItem("New");
 	private JMenuItem importSimulationItem = new JMenuItem("Import");
 	private JMenuItem exportSimulationItem = new JMenuItem("Export");
 	private JMenuItem exitItem = new JMenuItem("Exit");
 	private JMenuItem fileHelpItem = new JMenuItem("Import/Export");
 	private JMenuItem paramHelpItem = new JMenuItem("Simulation parameters");
+	private JMenuItem simulationHelpItem = new JMenuItem("About the mission");
+	private JMenuItem softwareHelpItem = new JMenuItem("About SimLaunch");
 
 	// stage panels
 	private StagePanel stagePanel1 = new StagePanel(1, 32);
-	private StagePanel stagePanel2 = new StagePanel(2,6);
+	private StagePanel stagePanel2 = new StagePanel(1,6);
 
 	// payload panel
 	private PayloadPanel payloadPanel;
@@ -87,10 +92,8 @@ public class MainGUI extends JFrame {
 	// space centers panel
 	private SpaceCentersPanel spaceCentersPanel = new SpaceCentersPanel();
 
-	// mission data
-	private JPanel infoPanel = new JPanel();
-
-	private JTextField missionNameField = new JTextField("Name your mission here");
+	private JTextField missionNameField = new JTextField("");
+	private JTextField missionDescriptionField = new JTextField("");
 	private JTextPane errorTextPane = new JTextPane();
 	private JTextField orbitField;
 	private JComboBox<String> destinationMenu;
@@ -134,13 +137,22 @@ public class MainGUI extends JFrame {
 		contentPane.add(topBanner, c);
 
 		// top menu
+		newSimulationItem.addActionListener(new NewSimulationAction());
 		exportSimulationItem.addActionListener(new exportAction());
 		importSimulationItem.addActionListener(new importAction());
 		exitItem.addActionListener(new exitAction());
+		fileMenu.add(newSimulationItem);
 		fileMenu.add(importSimulationItem);
 		fileMenu.add(exportSimulationItem);
 		fileMenu.add(exitItem);
+
 		menuBar.add(fileMenu);
+
+		helpMenu.add(paramHelpItem);
+		helpMenu.add(fileHelpItem);
+		helpMenu.add(simulationHelpItem);
+		helpMenu.add(softwareHelpItem);
+
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 
@@ -151,13 +163,15 @@ public class MainGUI extends JFrame {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
-		c.gridheight = 3;
+		c.gridheight = 2;
 		c.fill = GridBagConstraints.BOTH;
 		spaceCentersPanel.setBackground(MISSION_COLOR);
 		spaceCentersPanel.setElementsBackground(MISSION_COLOR);
 		spaceCentersPanel.setElementsForeground(TEXT_COLOR);
 		contentPane.add(spaceCentersPanel, c);
 
+
+		//bottom-left panel : mission infos
 		c.weightx = 0.2;
 		c.weighty = 1;
 		c.gridx = 0;
@@ -168,8 +182,6 @@ public class MainGUI extends JFrame {
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
 		JLabel missionNameLabel = new JLabel("Mission name :");
 		JLabel missionDescriptionLabel = new JLabel("Description :");
-		JTextField missionNameField = new JTextField("");
-		JTextField missionDescriptionField = new JTextField("\n");
 
 		missionNameLabel.setForeground(TEXT_COLOR);
 		missionDescriptionLabel.setForeground(TEXT_COLOR);
@@ -186,7 +198,6 @@ public class MainGUI extends JFrame {
 		infoPanel.add(missionDescriptionField);
 
 		contentPane.add(infoPanel, c);
-
 
 		//middle panel : rocket schema
 		JPanel rocketPanel = new JPanel();
@@ -266,7 +277,7 @@ public class MainGUI extends JFrame {
 		c.gridwidth = 1;
 		c.gridheight = 2;
 		stagePanel1.setBackground(ROCKET_COLOR);
-		stagePanel1.setElementsBackground(new Color(89,90,93));
+		stagePanel1.setElementsBackground(ROCKET_COLOR);
 		stagePanel1.setElementsForeground(TEXT_COLOR);
 		contentPane.add(stagePanel1, c);
 
@@ -277,7 +288,7 @@ public class MainGUI extends JFrame {
 		c.gridwidth = 1;
 		c.gridheight = 2;
 		stagePanel2.setBackground(ROCKET_COLOR);
-		stagePanel2.setElementsBackground(new Color(89,90,93));
+		stagePanel2.setElementsBackground(ROCKET_COLOR);
 		stagePanel2.setElementsForeground(TEXT_COLOR);
 		contentPane.add(stagePanel2, c);
 
@@ -298,6 +309,7 @@ public class MainGUI extends JFrame {
 				HashMap<String,String> stage2Values = stagePanel2.getValues();
 				String payloadMass = payloadPanel.getMassInput();
 				String missionName = missionNameField.getText();
+				String missionDescription = missionNameField.getText();
 
 				int orbit = Integer.valueOf(orbitField.getText());
 				if (orbit < ORBIT_MIN) {
@@ -308,7 +320,7 @@ public class MainGUI extends JFrame {
 				}
 				else {
 					String spaceCenterName = spaceCentersPanel.getSelectedCenter();
-					SimulationManager manager = simulationBuilder.buildSimulation(stage1Values, stage2Values, payloadMass, missionName, spaceCenterName, destination, orbit);
+					SimulationManager manager = simulationBuilder.buildSimulation(stage1Values, stage2Values, payloadMass, missionName, missionDescription, spaceCenterName, destination, orbit);
 
 					new SimulationGUI(getTitle(), manager, fileManager);
 					setVisible(false);
@@ -339,6 +351,7 @@ public class MainGUI extends JFrame {
 				HashMap<String,String> stage2Values = stagePanel2.getValues();
 				String payloadMass = payloadPanel.getMassInput();
 				String missionName = missionNameField.getText();
+				String missionDescription = missionDescriptionField.getText();
 
 				HashMap<String, String> payloadValues = new HashMap<>();
 				payloadValues.put("mass", payloadMass);
@@ -352,9 +365,10 @@ public class MainGUI extends JFrame {
 				}
 				else {
 					String spaceCenterName = spaceCentersPanel.getSelectedCenter();
-					Mission mission = missionBuilder.buildMission(missionName, spaceCenterName, destination, orbit);
+					Mission mission = missionBuilder.buildMission(missionName, missionDescription, destination, spaceCenterName, orbit);
 					HashMap<String, String> missionValues = new HashMap<>();
 					missionValues.put("missionName", missionName);
+					missionValues.put("description", missionDescription);
 					missionValues.put("spaceCenterName", spaceCenterName);
 					missionValues.put("destinationName", destination);
 					missionValues.put("orbit", String.valueOf(orbit));
@@ -409,6 +423,16 @@ public class MainGUI extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			setVisible(false);
+			dispose();
+		}
+	}
+
+	private class NewSimulationAction implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			new MainGUI("Space Simulation");
 			setVisible(false);
 			dispose();
 		}

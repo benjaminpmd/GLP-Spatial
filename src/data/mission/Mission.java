@@ -30,9 +30,11 @@ public class Mission {
 		launchTime = new Date();
 	}
 
-	public Mission(String spaceCenterName, String destination, int orbitAltitude, String name) {
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name) {
 		this.name = name;
 		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
 		description = "No description provided.";
 		launchTime = new Date();
 	}
@@ -41,6 +43,8 @@ public class Mission {
 		this.name = name;
 		this.description = description;
 		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
 		launchTime = new Date();
 	}
 
@@ -48,6 +52,8 @@ public class Mission {
 		this.name = name;
 		this.description = description;
 		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
 		this.launchTime = launchTime;
 	}
 
