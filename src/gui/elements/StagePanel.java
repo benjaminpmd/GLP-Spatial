@@ -1,20 +1,13 @@
-/**
- * 
- */
 package gui.elements;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import config.SimConfig;
-import engine.process.factories.RocketFactory;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * JPanel that displays every characteristic of the Stage you need the user to choose so the rocket can fly.
@@ -25,14 +18,23 @@ public class StagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int stage;
 	private int maxEngines;
-	private RocketFactory rocketFactory;
 	// fields
-	private JTextField capacityField;
-	private JTextField densityField;
-	private JTextField thrustToWeightField;
-	private JTextField engineThrustField;
-	private JTextField ispField;
-	private JTextField propelTemperatureField;
+	private JTextField capacityField = new JTextField();
+	private JTextField densityField = new JTextField();
+	private JTextField thrustToWeightField = new JTextField();
+	private JTextField engineThrustField = new JTextField();
+	private JTextField ispField = new JTextField();
+	private JTextField propelTemperatureField = new JTextField();
+	// labels
+	private JLabel titleLabel;
+	private JLabel capacityLabel = new JLabel("Propellant Volume (L)");
+	private JLabel densityLabel = new JLabel("Propellant density (kg/L)");
+	private JLabel propelTemperatureLabel = new JLabel("Propellant temperature");
+	private JLabel engNumLabel = new JLabel("Number of engines");
+	private JLabel thrustToWeightLabel = new JLabel("Thrust To Weight");
+	private JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
+	private JLabel ispLabel = new JLabel("ISP (s)");
+
 	private JSlider engNumSlider;
 	private String defaultCapacity;
 	private String defaultDensity;
@@ -40,85 +42,90 @@ public class StagePanel extends JPanel {
 	private String defaultThrust;
 	private String defaultISP;
 	private String defaultPropelTemp;
-	private String defaultEngNb;
+	private int defaultEngNb;
 
 
 	/**
 	 * Builds a JPanel that displays every characteristic of the Stage you need the user to choose so the rocket can fly.
 	 * @param stage either 1 for the 1st stage or 2 for the 2nd stage
 	 * @param maxEngines the maximum number of engines
-	 * @param rocketFactory {@link RocketFactory}
 	 */
-	public StagePanel(int stage, int maxEngines, RocketFactory rocketFactory) {
+	public StagePanel(int stage, int maxEngines) {
 		this.stage = stage;
 		this.maxEngines = maxEngines;
-		this.rocketFactory = rocketFactory;
 		init();
 
 	}
-	
+
 	/**
 	 * Adds every label, text field, slider and button necessary.
 	 */
 	private void init() {
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		
-		JLabel titleLabel = new JLabel("Stage " + stage);
-		add(titleLabel);
-		
-		JLabel capacityLabel = new JLabel("Propellant Volume (L)");
-		add(capacityLabel);
-		capacityField = new JTextField();
-		add(capacityField);
-		
-		JLabel densityLabel = new JLabel("Propellant density (kg/L)");
-		add(densityLabel);
-		densityField = new JTextField();
-		add(densityField);
-		densityLabel.setVisible(!SimConfig.beginnerMode);
-		densityField.setVisible(!SimConfig.beginnerMode);
-		
-		JLabel propelTemperatureLabel = new JLabel("Propellant temperature");
-		add(propelTemperatureLabel);
-		propelTemperatureField = new JTextField();
-		add(propelTemperatureField);
-		
-		JLabel engNumLabel = new JLabel("Number of engines");
-		add(engNumLabel);
+
 		engNumSlider = new JSlider(1, maxEngines);
+
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+
+		titleLabel = new JLabel("Stage " + stage);
+		add(titleLabel);
+
+
+		add(capacityLabel);
+		add(capacityField);
+
+		add(densityLabel);
+		add(densityField);
+
+		add(propelTemperatureLabel);
+		add(propelTemperatureField);
+
+		add(engNumLabel);
 		engNumSlider.setMajorTickSpacing(10);
 		engNumSlider.setMinorTickSpacing(1);
 		engNumSlider.setPaintTicks(true);
 		engNumSlider.setPaintLabels(true);
 		add(engNumSlider);
-		
-		
-		JLabel thrustToWeightLabel = new JLabel("Thrust To Weight");
+
 		add(thrustToWeightLabel);
-		thrustToWeightField = new JTextField();
 		add(thrustToWeightField);
-		//fuelFlowLabel.setVisible(!SimConfig.beginnerMode);
-		//fuelFlowField.setVisible(!SimConfig.beginnerMode);
-		
-		JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
+
 		add(engineThrustLabel);
-		engineThrustField = new JTextField();
 		add(engineThrustField);
-		
-		JLabel ispLabel = new JLabel("ISP (s)");
+
 		add(ispLabel);
-		ispField = new JTextField();
 		add(ispField);
-		//ispLabel.setVisible(!SimConfig.beginnerMode);
-		//ispField.setVisible(!SimConfig.beginnerMode);
-		
-		JButton applyButton = new JButton("Apply");
-		applyButton.addActionListener(new ApplyListener());
-		add(applyButton);
-		
+
 		setDefaultValues();
 	}
-	
+
+	public void setElementsBackground(Color c) {
+		capacityField.setBackground(c);
+		densityField.setBackground(c);
+		engineThrustField.setBackground(c);
+		engNumSlider.setBackground(c);
+		thrustToWeightField.setBackground(c);
+		propelTemperatureField.setBackground(c);
+		ispField.setBackground(c);
+	}
+
+	public void setElementsForeground(Color c) {
+		capacityField.setForeground(c);
+		densityField.setForeground(c);
+		thrustToWeightField.setForeground(c);
+		engNumSlider.setForeground(c);
+		engineThrustField.setForeground(c);
+		propelTemperatureField.setForeground(c);
+		ispField.setForeground(c);
+		titleLabel.setForeground(c);
+		capacityLabel.setForeground(c);
+		densityLabel.setForeground(c);
+		propelTemperatureLabel.setForeground(c);
+		engNumLabel.setForeground(c);
+		thrustToWeightLabel.setForeground(c);
+		engineThrustLabel.setForeground(c);
+		ispLabel.setForeground(c);
+	}
+
 	/**
 	 * Sets the texts in the text fields based on Falcon 9.
 	 */
@@ -127,7 +134,7 @@ public class StagePanel extends JPanel {
 			defaultCapacity = "400000";
 			defaultDensity = "0.72";
 			defaultThrust = "482000";
-			defaultEngNb = "9";
+			defaultEngNb = 9;
 			defaultISP = "311";
 			defaultPropelTemp = "-200";
 			defaultTWRatio = "70.8";
@@ -136,7 +143,7 @@ public class StagePanel extends JPanel {
 			defaultCapacity = "22000";
 			defaultDensity = "0.8";
 			defaultThrust = "626000";
-			defaultEngNb = "1";
+			defaultEngNb = 1;
 			defaultISP = "342";
 			defaultPropelTemp = "-200";
 			defaultTWRatio = "78.2";
@@ -147,27 +154,25 @@ public class StagePanel extends JPanel {
 		engineThrustField.setText(defaultThrust);
 		ispField.setText(defaultISP);
 		propelTemperatureField.setText(defaultPropelTemp);
+		engNumSlider.setValue(defaultEngNb);
 	}
-	
+
 	/**
-	 * Gets the text from the text fields and sends them to {@link RocketFactory} to create a stage.
-	 * @author Benjamin Paumard
+	 * Gets the text from the text fields and slider. Used in {@link gui.MainGUI}.
+	 * @author Benjamin Paumard, Alice Mabille
 	 */
-	private class ApplyListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			int capacity = Integer.valueOf(capacityField.getText());
-			double density = Double.valueOf(densityField.getText());
-			int propellantTemperature = 15;
-			int engineNb = engNumSlider.getValue();
-			double engineThrust = Double.valueOf(engineThrustField.getText());
-			double ratio = Double.valueOf(thrustToWeightField.getText());
-			int isp = Integer.valueOf(ispField.getText());
-			rocketFactory.createStage(capacity, density, propellantTemperature, engineNb, engineThrust, ratio, isp, stage);
-			System.out.println(rocketFactory.getBuiltRocket());
-		}
+	public HashMap<String,String> getValues() {
+		HashMap<String,String> values = new HashMap<String,String>();
+		values.put("tankCapacity", capacityField.getText());
+		values.put("propellantDensity", densityField.getText());
+		values.put("propellantTemperature", propelTemperatureField.getText());
+		values.put("engineNb", String.valueOf(engNumSlider.getValue()));
+		values.put("engineThrust", engineThrustField.getText());
+		values.put("engineThrustRatio", thrustToWeightField.getText());
+		values.put("isp", ispField.getText());
+		return values;
 	}
 
 
-	
+
 }

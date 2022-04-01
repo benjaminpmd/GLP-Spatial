@@ -1,21 +1,22 @@
 package gui.elements;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import config.SimConfig;
-import engine.process.factories.RocketFactory;
-
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
 /**
  * A panel with pre-made buttons. Allows the user to choose the type of payload to send into space.
- * Used in @see PreLaunchGUI
- * 
+ * Used in @see MainGUI
+ *
  * @author Alice Mabille
  *
  */
@@ -23,84 +24,98 @@ public class PayloadPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private RocketFactory rocketFactory;
-	private JTextField weightField;
-	private JButton obsButton;
-	private JButton geoButton;
-	private JButton cubsatButton;
-	private JButton interplanetButton;
+	private JPanel topPanel = new JPanel();
+	private JPanel bottomPanel = new JPanel();
+	private JLabel massLabel = new JLabel("Custom payload mass (kg) :");
+	private JTextField massField = new JTextField();
+	private ButtonGroup radioButtonGroup = new ButtonGroup();
+	private JRadioButton obsButton = new JRadioButton("Observation");
+	private JRadioButton geoButton = new JRadioButton("Geostationary");
+	private JRadioButton cubsatButton = new JRadioButton("Cubsat");
+	private JRadioButton interplanetButton = new JRadioButton("Interplanetary");
 
+	public PayloadPanel() {
 
-	public PayloadPanel(RocketFactory rocketFactory) {
-		this.rocketFactory = rocketFactory;
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
+		setLayout(layout);
 
 		//top panel : buttons for the type of payload
-		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.LINE_AXIS));
-		
-		obsButton = new JButton("Observation");
-		obsButton.addActionListener(new ButtonListener());
+		topPanel.setBounds(50, 50, 50, 50);
 
-		topPanel.add(obsButton);
-		
-		geoButton = new JButton("Geostationary");
-		geoButton.addActionListener(new ButtonListener());
-		topPanel.add(geoButton);
-		
-		cubsatButton = new JButton("Cubsat");
-		cubsatButton.addActionListener(new ButtonListener());
+		obsButton.addActionListener(new PayloadTypeChosenAction());
+		geoButton.addActionListener(new PayloadTypeChosenAction());
+		cubsatButton.addActionListener(new PayloadTypeChosenAction());
+		interplanetButton.addActionListener(new PayloadTypeChosenAction());
+
+		radioButtonGroup.add(obsButton);
+		radioButtonGroup.add(geoButton);
+		radioButtonGroup.add(interplanetButton);
+		radioButtonGroup.add(cubsatButton);
+
 		topPanel.add(cubsatButton);
-		
-		interplanetButton = new JButton("Interplanetary");
-		interplanetButton.addActionListener(new ButtonListener());
+		topPanel.add(geoButton);
 		topPanel.add(interplanetButton);
-		
-		
+		topPanel.add(obsButton);
+
+		//adds a blank space on top of the topPanel just to make it look nicer
+		add(Box.createRigidArea(new Dimension(0, 50)));
 		add(topPanel);
-		
-		//bottom panel : custom weight and validate button
-		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
-		
-		JLabel weightLabel = new JLabel("Custom payload weight (kg) :");
-		botPanel.add(weightLabel);
-		weightField = new JTextField();
-		botPanel.add(weightField);
-		weightLabel.setVisible(!SimConfig.beginnerMode);
-		weightField.setVisible(!SimConfig.beginnerMode);
-		
-		JButton validateButton = new JButton("Apply");
-		botPanel.add(validateButton);
-		
-		add(botPanel);
+		//same but on bottom : between the two panels
+		add(Box.createRigidArea(new Dimension(0, 50)));
+
+		//bottom panel : custom mass and validate button
+		bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
+
+		massField.setMaximumSize(new Dimension(200,40));
+		bottomPanel.add(massLabel);
+		bottomPanel.add(massField);
+
+		add(bottomPanel);
 	}
 
-	private class ApplyListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			rocketFactory.createPayload(Integer.valueOf(weightField.getText()));
+	public void setElementsBackground(Color c) {
+		obsButton.setBackground(c);
+		geoButton.setBackground(c);
+		cubsatButton.setBackground(c);
+		interplanetButton.setBackground(c);
+		massField.setBackground(c);
+		massLabel.setBackground(c);
+		bottomPanel.setBackground(c);
+	}
+
+	public void setElementsForeground(Color c) {
+		obsButton.setForeground(c);
+		geoButton.setForeground(c);
+		cubsatButton.setForeground(c);
+		interplanetButton.setForeground(c);
+		massField.setForeground(c);
+		massLabel.setForeground(c);
+	}
+
+	public String getMassInput() {
+		return massField.getText();
+	}
+
+	private void setTypicalPayloadWeight() {
+		if (obsButton.isSelected()) {
+			massField.setText("1500");
+		}
+		else if (geoButton.isSelected()) {
+			massField.setText("8000");
+		}
+		else if (cubsatButton.isSelected()) {
+			massField.setText("40");
+		}
+		else if (interplanetButton.isSelected()) {
+			massField.setText("2000");
 		}
 	}
 
-	private class ButtonListener implements ActionListener {
+	private class PayloadTypeChosenAction implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			switch (((JButton) e.getSource()).getText()) {
-				case "Observation":
-					weightField.setText("3000");
-					break;
-				case "Geostationary":
-					weightField.setText("7500");
-					break;
-				case "Cubsat":
-					weightField.setText("40");
-					break;
-				case "Interplanetary":
-					weightField.setText("1500");
-					break;
-				default: weightField.setText("0");
-			}
+		public void actionPerformed(ActionEvent arg0) {
+			setTypicalPayloadWeight();
 		}
 	}
 }

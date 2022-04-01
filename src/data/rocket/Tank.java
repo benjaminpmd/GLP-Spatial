@@ -1,10 +1,10 @@
 package data.rocket;
 
 /**
- * Class that contains informations about the tank
+ * Class that contains information about the propellant tank.
  *
  * @author Alice M, Benjamin P
- * @version 22.02.11 - thrust me (1.0.0)
+ * @version 22.03.13 (1.0.0)
  * @see Propellant
  * @since 11.02.22
  */
@@ -16,6 +16,9 @@ public class Tank {
     // the remaining volume of fuel in the tank (kg)
     private double remainingPropellant;
 
+    /**
+     * Constructor of the Tank.
+     */
     public Tank(Propellant propellant, int capacity) {
         this.propellant = propellant;
         this.capacity = capacity * propellant.getDensity();

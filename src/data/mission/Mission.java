@@ -1,79 +1,100 @@
 package data.mission;
 
-import engine.data.Constants;
-import engine.data.PolarCoordinates;
-import data.rocket.Rocket;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * The mission class is the center core of the engine, all important information like target of the mission, rocket etc.
- * are stored in this object.
+ * The mission object contains all information like destination of the mission, orbit target or the center where the
+ * rocket will be launched.
  *
  * @author Benjamin P
- * @version 22.02.13 - To Infinity and beyond (1.0.0)
- * @see data.rocket.Rocket
- * @see data.mission.Center
- * @see engine.data.PolarCoordinates
+ * @version 22.03.06 (1.0.0)
+ * @see SpaceCenter
  * @since 11.02.22
  */
 public class Mission {
 
 	private String name;
 	private String description;
+	private String spaceCenterName;
+	private String destinationName;
+	private int orbitAltitude;
 	private Date launchTime;
-	private Rocket rocket;
-	private Center center;
-	private Planet earth = new Planet("Earth", new PolarCoordinates(0), Constants.EARTH_MASS, Constants.EARTH_RADIUS);
-	private Target target;
 
-	// TODO: invert, use this() with the smallest value input
-	public Mission(String name, String description, Date launchTime, Center center, Target target, Rocket rocket) {
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude) {
+		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
+		name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
+		description = "No description provided.";
+		launchTime = new Date();
+	}
+
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name) {
+		this.name = name;
+		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
+		description = "No description provided.";
+		launchTime = new Date();
+	}
+
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description) {
 		this.name = name;
 		this.description = description;
+		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
+		launchTime = new Date();
+	}
+
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description, Date launchTime) {
+		this.name = name;
+		this.description = description;
+		this.spaceCenterName = spaceCenterName;
+		this.destinationName = destinationName;
+		this.orbitAltitude = orbitAltitude;
 		this.launchTime = launchTime;
-		this.center = center;
-		this.target = target;
-		this.rocket = rocket;
 	}
-
-	public Mission(String name, String description, Date launchTime, Center center, Target target) {
-		this.name = name;
-		this.description = description;
-		this.launchTime = launchTime;
-		this.center = center;
-		this.target = target;
-	}
-
-	public Mission(String name, String description, Center center, Target target, Rocket rocket) {
-		this.name = name;
-		this.description = description;
-		this.center = center;
-		this.target = target;
-		this.rocket = rocket;
-	}
-
-	public Mission(String name, Center center, Target target) {
-		this(name, null, null, center, target);
-	}
-
-	public Mission(Center center, Target target) {
-		this(null, null, null, center, target);
-	}
-
-	public Mission() {}
 
 	@Override
 	public String toString() {
 		return "Mission{" +
 				"name='" + name + '\'' +
 				", description='" + description + '\'' +
+				", spaceCenterName='" + spaceCenterName + '\'' +
+				", destinationName='" + destinationName + '\'' +
+				", orbitAltitude=" + orbitAltitude +
 				", launchTime=" + launchTime +
-				", center=" + center +
-				", earth=" + earth +
-				", target=" + target +
-				", rocket=" + rocket +
 				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Mission)) return false;
+
+		Mission mission = (Mission) o;
+
+		if (orbitAltitude != mission.orbitAltitude) return false;
+		if (name != null ? !name.equals(mission.name) : mission.name != null) return false;
+		if (description != null ? !description.equals(mission.description) : mission.description != null) return false;
+		if (spaceCenterName != null ? !spaceCenterName.equals(mission.spaceCenterName) : mission.spaceCenterName != null)
+			return false;
+		if (destinationName != null ? !destinationName.equals(mission.destinationName) : mission.destinationName != null)
+			return false;
+		return launchTime != null ? launchTime.equals(mission.launchTime) : mission.launchTime == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (description != null ? description.hashCode() : 0);
+		result = 31 * result + (spaceCenterName != null ? spaceCenterName.hashCode() : 0);
+		result = 31 * result + (destinationName != null ? destinationName.hashCode() : 0);
+		result = 31 * result + orbitAltitude;
+		result = 31 * result + (launchTime != null ? launchTime.hashCode() : 0);
+		return result;
 	}
 
 	public String getName() {
@@ -92,43 +113,35 @@ public class Mission {
 		this.description = description;
 	}
 
+	public String getSpaceCenterName() {
+		return spaceCenterName;
+	}
+
+	public void setSpaceCenterName(String spaceCenterName) {
+		this.spaceCenterName = spaceCenterName;
+	}
+
+	public String getDestinationName() {
+		return destinationName;
+	}
+
+	public void setDestinationName(String destinationName) {
+		this.destinationName = destinationName;
+	}
+
+	public int getOrbitAltitude() {
+		return orbitAltitude;
+	}
+
+	public void setOrbitAltitude(int orbitAltitude) {
+		this.orbitAltitude = orbitAltitude;
+	}
+
 	public Date getLaunchTime() {
 		return launchTime;
 	}
 
 	public void setLaunchTime(Date launchTime) {
 		this.launchTime = launchTime;
-	}
-
-	public Center getCenter() {
-		return center;
-	}
-
-	public void setCenter(Center center) {
-		this.center = center;
-	}
-
-	public Planet getEarth() {
-		return earth;
-	}
-
-	public void setEarth(Planet earth) {
-		this.earth = earth;
-	}
-
-	public Target getTarget() {
-		return target;
-	}
-
-	public void setTarget(Target target) {
-		this.target = target;
-	}
-
-	public Rocket getRocket() {
-		return rocket;
-	}
-
-	public void setRocket(Rocket rocket) {
-		this.rocket = rocket;
 	}
 }

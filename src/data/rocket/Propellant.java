@@ -1,57 +1,43 @@
 package data.rocket;
 
-import engine.data.Constants;
+import config.Constants;
 
 /**
  * Class that contains information about the propellant.
  *
  * @author Alice M, Benjamin P
- * @version 22.02.11 - thrust me (1.0.0)
+ * @version 22.03.06 (1.0.0)
  * @since 11.02.22
  */
 public class Propellant {
 
-    // C degrees
+    // in C degrees
     private int temperature;
-    // Kg/L
+    // in kg.L^-1
     private double density;
 
     /**
-     * Constructor of the Propellant object.
-     *
-     * @param density     in kg.L^-1.
-     * @param temperature in C.
+     * Constructor of the propellant.
+     */
+    public Propellant() {
+        density = Constants.DEFAULT_PROPELLANT_DENSITY;
+        temperature = Constants.DEFAULT_PROPELLANT_TEMPERATURE;
+    }
+
+    /**
+     * Constructor of the Propellant.
      */
     public Propellant(double density, int temperature) {
         this.density = density;
         this.temperature = temperature;
     }
 
-    /**
-     * Constructor to be used if the propellant is solid, default values will be used.
-     * You can still create a custom solid propellant, for reminder, the average solid prop' density is about 1.65 and
-     * support ambiant temperature (15 Celsius degrees)
-     *
-     * @param isSolid if the propellant is solid.
-     */
-    public Propellant(boolean isSolid) {
-        this(Constants.DEFAULT_SOLID_PROPELLANT_DENSITY, Constants.DEFAULT_PROPELLANT_TEMPERATURE);
-    }
-
-    /**
-     * Constructor to use if the propellant can support ambiant temperature.
-     *
-     * @param density in kg.L^-1.
-     */
-    public Propellant(double density) {
-        this(density, Constants.DEFAULT_PROPELLANT_TEMPERATURE);
-    }
-
-    /**
-     * Constructor to use for default values.
-     */
-    public Propellant() {
-        this(Constants.DEFAULT_PROPELLANT_DENSITY, Constants.DEFAULT_PROPELLANT_TEMPERATURE);
+    @Override
+    public String toString() {
+        return "Propellant{" +
+                "temperature=" + temperature +
+                ", density=" + density +
+                '}';
     }
 
     public int getTemperature() {
