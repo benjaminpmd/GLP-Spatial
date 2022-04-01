@@ -2,10 +2,13 @@ package gui.elements;
 
 import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
+import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
+import data.rocket.Stage;
 import gui.instruments.PaintStrategy;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
+import process.management.Calculation;
 import process.management.SimulationManager;
 
 import javax.swing.*;
@@ -27,9 +30,8 @@ public class TrajectoryDisplay extends JPanel {
     private int centerX = SimConfig.GRAPHIC_CENTER_X;
     private int centerY = SimConfig.GRAPHIC_CENTER_Y;
     private final SimulationManager manager;
+    private Calculation calculation = new Calculation();
     private final PaintStrategy paintStrategy;
-    private final double max = 0.00000001;
-    private final double min = 0.00000001;
 
     public TrajectoryDisplay(SimulationManager manager) {
         super();
@@ -60,6 +62,10 @@ public class TrajectoryDisplay extends JPanel {
             paintStrategy.paint(celestialObject, scale, centerX, centerY, g);
         }
 
+        for (Stage stage : manager.getReleasedStages()) {
+            paintStrategy.paint(stage, scale, centerX, centerY, g);
+        }
+
         // paining trajectory
         for (int i = manager.getTrajectoryHistory().size() - 1; i > 0; i--) {
 
@@ -81,6 +87,14 @@ public class TrajectoryDisplay extends JPanel {
             }
         }
 
+        if (!manager.getMission().getDestinationName().equals("Earth")) {
+            CelestialObject destination = manager.getCelestialObjects().get(manager.getMission().getDestinationName());
+            PolarCoordinate polarCoordinate = calculation.cartesianToPolar(destination.getCartesianCoordinate());
+            polarCoordinate.setR(polarCoordinate.getR() - destination.getRadius() - manager.getMission().getOrbitAltitude());
+            paintStrategy.paint(manager.getRocket(), calculation.polarToCartesian(polarCoordinate), scale, centerX, centerY, g);
+        }
+        paintStrategy.paint(manager.getMission().getOrbitAltitude(), manager.getCelestialObjects().get(manager.getMission().getDestinationName()), scale, centerX, centerY, g);
+
         paintStrategy.paint(manager.getRocket(), scale, centerX, centerY, g);
     }
 
@@ -89,7 +103,9 @@ public class TrajectoryDisplay extends JPanel {
     }
 
     public void setScale(int scale) {
-        this.scale = scale;
+        if (SimConfig.MIN_SCALE <= scale) {
+            this.scale = scale;
+        }
     }
 
     public int getCenterX() {

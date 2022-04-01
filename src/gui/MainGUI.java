@@ -1,20 +1,16 @@
 package gui;
 
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import config.SimConfig;
@@ -203,12 +199,26 @@ public class MainGUI extends JFrame {
 		JPanel rocketPanel = new JPanel();
 		c.gridx = MIDDLE;
 		c.gridy = MIDDLE;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		c.gridheight = 2;
 		c.fill = GridBagConstraints.BOTH;
+		rocketPanel.setLayout(new BoxLayout(rocketPanel, BoxLayout.PAGE_AXIS));
 		rocketPanel.setBackground(ROCKET_COLOR);
 		JLabel rocketLabel = new JLabel("Rocket schema");
+		rocketLabel.setForeground(TEXT_COLOR);
 		rocketPanel.add(rocketLabel);
+		try {
+			BufferedImage rocketSchema = ImageIO.read(new File(SimConfig.IMAGE_PATH + "RocketSchema.png"));
+			Image scaledRocketSchema = rocketSchema.getScaledInstance(318, 383, Image.SCALE_SMOOTH);
+			JLabel rocketSchemaLabel = new JLabel(new ImageIcon(scaledRocketSchema));
+			rocketPanel.add(rocketSchemaLabel);
+		} catch (IOException e) {
+			JLabel errorLabel = new JLabel("\nWe are not able to show you the schema of the rocket :(");
+			errorLabel.setForeground(TEXT_COLOR);
+			rocketPanel.add(errorLabel);
+
+			rocketPanel.add(errorLabel);
+		}
 
 		contentPane.add(rocketPanel, c);
 

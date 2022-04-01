@@ -39,6 +39,7 @@ public class MissionBuilder {
      */
     public Mission buildMission(String name, String description, String spaceCenterName, String destinationName, int orbit) {
         Mission mission;
+        orbit *= 1000;
         if (name.equals("")) {
             name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
         }

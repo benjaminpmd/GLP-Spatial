@@ -1,6 +1,9 @@
 package process.builders;
 
+import data.coordinate.CartesianCoordinate;
+import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
+import process.management.Calculation;
 import process.repositories.CelestialObjectRepository;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
@@ -28,6 +31,8 @@ public class CelestialObjectBuilder {
 
     private final CelestialObjectRepository celestialObjectRepository = CelestialObjectRepository.getInstance();
 
+    private final Calculation calculation = new Calculation();
+
     /**
      * Constructor of the CelestialObjectBuilder.
      *
@@ -44,7 +49,7 @@ public class CelestialObjectBuilder {
                 // The first one is expected to be the radius
                 // The second one is expected to be the mass
                 String[] values = line.split(SEPARATOR);
-                String[] props = {values[1], values[2]};
+                String[] props = {values[1], values[2], values[3], values[4]};
 
                 // registering them into the repository
                 celestialObjectRepository.register(values[0], props);
@@ -67,11 +72,14 @@ public class CelestialObjectBuilder {
      */
     public CelestialObject buildCelestialObject(String name) {
 
-        CelestialObject celestialObject;
         try {
             // try to get the String array with the provided name.
             String[] props = celestialObjectRepository.getValue(name);
-            return new CelestialObject(name, Integer.valueOf(props[0]), Double.valueOf(props[1]));
+
+            PolarCoordinate polarCoordinate = new PolarCoordinate(Double.valueOf(props[2]), Double.valueOf(props[3]));
+            CartesianCoordinate coordinate = calculation.polarToCartesian(polarCoordinate);
+
+            return new CelestialObject(name, Integer.valueOf(props[0]), Double.valueOf(props[1]), coordinate);
 
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());

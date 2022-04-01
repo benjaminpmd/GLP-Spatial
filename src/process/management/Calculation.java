@@ -3,6 +3,7 @@ package process.management;
 import config.Constants;
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
+import data.rocket.Rocket;
 
 /**
  * Class that contains all equations to use for objects movements.
@@ -59,7 +60,7 @@ public class Calculation {
      */
     public PolarCoordinate cartesianToPolar(CartesianCoordinate cartesianCoordinate) {
         double r = Math.sqrt(Math.pow(cartesianCoordinate.getX(), 2) + Math.pow(cartesianCoordinate.getY(), 2));
-        double angle = Math.atan2(cartesianCoordinate.getX(), cartesianCoordinate.getY());
+        double angle = Math.atan2(cartesianCoordinate.getY(), cartesianCoordinate.getX());
         return new PolarCoordinate(r, angle);
     }
 
@@ -112,6 +113,16 @@ public class Calculation {
         int x = cartesianCoordinate.getX();
         cartesianCoordinate.setX( (int) (x + 10));
         return cartesianCoordinate;
+    }
+
+    public double calculateRocketThrust(Rocket rocket) {
+        if (rocket.getFirstStage() != null) {
+            return (rocket.getFirstStage().getEngine().getThrust() * rocket.getFirstStage().getEngineNb());
+        }
+        else if (rocket.getSecondStage() != null) {
+            return (rocket.getSecondStage().getEngine().getThrust() * rocket.getSecondStage().getEngineNb());
+        }
+        else return 0;
     }
 
 

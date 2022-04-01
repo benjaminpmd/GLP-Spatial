@@ -2,6 +2,7 @@ package process.management;
 
 import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
+import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
 import data.mission.Mission;
 import data.rocket.Rocket;
@@ -132,7 +133,7 @@ public class SimulationManager {
 
     private void updateRocketPosition() {
 
-        double acceleration = calculation.accelerationFromThrust(rocket.getMass(), calculateRocketThrust());
+        double acceleration = calculation.accelerationFromThrust(rocket.getMass(), calculation.calculateRocketThrust(rocket));
         double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), deltaTime);
         double altitude;
 
@@ -143,17 +144,18 @@ public class SimulationManager {
             altitude = rocket.getCartesianCoordinate().getY() - celestialObjects.get("Earth").getRadius();
         }
         rocket.getCartesianCoordinate().setX(rocket.getCartesianCoordinate().getX() +1000);
-        updateTelemetry((int) acceleration, (int) velocity, (int) altitude);
-    }
 
-    private double calculateRocketThrust() {
-        if (rocket.getFirstStage() != null) {
-            return (rocket.getFirstStage().getEngine().getThrust() * rocket.getFirstStage().getEngineNb());
-        }
-        else if (rocket.getSecondStage() != null) {
-            return (rocket.getSecondStage().getEngine().getThrust() * rocket.getSecondStage().getEngineNb());
-        }
-        else return 0;
+        // TEMP
+        PolarCoordinate polarCoordinate = calculation.cartesianToPolar(rocket.getCartesianCoordinate());
+        double angle = polarCoordinate.getAngle();
+
+        angle += calculation.degreeToRadian(0.02);
+        polarCoordinate.setAngle(angle);
+        rocket.setCartesianCoordinate(calculation.polarToCartesian(polarCoordinate));
+        System.out.println(rocket.getCartesianCoordinate());
+        // END TEMP
+
+        updateTelemetry((int) acceleration, (int) velocity, (int) altitude);
     }
 
     private void updateTelemetry(int acceleration, int velocity, int altitude) {
