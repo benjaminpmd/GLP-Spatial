@@ -5,12 +5,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 public class HelpGUI extends JFrame {
-    public HelpGUI(){
-        super();
+    public HelpGUI(String title){
+        super(title);
         init();
     }
 
-    private init(){
+    private void init(){
     JLabel title = new JLabel("Notions et terminologies de base");
 
 
@@ -58,8 +58,8 @@ public class HelpGUI extends JFrame {
     add(scheduleLabel);
     add(schedule);
 
-    add(launchersLabel);
-    add(launchers);
+    add(launcherLabel);
+    add(launcher);
     add(stageLabel);
     add(stage);
     add(propergolLabel);
