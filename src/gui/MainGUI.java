@@ -146,6 +146,8 @@ public class MainGUI extends JFrame {
 
 		helpMenu.add(paramHelpItem);
 		helpMenu.add(fileHelpItem);
+
+		simulationHelpItem.addActionListener(new HelpAction());
 		helpMenu.add(simulationHelpItem);
 		helpMenu.add(softwareHelpItem);
 
@@ -445,6 +447,12 @@ public class MainGUI extends JFrame {
 			new MainGUI("Space Simulation");
 			setVisible(false);
 			dispose();
+		}
+	}
+
+	private class HelpAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			new HelpGUI("Help");
 		}
 	}
 }

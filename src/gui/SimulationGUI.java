@@ -36,7 +36,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 	private GraphPanel speedGraph;
 	private GraphPanel accelerationGraph;
-	//private GraphPanel altitudeGraph = new GraphPanel("Altitude");
 
 	private JPanel graphPanel = new JPanel();
 	Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
