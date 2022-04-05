@@ -2,14 +2,19 @@ package gui;
 
 import config.SimConfig;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+
 import java.awt.*;
 
 public class HelpGUI extends JFrame {
 
     private final static Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+    private Border border = BorderFactory.createEmptyBorder(20, 50, 20, 50);
 
     public HelpGUI(String title){
         super(title);
@@ -17,6 +22,9 @@ public class HelpGUI extends JFrame {
     }
 
     private void init() {
+    	Container contentPane = this.getContentPane();
+    	contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
+    	
         JLabel title = new JLabel("Notions et terminologies de base");
 
 
@@ -53,29 +61,50 @@ public class HelpGUI extends JFrame {
         JTextArea isp = new JTextArea("duration in seconds of a 1 ton-force thrust. "
                 + " As an exemple, chemical engines that use the hydrogen-oxygen couple can produce a 1 ton-force thrust for 460 seconds.");
 
-
+        
+        
         add(title);
 
         add(payloadLabel);
+        payload.setBorder(border);
+        payload.setLineWrap(true);
         add(payload);
         add(centreLabel);
+        centre.setBorder(border);
+        centre.setLineWrap(true);
         add(centre);
         add(scheduleLabel);
+        schedule.setBorder(border);
+        schedule.setLineWrap(true);
         add(schedule);
 
         add(launcherLabel);
+        launcher.setBorder(border);
+        launcher.setLineWrap(true);
         add(launcher);
         add(stageLabel);
+        stage.setLineWrap(true);
+        stage.setBorder(border);
         add(stage);
         add(propergolLabel);
+        propergol.setBorder(border);
+        propergol.setLineWrap(true);
         add(propergol);
         add(nbEnginesLabel);
+        nbEngines.setBorder(border);
+        nbEngines.setLineWrap(true);
         add(nbEngines);
         add(thrustLabel);
+        thrust.setBorder(border);
+        thrust.setLineWrap(true);
         add(thrust);
         add(ratioLabel);
+        ratio.setBorder(border);
+        ratio.setLineWrap(true);
         add(ratio);
         add(ispLabel);
+        isp.setBorder(border);
+        isp.setLineWrap(true);
         add(isp);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
