@@ -1,15 +1,13 @@
 package gui.instruments;
-import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
 import data.mission.CelestialObject;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Line2D;
 
 /**
  * This class draws the trajectory of the rocket. Used in {@link gui.SimulationGUI}.
@@ -99,5 +97,20 @@ public class PaintStrategy {
 		int y = centerY + (coordinate.getY() / scale) - (celestialObject.getRadius() / scale) - (orbit / scale);;
 		int diameter = (((celestialObject.getRadius()*2) + orbit*2) / scale);
 		g.drawOval(x, y, diameter, diameter);
+	}
+
+	public void paint(CartesianCoordinate centerArcCircleCoordinates, int arcCircleRadius, int startingArcCircleAngle, int maxArcCircleAngle, double currentAngle, String unitName, CartesianCoordinate unitNameCoordinates, String minUnit, String maxUnit, Graphics2D g2) {
+		g2.setPaint(Color.YELLOW);
+		Arc2D arcCircle = new Arc2D.Float();
+		arcCircle.setArcByCenter(centerArcCircleCoordinates.getX(), centerArcCircleCoordinates.getY(), arcCircleRadius, startingArcCircleAngle, maxArcCircleAngle, Arc2D.PIE);
+		g2.draw(arcCircle);
+		Shape angularLine = new Line2D.Double(centerArcCircleCoordinates.getX(), centerArcCircleCoordinates.getY()-10, centerArcCircleCoordinates.getX()+(arcCircleRadius*-1*Math.cos((Math.toRadians(currentAngle)))), centerArcCircleCoordinates.getY()-(arcCircleRadius*Math.sin(Math.toRadians(currentAngle))));
+		g2.setPaint(Color.RED);
+		g2.draw(angularLine);
+
+		g2.setPaint(new Color(240, 240, 240));
+		g2.drawString(unitName, unitNameCoordinates.getX(), unitNameCoordinates.getY());
+		g2.drawString(minUnit, centerArcCircleCoordinates.getX()-arcCircleRadius, centerArcCircleCoordinates.getY()+15);
+		g2.drawString(maxUnit, centerArcCircleCoordinates.getX()+(arcCircleRadius-(arcCircleRadius/2)), centerArcCircleCoordinates.getY()+15);
 	}
 }

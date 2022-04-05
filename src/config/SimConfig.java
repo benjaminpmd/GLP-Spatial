@@ -1,6 +1,6 @@
 package config;
 
-import java.awt.*;
+import java.awt.Dimension;
 
 public class SimConfig {
 
@@ -13,6 +13,11 @@ public class SimConfig {
     public static final int GRAPHIC_CENTER_Y = GRAPHIC_HEIGHT / 2;
     public static final int MIN_SCALE = 2048;
     public static final int DEFAULT_SCALE = 30000;
+
+    public static final int TELEMETRY_CENTER_XSPEED = 60;
+    public static final int TELEMETRY_CENTER_YSPEED = 100;
+    public static final int TELEMETRY_CENTER_XALTITUDE = 200;
+    public static final int TELEMETRY_CENTER_YALTITUDE = 100;
 
     public static final Dimension IDEAL_GRAPH_DIMENSION = new Dimension(200,200);
 

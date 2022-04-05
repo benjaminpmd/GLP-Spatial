@@ -16,6 +16,7 @@ public class Stage extends MobileElement {
     private Tank tank;
     private RocketEngine engine;
     private int engineNb;
+    private boolean isFiring;
 
     /**
      * Constructor of the Stage.
@@ -25,6 +26,7 @@ public class Stage extends MobileElement {
         this.tank = tank;
         this.engine = engine;
         this.engineNb = engineNb;
+        isFiring = false;
     }
 
     @Override
@@ -58,5 +60,13 @@ public class Stage extends MobileElement {
 
     public void setTank(Tank tank) {
         this.tank = tank;
+    }
+
+    public boolean isFiring() {
+        return isFiring;
+    }
+
+    public void setFiring(boolean firing) {
+        isFiring = firing;
     }
 }

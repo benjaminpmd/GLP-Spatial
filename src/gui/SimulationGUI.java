@@ -12,6 +12,7 @@ import data.coordinate.CartesianCoordinate;
 import exceptions.MissingPartException;
 import exceptions.TooLowThrustException;
 import gui.elements.GraphPanel;
+import gui.elements.TelemetryDisplay;
 import gui.elements.TrajectoryDisplay;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
@@ -37,9 +38,11 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private GraphPanel speedGraph;
 	private GraphPanel accelerationGraph;
 
+	private float speed = 1;
+	private boolean firstRun = true;
+
 	private JPanel graphPanel = new JPanel();
 	Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
-
 
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu fileMenu = new JMenu("File");
@@ -49,10 +52,8 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JMenuItem importSimulationItem = new JMenuItem("Import");
 	private JMenuItem exportSimulationItem = new JMenuItem("Export");
 	private JMenuItem exitItem = new JMenuItem("Exit");
-	private JMenuItem fileHelpItem = new JMenuItem("Import/Export");
-	private JMenuItem paramHelpItem = new JMenuItem("Simulation parameters");
-	private JMenuItem simulationHelpItem = new JMenuItem("About the mission");
-	private JMenuItem softwareHelpItem = new JMenuItem("About SimLaunch");
+
+	private JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
 
 
 	private JFileChooser fileChooser = new JFileChooser("./");
@@ -73,7 +74,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private final Color TEXT_COLOR = new Color(240, 240, 240);
 	private final Color BUTTON_COLOR = new Color(95, 0, 0);
 	private final Color BUTTON_ENGAGE_COLOR = new Color(58, 162, 0);
-	
+
+	private JLabel speedLabel = new JLabel("Speed: x" + speed);
+
 	private JButton startButton = new JButton("Play");
 	private JButton delayButton = new JButton("Delay start");
 	private JButton speedupButton = new JButton("Speed up");
@@ -84,6 +87,8 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JButton trackButton = new JButton("Start traking");
 
 	private TrajectoryDisplay trajectoryDisplay;
+	private TelemetryDisplay telemetryDisplay;
+
 	private GridBagConstraints c = new GridBagConstraints();
 	
 	/**
@@ -101,6 +106,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		speedGraph = new GraphPanel("Speed", manager.getTelemetry());
 		accelerationGraph = new GraphPanel("Acceleration", manager.getTelemetry());
 		trajectoryDisplay = new TrajectoryDisplay(manager);
+		telemetryDisplay = new TelemetryDisplay(manager);
 		MouseInput mouseInput = new MouseInput();
 		trajectoryDisplay.addMouseListener(mouseInput);
 		trajectoryDisplay.addMouseMotionListener(mouseInput);
@@ -118,6 +124,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		exportSimulationItem.addActionListener(new exportAction());
 		importSimulationItem.addActionListener(new ImportAction());
 		exitItem.addActionListener(new ExitAction());
+		simulationHelpItem.addActionListener(new HelpAction());
 		fileMenu.add(newSimulationItem);
 		fileMenu.add(importSimulationItem);
 		fileMenu.add(exportSimulationItem);
@@ -125,10 +132,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 		menuBar.add(fileMenu);
 
-		helpMenu.add(paramHelpItem);
-		helpMenu.add(fileHelpItem);
 		helpMenu.add(simulationHelpItem);
-		helpMenu.add(softwareHelpItem);
 
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
@@ -160,11 +164,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 		graphPanel.add(speedGraph);
 
 		graphPanel.add(accelerationGraph);
-		//graphPanel.add(altitudeGraph);
 
 		contentPane.add(graphPanel, c);
 
-		//middle panel : trajectory
 		c.weightx = 0.6;
 		c.weighty = 0.5;
 		c.gridx = MIDDLE;
@@ -173,28 +175,16 @@ public class SimulationGUI extends JFrame implements Runnable {
 		c.gridheight = 3;
 
 		contentPane.add(trajectoryDisplay, c);
-		
-		
-		//below the middle panel : flight parameters dashboard
-		JPanel boardPanel = new JPanel();
-		c.weighty = 0.1;
+
+		c.weighty = 1;
 		c.weightx = 0.5;
 		c.gridx = MIDDLE;
 		c.gridy = MIDDLE_BOTTOM;
 		c.gridwidth = 2;
 		c.gridheight = 1;
-				
-		JLabel velocLabel = new JLabel("Velocity");
-		JLabel altiLabel = new JLabel("Altitude");
 
-		velocLabel.setForeground(TEXT_COLOR);
-		altiLabel.setForeground(TEXT_COLOR);
-
-		boardPanel.add(velocLabel);
-		boardPanel.add(altiLabel);
-
-		boardPanel.setBackground(BACKGROUND_COLOR);
-		contentPane.add(boardPanel, c);
+		telemetryDisplay.setBackground(BACKGROUND_COLOR);
+		contentPane.add(telemetryDisplay, c);
 		
 		
 		//below the middle panel : rocket schema
@@ -216,7 +206,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		
 		//right panel : play, pause buttons
 		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new GridLayout(8,1));
+		rightPanel.setLayout(new GridLayout(9,1));
 		((GridLayout) rightPanel.getLayout()).setVgap(10);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.2;
@@ -224,6 +214,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.gridheight = 4;
+
 		startButton.addActionListener(new StartStopAction());
 		speedupButton.addActionListener(new IncreaseSpeedAction());
 		slowdownButton.addActionListener(new DecreaseSpeedAction());
@@ -232,6 +223,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		resetViewButton.addActionListener(new ResetViewAction());
 		trackButton.addActionListener(new TrackAction());
 
+		speedLabel.setForeground(TEXT_COLOR);
 		delayButton.setForeground(TEXT_COLOR);
 		startButton.setForeground(TEXT_COLOR);
 		speedupButton.setForeground(TEXT_COLOR);
@@ -241,6 +233,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		resetViewButton.setForeground(TEXT_COLOR);
 		trackButton.setForeground(TEXT_COLOR);
 
+		speedLabel.setBackground(BACKGROUND_COLOR);
 		delayButton.setBackground(BUTTON_COLOR);
 		startButton.setBackground(BUTTON_COLOR);
 		speedupButton.setBackground(BUTTON_COLOR);
@@ -250,6 +243,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		resetViewButton.setBackground(BUTTON_COLOR);
 		trackButton.setBackground(BUTTON_COLOR);
 
+		rightPanel.add(speedLabel);
 		rightPanel.add(delayButton);
 		rightPanel.add(startButton);
 		rightPanel.add(speedupButton);
@@ -287,10 +281,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private void updateValues() {
 		manager.next();
 		trajectoryDisplay.repaint();
+		telemetryDisplay.repaint();
 		speedGraph.update();
 		accelerationGraph.update();
-		//altitudeGraph.update();
-
 	}
 
 	@Override
@@ -303,8 +296,8 @@ public class SimulationGUI extends JFrame implements Runnable {
 			}
 			speedGraph.repaint();
 			accelerationGraph.repaint();
-			//altitudeGraph.repaint();
 			trajectoryDisplay.repaint();
+			telemetryDisplay.repaint();
 
 			// Ensure that the simulation is not stopped during the iteration.
 			if (!stop) {
@@ -322,6 +315,10 @@ public class SimulationGUI extends JFrame implements Runnable {
 			} else {
 				stop = false;
 				startButton.setText(" Pause ");
+				if (firstRun) {
+					manager.getRocket().getFirstStage().setFiring(true);
+					firstRun = false;
+				}
 				Thread simThread = new Thread(instance);
 				simThread.start();
 			}
@@ -384,7 +381,11 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			simulationSpeed /= 2;
+			if ((simulationSpeed / 2) > 0) {
+				speed *= 2;
+				speedLabel.setText("Speed: x" + speed);
+				simulationSpeed /= 2;
+			}
 		}
 	}
 
@@ -392,7 +393,11 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			simulationSpeed *= 2;
+			if (((simulationSpeed * 2) > 0) && ((speed / 2) >= 0.0625)) {
+				speed /= 2;
+				speedLabel.setText("Speed: x" + speed);
+				simulationSpeed *= 2;
+			}
 		}
 	}
 
@@ -502,6 +507,12 @@ public class SimulationGUI extends JFrame implements Runnable {
 				}
 			}
 			trajectoryDisplay.repaint();
+		}
+	}
+
+	private class HelpAction implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			new HelpGUI("Help");
 		}
 	}
 }

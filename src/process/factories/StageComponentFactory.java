@@ -51,10 +51,9 @@ public class StageComponentFactory {
      */
     public static RocketEngine createRocketEngine(double thrust, double thrustRatio, int isp) {
 
-        double engineWeight = ((thrust * Constants.GRAVITY) / (thrustRatio * Constants.GRAVITY));
+        double engineMass = (thrust / (thrustRatio * Constants.GRAVITY));
         double propellantFlow = (thrust / (Constants.GRAVITY * isp));
-        propellantFlow += ((propellantFlow * 10) / 100);
 
-        return new RocketEngine(isp, thrust, propellantFlow, engineWeight);
+        return new RocketEngine(isp, thrust, propellantFlow, engineMass);
     }
 }

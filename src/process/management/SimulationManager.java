@@ -5,6 +5,7 @@ import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
 import data.mission.Mission;
+import data.rocket.Propellant;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 import log.LoggerUtility;
@@ -39,6 +40,8 @@ public class SimulationManager {
     private Mission mission;
     private Rocket rocket;
 
+    private double altitude;
+
     // record the last 255 postions of the rocket.
     private List<CartesianCoordinate>coordinatesHistory = new ArrayList<>();
     private List<CartesianCoordinate>trajectoryHistory = new ArrayList<>();
@@ -53,14 +56,13 @@ public class SimulationManager {
 
     private final Logger logger = LoggerUtility.getLogger(SimulationManager.class, "html");
 
-
     public SimulationManager(Rocket rocket, Mission mission, CelestialObjectBuilder celestialObjectBuilder) {
         this.rocket = rocket;
         this.mission = mission;
-        logger.trace(mission);
 
         calculation = new Calculation();
         telemetry = new TelemetryRecord();
+        altitude = 0;
         deltaTime = SimConfig.DELTA_TIME;
 
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
@@ -69,17 +71,6 @@ public class SimulationManager {
             CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
             celestialObjects.put(destination.getName(), destination);
         }
-
-        logger.trace(rocket);
-    }
-
-    public void next() {
-        updateRocketMass();
-        updateRocketPosition();
-        updateReleasedStagesPosition();
-        updateCelestialObjectsPosition();
-        updateCoordinateHistory();
-        updateTrajectoryHistory();
     }
 
     public Rocket getRocket() {
@@ -110,59 +101,88 @@ public class SimulationManager {
         return trajectoryHistory;
     }
 
+    public double getAltitude() {
+        return altitude;
+    }
+
+    public void next() {
+
+        // rocket update
+        updateRocketMass();
+        updateRocket();
+
+        // released stages
+        updateReleasedStagesPosition();
+
+        // telemetry
+        updateCoordinateHistory();
+        updateTrajectoryHistory();
+    }
+
     /**
      * Method that updates the rocket. It removes the used propellant mass and manage stage once the tank is empty.
     */
      private void updateRocketMass() {
-         double mass = 0;
-         if (rocket.getFirstStage() != null) {
-             mass += (rocket.getFirstStage().getMass() +
-                     (rocket.getFirstStage().getTank().getRemainingPropellant() * rocket.getFirstStage().getTank().getPropellant().getDensity()) +
-                     (rocket.getFirstStage().getEngine().getWeight() * rocket.getFirstStage().getEngineNb()));
+
+         if ((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) {
+             double propellantFlow = (rocket.getFirstStage().getEngine().getPropellantFlow() * rocket.getFirstStage().getEngineNb()) * deltaTime;
+
+             if ((rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
+                 rocket.getFirstStage().getTank().setRemainingPropellant(rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow);
+                 rocket.setMass(calculation.calculateRocketMass(rocket));
+             }
+             else {
+                 CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+                 rocket.getFirstStage().setCartesianCoordinate(coordinate);
+                 releasedStages.add(rocket.getFirstStage());
+                 rocket.setFirstStage(null);
+                 rocket.getSecondStage().setFiring(true);
+                 logger.trace("ignition of second stage at " + altitude);
+             }
+             rocket.setMass(calculation.calculateRocketMass(rocket));
          }
-         if (rocket.getSecondStage() != null) {
-             mass += (rocket.getSecondStage().getMass() +
-                     (rocket.getSecondStage().getTank().getRemainingPropellant() * rocket.getSecondStage().getTank().getPropellant().getDensity()) +
-                     (rocket.getSecondStage().getEngine().getWeight() * rocket.getSecondStage().getEngineNb()));
+         else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
+             double propellantFlow = (rocket.getSecondStage().getEngine().getPropellantFlow() * rocket.getSecondStage().getEngineNb()) * deltaTime;
+
+             if ((rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
+                 rocket.getSecondStage().getTank().setRemainingPropellant(rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow);
+                 rocket.setMass(calculation.calculateRocketMass(rocket));
+             }
+             else {
+                 CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+                 rocket.getSecondStage().setCartesianCoordinate(coordinate);
+                 releasedStages.add(rocket.getSecondStage());
+                 rocket.setSecondStage(null);
+             }
          }
-         if (rocket.getPayload() != null) {
-             mass += rocket.getPayload().getMass();
-         }
-         rocket.setMass(mass);
     }
 
-    private void updateRocketPosition() {
+    private void updateRocket() {
 
-        double acceleration = calculation.accelerationFromThrust(rocket.getMass(), calculation.calculateRocketThrust(rocket));
-        double velocity = calculation.velocityFromAcceleration(acceleration, rocket.getVelocity(), deltaTime);
-        double altitude;
-
-        if (rocket.getCartesianCoordinate().getX() > rocket.getCartesianCoordinate().getY()) {
-            altitude = rocket.getCartesianCoordinate().getX() - celestialObjects.get("Earth").getRadius();
+        CelestialObject nearestObject = celestialObjects.get("Earth");
+        CelestialObject destination = celestialObjects.get(mission.getDestinationName());
+        for (CelestialObject celestialObject : celestialObjects.values()) {
+            if (calculation.calculateDistance(celestialObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()) < calculation.calculateDistance(nearestObject.getCartesianCoordinate(), rocket.getCartesianCoordinate())) {
+                nearestObject = celestialObject;
+            }
         }
-        else {
-            altitude = rocket.getCartesianCoordinate().getY() - celestialObjects.get("Earth").getRadius();
-        }
-        rocket.getCartesianCoordinate().setX(rocket.getCartesianCoordinate().getX() +1000);
 
-        // TEMP
-        PolarCoordinate polarCoordinate = calculation.cartesianToPolar(rocket.getCartesianCoordinate());
-        double angle = polarCoordinate.getAngle();
+        altitude = calculation.calculateAltitude(rocket.getCartesianCoordinate(), celestialObjects.get("Earth"));
 
-        angle += calculation.degreeToRadian(0.02);
-        polarCoordinate.setAngle(angle);
-        rocket.setCartesianCoordinate(calculation.polarToCartesian(polarCoordinate));
-        System.out.println(rocket.getCartesianCoordinate());
-        // END TEMP
+        double acceleration = calculation.calculateAcceleration(rocket, nearestObject, altitude, deltaTime);
 
-        updateTelemetry((int) acceleration, (int) velocity, (int) altitude);
+        double velocity = calculation.calculateVelocity(rocket.getVelocity(), acceleration, deltaTime);
+        logger.trace(velocity);
+        rocket.setVelocity(velocity);
+
+        rocket.setCartesianCoordinate(calculation.calculateRocketPosition(rocket, destination, mission.getOrbitAltitude(), altitude, deltaTime));
+
+        updateTelemetry((int) acceleration, (int) velocity);
     }
 
-    private void updateTelemetry(int acceleration, int velocity, int altitude) {
-         logger.trace(acceleration + " " + velocity + " " + altitude);
+    private void updateTelemetry(int acceleration, int velocity) {
          telemetry.addAcceleration(acceleration);
          telemetry.addVelocity(velocity);
-         telemetry.addAltitude(altitude);
     }
 
     private void updateCoordinateHistory() {
@@ -170,6 +190,7 @@ public class SimulationManager {
              coordinatesHistory.remove(0);
          }
          CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+
          coordinatesHistory.add(coordinate);
     }
 
@@ -185,13 +206,7 @@ public class SimulationManager {
 
     private void updateReleasedStagesPosition() {
         for (Stage stage: releasedStages) {
-            stage.setCartesianCoordinate(calculation.calculateNewPosition(stage.getCartesianCoordinate(), stage.getVelocity(), 0, 0));
-        }
-    }
-
-    private void updateCelestialObjectsPosition() {
-        for (CelestialObject celestialObject : celestialObjects.values()) {
-            celestialObject.setCartesianCoordinate(calculation.calculateNewPosition(celestialObject.getCartesianCoordinate(), celestialObject.getVelocity(), 0, 0));
+            //stage.setCartesianCoordinate(calculation.calculateStagePosition(stage.getCartesianCoordinate(), stage.getVelocity(), 0, 0));
         }
     }
 }

@@ -28,10 +28,10 @@ public class Rocket extends MobileElement {
         this.payload = payload;
         double mass = 0;
         if (firstStage != null) {
-            mass += (firstStage.getMass() + (firstStage.getTank().getRemainingPropellant() * firstStage.getTank().getPropellant().getDensity()) + (firstStage.getEngine().getWeight() * firstStage.getEngineNb()));
+            mass += (firstStage.getMass() + (firstStage.getTank().getRemainingPropellant() * firstStage.getTank().getPropellant().getDensity()) + (firstStage.getEngine().getMass() * firstStage.getEngineNb()));
         }
         if (secondStage != null) {
-            mass += (secondStage.getMass() + (secondStage.getTank().getRemainingPropellant() * secondStage.getTank().getPropellant().getDensity()) + (secondStage.getEngine().getWeight() * secondStage.getEngineNb()));
+            mass += (secondStage.getMass() + (secondStage.getTank().getRemainingPropellant() * secondStage.getTank().getPropellant().getDensity()) + (secondStage.getEngine().getMass() * secondStage.getEngineNb()));
         }
         if (payload != null) {
             mass += payload.getMass();

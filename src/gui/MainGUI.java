@@ -73,14 +73,12 @@ public class MainGUI extends JFrame {
 	private JMenuItem importSimulationItem = new JMenuItem("Import");
 	private JMenuItem exportSimulationItem = new JMenuItem("Export");
 	private JMenuItem exitItem = new JMenuItem("Exit");
-	private JMenuItem fileHelpItem = new JMenuItem("Import/Export");
-	private JMenuItem paramHelpItem = new JMenuItem("Simulation parameters");
-	private JMenuItem simulationHelpItem = new JMenuItem("About the mission");
-	private JMenuItem softwareHelpItem = new JMenuItem("About SimLaunch");
+
+	private JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
 
 	// stage panels
 	private StagePanel stagePanel1 = new StagePanel(1, 32);
-	private StagePanel stagePanel2 = new StagePanel(1,6);
+	private StagePanel stagePanel2 = new StagePanel(2,6);
 
 	// payload panel
 	private PayloadPanel payloadPanel;
@@ -144,12 +142,8 @@ public class MainGUI extends JFrame {
 
 		menuBar.add(fileMenu);
 
-		helpMenu.add(paramHelpItem);
-		helpMenu.add(fileHelpItem);
-
-		simulationHelpItem.addActionListener(new HelpAction());
 		helpMenu.add(simulationHelpItem);
-		helpMenu.add(softwareHelpItem);
+		simulationHelpItem.addActionListener(new HelpAction());
 
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);

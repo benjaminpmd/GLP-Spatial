@@ -14,7 +14,7 @@ public class RocketEngine {
     // kg/s
     private double propellantFlow;
     // kg
-    private double weight;
+    private double mass;
     // s
     private int isp;
 
@@ -23,14 +23,14 @@ public class RocketEngine {
      *
      * @param thrust         the thrust of the engine in Kg/s.
      * @param propellantFlow the amont of fuel in kg used per second.
-     * @param weight         the weight of the engine.
+     * @param mass         the weight of the engine.
      * @param isp            the specific impulse of the engine.
      */
-    public RocketEngine(int isp, double thrust, double propellantFlow, double weight) {
+    public RocketEngine(int isp, double thrust, double propellantFlow, double mass) {
         this.isp = isp;
         this.thrust = thrust;
         this.propellantFlow = propellantFlow;
-        this.weight = weight;
+        this.mass = mass;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class RocketEngine {
         return "RocketEngine{" +
                 "thrust=" + thrust +
                 ", propellantFlow=" + propellantFlow +
-                ", weight=" + weight +
+                ", weight=" + mass +
                 ", isp=" + isp +
                 '}';
     }
@@ -59,12 +59,12 @@ public class RocketEngine {
         this.propellantFlow = propellantFlow;
     }
 
-    public double getWeight() {
-        return weight;
+    public double getMass() {
+        return mass;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setMass(int mass) {
+        this.mass = mass;
     }
 
     public int getIsp() {

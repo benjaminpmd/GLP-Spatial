@@ -95,10 +95,6 @@ public class GraphPanel extends JPanel {
 		case "Acceleration" :
 			dataArray = telemetryRecord.getAccelerations();
 			break;
-		
-		case "Altitude" :
-			dataArray = telemetryRecord.getAltitudes();
-			break;
 
 		default :
 			throw new IllegalArgumentException("Cannot draw a graph about "+title);
