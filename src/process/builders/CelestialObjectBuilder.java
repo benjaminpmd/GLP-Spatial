@@ -18,7 +18,7 @@ import java.io.IOException;
  * Once the object is initialized, the build method allows to get a built celestial object stored in the CelestialObjectRepository.
  *
  * @author Benjamin P
- * @version 22.03.13 (0.1.0)
+ * @version 22.03.13 (1.0.0)
  * @see CelestialObject
  * @see CelestialObjectRepository
  * @since 14.02.22

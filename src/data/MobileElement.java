@@ -2,13 +2,11 @@ package data;
 
 import data.coordinate.CartesianCoordinate;
 
-import java.io.Serializable;
-
 /**
- * Class that contains a coordinate, a weight and a velocity of a MobileElement.
+ * Class that contains a coordinate, a mass and a velocity of a MobileElement.
  *
  * @author Benjamin P
- * @version 22.03.13 (1.0.0)
+ * @version 22.04.05 (1.0.1)
  * @see data.coordinate.CartesianCoordinate
  * @since 06/03/22
  */
@@ -16,17 +14,10 @@ public class MobileElement {
 
     // in kg
     private double mass;
+    // in m.s^-1
     private double velocity;
-    private CartesianCoordinate cartesianCoordinate;
 
-    /**
-     * Constructor of the MobileElement.
-     */
-    public MobileElement(double mass, double velocity, CartesianCoordinate cartesianCoordinate) {
-        this.mass = mass;
-        this.velocity = velocity;
-        this.cartesianCoordinate = cartesianCoordinate;
-    }
+    private CartesianCoordinate cartesianCoordinate;
 
     /**
      * Constructor of the MobileElement.
@@ -34,6 +25,7 @@ public class MobileElement {
     public MobileElement(double mass, CartesianCoordinate cartesianCoordinate) {
         this.mass = mass;
         this.cartesianCoordinate = cartesianCoordinate;
+        velocity = 0;
     }
 
     /**
@@ -42,11 +34,7 @@ public class MobileElement {
     public MobileElement(double mass) {
         this.mass = mass;
         cartesianCoordinate = new CartesianCoordinate();
-    }
-
-    public MobileElement() {
-        mass = 0;
-        cartesianCoordinate = new CartesianCoordinate();
+        velocity = 0;
     }
 
     @Override
@@ -56,14 +44,6 @@ public class MobileElement {
                 ", velocity=" + velocity +
                 ", cartesianCoordinate=" + cartesianCoordinate +
                 '}';
-    }
-
-    public CartesianCoordinate getCartesianCoordinate() {
-        return cartesianCoordinate;
-    }
-
-    public void setCartesianCoordinate(CartesianCoordinate cartesianCoordinate) {
-        this.cartesianCoordinate = cartesianCoordinate;
     }
 
     public double getMass() {
@@ -80,5 +60,13 @@ public class MobileElement {
 
     public void setVelocity(double velocity) {
         this.velocity = velocity;
+    }
+
+    public CartesianCoordinate getCartesianCoordinate() {
+        return cartesianCoordinate;
+    }
+
+    public void setCartesianCoordinate(CartesianCoordinate cartesianCoordinate) {
+        this.cartesianCoordinate = cartesianCoordinate;
     }
 }

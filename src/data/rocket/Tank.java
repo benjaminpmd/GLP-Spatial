@@ -5,7 +5,7 @@ package data.rocket;
  *
  * @author Alice M, Benjamin P
  * @version 22.03.13 (1.0.0)
- * @see Propellant
+ * @see data.rocket.Propellant
  * @since 11.02.22
  */
 public class Tank {

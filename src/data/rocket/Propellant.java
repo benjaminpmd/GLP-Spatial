@@ -11,18 +11,10 @@ import config.Constants;
  */
 public class Propellant {
 
-    // in C degrees
+    // in Celsius degrees
     private int temperature;
     // in kg.L^-1
     private double density;
-
-    /**
-     * Constructor of the propellant.
-     */
-    public Propellant() {
-        density = Constants.DEFAULT_PROPELLANT_DENSITY;
-        temperature = Constants.DEFAULT_PROPELLANT_TEMPERATURE;
-    }
 
     /**
      * Constructor of the Propellant.

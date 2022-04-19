@@ -7,6 +7,7 @@ import data.MobileElement;
  *
  * @author Alice M, Benjamin P
  * @version 22.03.13 (1.0.0)
+ * @see data.MobileElement
  * @since 11.02.22
  */
 public class Payload extends MobileElement {

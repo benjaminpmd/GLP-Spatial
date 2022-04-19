@@ -22,6 +22,7 @@ import java.io.IOException;
 public class CelestialObject extends MobileElement {
 
     private String name;
+    // in m
     private int radius;
     private Image image;
 
@@ -41,6 +42,7 @@ public class CelestialObject extends MobileElement {
         return "CelestialObject{" +
                 "name='" + name + '\'' +
                 ", radius=" + radius +
+                ", image=" + image +
                 "} " + super.toString();
     }
 
@@ -51,8 +53,9 @@ public class CelestialObject extends MobileElement {
 
         CelestialObject that = (CelestialObject) o;
 
-        if (radius != that.radius) return false;
-        return name.equals(that.name);
+        if (getRadius() != that.getRadius()) return false;
+        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
+        return getImage() != null ? getImage().equals(that.getImage()) : that.getImage() == null;
     }
 
     public String getName() {

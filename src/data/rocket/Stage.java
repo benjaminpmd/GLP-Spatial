@@ -7,8 +7,8 @@ import data.MobileElement;
  *
  * @author Alice M, Benjamin P
  * @version 22.03.06 (1.0.0)
- * @see RocketEngine
- * @see Tank
+ * @see data.rocket.RocketEngine
+ * @see data.rocket.Tank
  * @since 11.02.22
  */
 public class Stage extends MobileElement {

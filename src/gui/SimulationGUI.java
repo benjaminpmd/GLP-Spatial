@@ -84,7 +84,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JButton zoomInButton = new JButton("Zoom in");
 	private JButton zoomOutButton = new JButton("Zoom out");
 	private JButton resetViewButton = new JButton("Reset View");
-	private JButton trackButton = new JButton("Start traking");
+	private JButton trackButton = new JButton("Start tracking");
 
 	private TrajectoryDisplay trajectoryDisplay;
 	private TelemetryDisplay telemetryDisplay;

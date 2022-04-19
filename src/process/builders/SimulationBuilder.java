@@ -91,17 +91,4 @@ public class SimulationBuilder {
         logger.trace("Simulation manager successfully built");
         return manager;
     }
-
-    /**
-     * Method to build a manager using existing rocket and mission.
-     *
-     * @param rocket  {@link Rocket} the rocket to use.
-     * @param mission {@link Mission} the mission to use.
-     * @return {@link SimulationManager} the manager of the simulation.
-     */
-    public SimulationManager buildSimulation(Rocket rocket, Mission mission) {
-        SimulationManager manager = new SimulationManager(rocket, mission, celestialObjectBuilder);
-        logger.trace("Simulation manager successfully built");
-        return manager;
-    }
 }

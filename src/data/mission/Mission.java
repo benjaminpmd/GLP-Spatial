@@ -21,6 +21,9 @@ public class Mission {
 	private int orbitAltitude;
 	private Date launchTime;
 
+	/**
+	 * Constructor of a mission.
+	 */
 	public Mission(String spaceCenterName, String destinationName, int orbitAltitude) {
 		this.spaceCenterName = spaceCenterName;
 		this.destinationName = destinationName;
@@ -30,6 +33,9 @@ public class Mission {
 		launchTime = new Date();
 	}
 
+	/**
+	 * Constructor of a mission.
+	 */
 	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name) {
 		this.name = name;
 		this.spaceCenterName = spaceCenterName;
@@ -39,6 +45,9 @@ public class Mission {
 		launchTime = new Date();
 	}
 
+	/**
+	 * Constructor of a mission.
+	 */
 	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description) {
 		this.name = name;
 		this.description = description;
@@ -48,6 +57,9 @@ public class Mission {
 		launchTime = new Date();
 	}
 
+	/**
+	 * Constructor of a mission.
+	 */
 	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description, Date launchTime) {
 		this.name = name;
 		this.description = description;
@@ -84,17 +96,6 @@ public class Mission {
 		if (destinationName != null ? !destinationName.equals(mission.destinationName) : mission.destinationName != null)
 			return false;
 		return launchTime != null ? launchTime.equals(mission.launchTime) : mission.launchTime == null;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
-		result = 31 * result + (description != null ? description.hashCode() : 0);
-		result = 31 * result + (spaceCenterName != null ? spaceCenterName.hashCode() : 0);
-		result = 31 * result + (destinationName != null ? destinationName.hashCode() : 0);
-		result = 31 * result + orbitAltitude;
-		result = 31 * result + (launchTime != null ? launchTime.hashCode() : 0);
-		return result;
 	}
 
 	public String getName() {

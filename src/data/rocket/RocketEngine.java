@@ -23,7 +23,7 @@ public class RocketEngine {
      *
      * @param thrust         the thrust of the engine in Kg/s.
      * @param propellantFlow the amont of fuel in kg used per second.
-     * @param mass         the weight of the engine.
+     * @param mass           the weight of the engine.
      * @param isp            the specific impulse of the engine.
      */
     public RocketEngine(int isp, double thrust, double propellantFlow, double mass) {

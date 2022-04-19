@@ -2,14 +2,15 @@ package gui;
 
 import config.SimConfig;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
+import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 
 public class HelpGUI extends JFrame {
 
     private final static Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+    private Border border = BorderFactory.createEmptyBorder(20, 50, 10, 50);
 
     public HelpGUI(String title){
         super(title);
@@ -17,6 +18,13 @@ public class HelpGUI extends JFrame {
     }
 
     private void init() {
+        Container contentPane = this.getContentPane();
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.LINE_AXIS));
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.PAGE_AXIS));
+
         JLabel title = new JLabel("Notions et terminologies de base");
 
 
@@ -54,31 +62,64 @@ public class HelpGUI extends JFrame {
                 + " As an exemple, chemical engines that use the hydrogen-oxygen couple can produce a 1 ton-force thrust for 460 seconds.");
 
 
-        add(title);
 
-        add(payloadLabel);
-        add(payload);
-        add(centreLabel);
-        add(centre);
-        add(scheduleLabel);
-        add(schedule);
+        leftPanel.add(title);
 
-        add(launcherLabel);
-        add(launcher);
-        add(stageLabel);
-        add(stage);
-        add(propergolLabel);
-        add(propergol);
-        add(nbEnginesLabel);
-        add(nbEngines);
-        add(thrustLabel);
-        add(thrust);
-        add(ratioLabel);
-        add(ratio);
-        add(ispLabel);
-        add(isp);
+        leftPanel.add(payloadLabel);
+        payload.setBorder(border);
+        payload.setLineWrap(true);
+        payload.setEditable(false);
+        leftPanel.add(payload);
+        leftPanel.add(centreLabel);
+        centre.setBorder(border);
+        centre.setLineWrap(true);
+        centre.setEditable(false);
+        leftPanel.add(centre);
+        leftPanel.add(scheduleLabel);
+        schedule.setBorder(border);
+        schedule.setLineWrap(true);
+        schedule.setEditable(false);
+        leftPanel.add(schedule);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        rightPanel.add(launcherLabel);
+        launcher.setBorder(border);
+        launcher.setLineWrap(true);
+        launcher.setEditable(false);
+        rightPanel.add(launcher);
+        rightPanel.add(stageLabel);
+        stage.setLineWrap(true);
+        stage.setBorder(border);
+        stage.setEditable(false);
+        rightPanel.add(stage);
+        rightPanel.add(propergolLabel);
+        propergol.setBorder(border);
+        propergol.setLineWrap(true);
+        propergol.setEditable(false);
+        rightPanel.add(propergol);
+        rightPanel.add(nbEnginesLabel);
+        nbEngines.setBorder(border);
+        nbEngines.setLineWrap(true);
+        nbEngines.setEditable(false);
+        rightPanel.add(nbEngines);
+        rightPanel.add(thrustLabel);
+        thrust.setBorder(border);
+        thrust.setLineWrap(true);
+        thrust.setEditable(false);
+        rightPanel.add(thrust);
+        rightPanel.add(ratioLabel);
+        ratio.setBorder(border);
+        ratio.setLineWrap(true);
+        ratio.setEditable(false);
+        rightPanel.add(ratio);
+        rightPanel.add(ispLabel);
+        isp.setBorder(border);
+        isp.setLineWrap(true);
+        isp.setEditable(false);
+        rightPanel.add(isp);
+
+        add(leftPanel);
+        add(rightPanel);
+
         setMinimumSize(preferredSize);
         pack();
         setVisible(true);
