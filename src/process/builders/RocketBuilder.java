@@ -23,9 +23,8 @@ import java.util.HashMap;
 public class RocketBuilder {
 
     private final Logger logger = LoggerUtility.getLogger(RocketBuilder.class, "html");
-
-    private Rocket rocket;
     private final StageBuilder stageBuilder;
+    private Rocket rocket;
 
     /**
      * Builder of the Rocker.
@@ -51,22 +50,22 @@ public class RocketBuilder {
         Stage firstStage = stageBuilder.buildStage(
                 Integer.valueOf(firstStageParam.get("tankCapacity")),
                 Double.valueOf(firstStageParam.get("propellantDensity")),
-                Integer.valueOf(firstStageParam.get("propellantTemperature")),
                 Integer.valueOf(firstStageParam.get("engineNb")),
                 Double.valueOf(firstStageParam.get("engineThrust")),
                 Double.valueOf(firstStageParam.get("engineThrustRatio")),
-                Integer.valueOf(firstStageParam.get("isp"))
+                Integer.valueOf(firstStageParam.get("isp")),
+                Integer.valueOf(firstStageParam.get("exhaustVelocity"))
         );
 
         // building the second stage
         Stage secondStage = stageBuilder.buildStage(
                 Integer.valueOf(secondStageParam.get("tankCapacity")),
                 Double.valueOf(firstStageParam.get("propellantDensity")),
-                Integer.valueOf(firstStageParam.get("propellantTemperature")),
                 Integer.valueOf(secondStageParam.get("engineNb")),
                 Double.valueOf(secondStageParam.get("engineThrust")),
                 Double.valueOf(secondStageParam.get("engineThrustRatio")),
-                Integer.valueOf(secondStageParam.get("isp"))
+                Integer.valueOf(secondStageParam.get("isp")),
+                Integer.valueOf(firstStageParam.get("exhaustVelocity"))
         );
 
         // building the payload

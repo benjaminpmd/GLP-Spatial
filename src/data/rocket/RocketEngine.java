@@ -9,28 +9,28 @@ package data.rocket;
  */
 public class RocketEngine {
 
-    // kg.s^-1
+    // N
     private double thrust;
     // kg/s
     private double propellantFlow;
     // kg
     private double mass;
-    // s
-    private int isp;
+    //m.s^-1
+    private int exhaustVelocity;
 
     /**
      * Constructor of RocketEngine.
      *
-     * @param thrust         the thrust of the engine in Kg/s.
-     * @param propellantFlow the amont of fuel in kg used per second.
-     * @param mass           the weight of the engine.
-     * @param isp            the specific impulse of the engine.
+     * @param thrust          the thrust of the engine in Kg/s.
+     * @param propellantFlow  the amont of fuel in kg used per second.
+     * @param mass            the weight of the engine.
+     * @param exhaustVelocity the ejection rate of the engine.
      */
-    public RocketEngine(int isp, double thrust, double propellantFlow, double mass) {
-        this.isp = isp;
+    public RocketEngine(double thrust, double propellantFlow, double mass, int exhaustVelocity) {
         this.thrust = thrust;
         this.propellantFlow = propellantFlow;
         this.mass = mass;
+        this.exhaustVelocity = exhaustVelocity;
     }
 
     @Override
@@ -38,8 +38,8 @@ public class RocketEngine {
         return "RocketEngine{" +
                 "thrust=" + thrust +
                 ", propellantFlow=" + propellantFlow +
-                ", weight=" + mass +
-                ", isp=" + isp +
+                ", mass=" + mass +
+                ", exhaustVelocity=" + exhaustVelocity +
                 '}';
     }
 
@@ -67,11 +67,11 @@ public class RocketEngine {
         this.mass = mass;
     }
 
-    public int getIsp() {
-        return isp;
+    public int getExhaustVelocity() {
+        return exhaustVelocity;
     }
 
-    public void setIsp(int isp) {
-        this.isp = isp;
+    public void setExhaustVelocity(int exhaustVelocity) {
+        this.exhaustVelocity = exhaustVelocity;
     }
 }

@@ -50,5 +50,7 @@ public class CalculationTest {
         assertEquals(1.22, calculation.calculateAirDensity(0), 0.1);
 
         assertEquals(7.07, calculation.calculateDistance(originCoordinate, endCoordinate), 0.01);
+
+        assertEquals(22.24, calculation.calculateLaunchAngle(400000, true), 0.01);
     }
 }

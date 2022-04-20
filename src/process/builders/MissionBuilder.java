@@ -19,14 +19,6 @@ public class MissionBuilder {
 
     private final Logger logger = LoggerUtility.getLogger(MissionBuilder.class, "html");
 
-    private final CelestialObjectBuilder celestialObjectBuilder;
-    private final SpaceCenterBuilder spaceCenterBuilder;
-
-    public MissionBuilder(CelestialObjectBuilder celestialObjectBuilder, SpaceCenterBuilder spaceCenterBuilder) {
-        this.celestialObjectBuilder = celestialObjectBuilder;
-        this.spaceCenterBuilder = spaceCenterBuilder;
-    }
-
     /**
      * Method that builds and returns a Mission.
      *
@@ -48,7 +40,7 @@ public class MissionBuilder {
             description = "No description provided.";
         }
 
-        mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name, description);
+        mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name, description, new Date());
         logger.trace("Mission successfully built");
         return mission;
     }

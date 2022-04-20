@@ -2,10 +2,8 @@ package process.management;
 
 import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
-import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
 import data.mission.Mission;
-import data.rocket.Propellant;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 import log.LoggerUtility;
@@ -28,33 +26,27 @@ import java.util.List;
  * @see data.rocket.Rocket
  * @see data.rocket.Stage
  * @since 14.02.22
- *
+ * <p>
  * TODO: implement all calculs once they are ready to be used.
  */
 public class SimulationManager {
 
-    private double deltaTime;
-    private Calculation calculation;
-    private TelemetryRecord telemetry;
-
-    private Mission mission;
-    private Rocket rocket;
-
-    private double altitude;
-
-    // record the last 255 postions of the rocket.
-    private List<CartesianCoordinate>coordinatesHistory = new ArrayList<>();
-    private List<CartesianCoordinate>trajectoryHistory = new ArrayList<>();
-
-    private int recordCycle = 0;
-
-    // celestial objects that will interact with the mission
-    private HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>();
-
-    // separated stages
-    private List<Stage>releasedStages = new ArrayList<>();
-
     private final Logger logger = LoggerUtility.getLogger(SimulationManager.class, "html");
+    private final double deltaTime;
+    private final double launchAngle;
+    private final Calculation calculation;
+    private final TelemetryRecord telemetry;
+    private final Mission mission;
+    private final Rocket rocket;
+    private double altitude;
+    // record the last 255 postions of the rocket.
+    private final List<CartesianCoordinate> coordinatesHistory = new ArrayList<>();
+    private final List<CartesianCoordinate> trajectoryHistory = new ArrayList<>();
+    private int recordCycle = 0;
+    // celestial objects that will interact with the mission
+    private final HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>();
+    // separated stages
+    private final List<Stage> releasedStages = new ArrayList<>();
 
     public SimulationManager(Rocket rocket, Mission mission, CelestialObjectBuilder celestialObjectBuilder) {
         this.rocket = rocket;
@@ -65,12 +57,17 @@ public class SimulationManager {
         altitude = 0;
         deltaTime = SimConfig.DELTA_TIME;
 
+
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
         System.out.println(celestialObjects.get("Earth"));
         if (!mission.getDestinationName().equals("Earth")) {
             CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
             celestialObjects.put(destination.getName(), destination);
+            launchAngle = calculation.calculateLaunchAngle(2000, false);
+        } else {
+            launchAngle = calculation.calculateLaunchAngle(mission.getOrbitAltitude(), true);
         }
+        System.out.println(launchAngle);
     }
 
     public Rocket getRocket() {
@@ -121,40 +118,37 @@ public class SimulationManager {
 
     /**
      * Method that updates the rocket. It removes the used propellant mass and manage stage once the tank is empty.
-    */
-     private void updateRocketMass() {
+     */
+    private void updateRocketMass() {
 
-         if ((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) {
-             double propellantFlow = (rocket.getFirstStage().getEngine().getPropellantFlow() * rocket.getFirstStage().getEngineNb()) * deltaTime;
+        if ((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) {
+            double propellantFlow = (rocket.getFirstStage().getEngine().getPropellantFlow() * rocket.getFirstStage().getEngineNb()) * deltaTime;
 
-             if ((rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
-                 rocket.getFirstStage().getTank().setRemainingPropellant(rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow);
-                 rocket.setMass(calculation.calculateRocketMass(rocket));
-             }
-             else {
-                 CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
-                 rocket.getFirstStage().setCartesianCoordinate(coordinate);
-                 releasedStages.add(rocket.getFirstStage());
-                 rocket.setFirstStage(null);
-                 rocket.getSecondStage().setFiring(true);
-                 logger.trace("ignition of second stage at " + altitude);
-             }
-             rocket.setMass(calculation.calculateRocketMass(rocket));
-         }
-         else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
-             double propellantFlow = (rocket.getSecondStage().getEngine().getPropellantFlow() * rocket.getSecondStage().getEngineNb()) * deltaTime;
+            if ((rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
+                rocket.getFirstStage().getTank().setRemainingPropellant(rocket.getFirstStage().getTank().getRemainingPropellant() - propellantFlow);
+                rocket.setMass(calculation.calculateRocketMass(rocket));
+            } else {
+                CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+                rocket.getFirstStage().setCartesianCoordinate(coordinate);
+                releasedStages.add(rocket.getFirstStage());
+                rocket.setFirstStage(null);
+                rocket.getSecondStage().setFiring(true);
+                logger.trace("ignition of second stage at " + altitude);
+            }
+            rocket.setMass(calculation.calculateRocketMass(rocket));
+        } else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
+            double propellantFlow = (rocket.getSecondStage().getEngine().getPropellantFlow() * rocket.getSecondStage().getEngineNb()) * deltaTime;
 
-             if ((rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
-                 rocket.getSecondStage().getTank().setRemainingPropellant(rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow);
-                 rocket.setMass(calculation.calculateRocketMass(rocket));
-             }
-             else {
-                 CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
-                 rocket.getSecondStage().setCartesianCoordinate(coordinate);
-                 releasedStages.add(rocket.getSecondStage());
-                 rocket.setSecondStage(null);
-             }
-         }
+            if ((rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow) >= 0) {
+                rocket.getSecondStage().getTank().setRemainingPropellant(rocket.getSecondStage().getTank().getRemainingPropellant() - propellantFlow);
+                rocket.setMass(calculation.calculateRocketMass(rocket));
+            } else {
+                CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+                rocket.getSecondStage().setCartesianCoordinate(coordinate);
+                releasedStages.add(rocket.getSecondStage());
+                rocket.setSecondStage(null);
+            }
+        }
     }
 
     private void updateRocket() {
@@ -181,32 +175,32 @@ public class SimulationManager {
     }
 
     private void updateTelemetry(int acceleration, int velocity) {
-         telemetry.addAcceleration(acceleration);
-         telemetry.addVelocity(velocity);
+        telemetry.addAcceleration(acceleration);
+        telemetry.addVelocity(velocity);
     }
 
     private void updateCoordinateHistory() {
-         if (coordinatesHistory.size() >= 510) {
-             coordinatesHistory.remove(0);
-         }
-         CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
+        if (coordinatesHistory.size() >= 510) {
+            coordinatesHistory.remove(0);
+        }
+        CartesianCoordinate coordinate = new CartesianCoordinate(rocket.getCartesianCoordinate().getX(), rocket.getCartesianCoordinate().getY());
 
-         coordinatesHistory.add(coordinate);
+        coordinatesHistory.add(coordinate);
     }
 
     private void updateTrajectoryHistory() {
-         if (recordCycle == 1000) {
-             CartesianCoordinate tempCoordinate = coordinatesHistory.get(0);
-             CartesianCoordinate coordinate = new CartesianCoordinate(tempCoordinate.getX(), tempCoordinate.getY());
-             trajectoryHistory.add(coordinate);
-             recordCycle = 0;
-         }
-         else recordCycle++;
+        if (recordCycle == 1000) {
+            CartesianCoordinate tempCoordinate = coordinatesHistory.get(0);
+            CartesianCoordinate coordinate = new CartesianCoordinate(tempCoordinate.getX(), tempCoordinate.getY());
+            trajectoryHistory.add(coordinate);
+            recordCycle = 0;
+        } else recordCycle++;
     }
 
     private void updateReleasedStagesPosition() {
-        for (Stage stage: releasedStages) {
-            //stage.setCartesianCoordinate(calculation.calculateStagePosition(stage.getCartesianCoordinate(), stage.getVelocity(), 0, 0));
+        for (Stage stage : releasedStages) {
+            CartesianCoordinate newCoordinate = calculation.calculateStagePosition(stage, deltaTime);
+            stage.setCartesianCoordinate(newCoordinate);
         }
     }
 }

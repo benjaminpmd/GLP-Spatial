@@ -329,6 +329,14 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			fileChooser.setDialogTitle("Export simulation");
+
+			int userSelection = fileChooser.showSaveDialog(contentPane);
+
+			if (userSelection == JFileChooser.APPROVE_OPTION) {
+				File fileToSave = fileChooser.getSelectedFile();
+				fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
+			}
 		}
 	}
 
@@ -344,10 +352,9 @@ public class SimulationGUI extends JFrame implements Runnable {
 			if (userSelection == JFileChooser.APPROVE_OPTION) {
 				File fileToOpen = fileChooser.getSelectedFile();
 				try {
-
-					SimulationManager manager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
-					new SimulationGUI(getTitle(), manager, fileManager);
-					setVisible(false);
+					stop = true;
+					SimulationManager newManager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
+					new SimulationGUI(getTitle(), newManager, fileManager);
 					dispose();
 				} catch (MissingPartException ex) {
 					ex.printStackTrace();
@@ -371,7 +378,8 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			new MainGUI("Space Simulation");
+			stop = true;
+			new MainGUI("Sim Launch 1.0.0");
 			setVisible(false);
 			dispose();
 		}
@@ -434,8 +442,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 			int rocketX = SimConfig.GRAPHIC_CENTER_X - (coordinate.getX() / trajectoryDisplay.getScale());
 			int rocketY = SimConfig.GRAPHIC_CENTER_Y - (coordinate.getY() / trajectoryDisplay.getScale());
-
-			System.out.println(rocketX+ " / " + rocketY);
 
 			trajectoryDisplay.setCenterX(rocketX);
 			trajectoryDisplay.setCenterY(rocketY);

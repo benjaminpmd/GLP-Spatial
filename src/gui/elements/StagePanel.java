@@ -24,12 +24,12 @@ public class StagePanel extends JPanel {
 	private JTextField thrustToWeightField = new JTextField();
 	private JTextField engineThrustField = new JTextField();
 	private JTextField ispField = new JTextField();
-	private JTextField propelTemperatureField = new JTextField();
+	private JTextField exhaustVelocityField = new JTextField();
 	// labels
 	private JLabel titleLabel;
 	private JLabel capacityLabel = new JLabel("Propellant Volume (L)");
-	private JLabel densityLabel = new JLabel("Propellant density (kg/L)");
-	private JLabel propelTemperatureLabel = new JLabel("Propellant temperature");
+	private JLabel densityLabel = new JLabel("Propellant density (kg.L^-1)");
+	private JLabel exhaustVelocityLabel = new JLabel("Exhaust Velocity (m.s^-1)");
 	private JLabel engNumLabel = new JLabel("Number of engines");
 	private JLabel thrustToWeightLabel = new JLabel("Thrust To Weight");
 	private JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
@@ -41,7 +41,7 @@ public class StagePanel extends JPanel {
 	private String defaultTWRatio;
 	private String defaultThrust;
 	private String defaultISP;
-	private String defaultPropelTemp;
+	private String defaultExhaustVelocity;
 	private int defaultEngNb;
 
 
@@ -76,9 +76,6 @@ public class StagePanel extends JPanel {
 		add(densityLabel);
 		add(densityField);
 
-		add(propelTemperatureLabel);
-		add(propelTemperatureField);
-
 		add(engNumLabel);
 		engNumSlider.setMajorTickSpacing(10);
 		engNumSlider.setMinorTickSpacing(1);
@@ -92,6 +89,9 @@ public class StagePanel extends JPanel {
 		add(engineThrustLabel);
 		add(engineThrustField);
 
+		add(exhaustVelocityLabel);
+		add(exhaustVelocityField);
+
 		add(ispLabel);
 		add(ispField);
 
@@ -104,7 +104,7 @@ public class StagePanel extends JPanel {
 		engineThrustField.setBackground(c);
 		engNumSlider.setBackground(c);
 		thrustToWeightField.setBackground(c);
-		propelTemperatureField.setBackground(c);
+		exhaustVelocityField.setBackground(c);
 		ispField.setBackground(c);
 	}
 
@@ -114,12 +114,12 @@ public class StagePanel extends JPanel {
 		thrustToWeightField.setForeground(c);
 		engNumSlider.setForeground(c);
 		engineThrustField.setForeground(c);
-		propelTemperatureField.setForeground(c);
+		exhaustVelocityField.setForeground(c);
 		ispField.setForeground(c);
 		titleLabel.setForeground(c);
 		capacityLabel.setForeground(c);
 		densityLabel.setForeground(c);
-		propelTemperatureLabel.setForeground(c);
+		exhaustVelocityLabel.setForeground(c);
 		engNumLabel.setForeground(c);
 		thrustToWeightLabel.setForeground(c);
 		engineThrustLabel.setForeground(c);
@@ -136,7 +136,7 @@ public class StagePanel extends JPanel {
 			defaultThrust = "482000";
 			defaultEngNb = 9;
 			defaultISP = "311";
-			defaultPropelTemp = "-200";
+			defaultExhaustVelocity = "4150";
 			defaultTWRatio = "70.8";
 		}
 		else if (stage == 2) {
@@ -145,7 +145,7 @@ public class StagePanel extends JPanel {
 			defaultThrust = "626000";
 			defaultEngNb = 1;
 			defaultISP = "342";
-			defaultPropelTemp = "-200";
+			defaultExhaustVelocity = "4150";
 			defaultTWRatio = "78.2";
 		}
 		capacityField.setText(defaultCapacity);
@@ -153,7 +153,7 @@ public class StagePanel extends JPanel {
 		thrustToWeightField.setText(defaultTWRatio);
 		engineThrustField.setText(defaultThrust);
 		ispField.setText(defaultISP);
-		propelTemperatureField.setText(defaultPropelTemp);
+		exhaustVelocityField.setText(defaultExhaustVelocity);
 		engNumSlider.setValue(defaultEngNb);
 	}
 
@@ -165,9 +165,9 @@ public class StagePanel extends JPanel {
 		HashMap<String,String> values = new HashMap<String,String>();
 		values.put("tankCapacity", capacityField.getText());
 		values.put("propellantDensity", densityField.getText());
-		values.put("propellantTemperature", propelTemperatureField.getText());
 		values.put("engineNb", String.valueOf(engNumSlider.getValue()));
 		values.put("engineThrust", engineThrustField.getText());
+		values.put("exhaustVelocity", exhaustVelocityField.getText());
 		values.put("engineThrustRatio", thrustToWeightField.getText());
 		values.put("isp", ispField.getText());
 		return values;

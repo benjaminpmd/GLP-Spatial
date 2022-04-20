@@ -4,7 +4,9 @@ import config.Constants;
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
+import data.mission.SpaceCenter;
 import data.rocket.Rocket;
+import data.rocket.Stage;
 
 /**
  * Class that contains all equations to use.
@@ -16,6 +18,11 @@ import data.rocket.Rocket;
  * @since 17.02.22
  */
 public class Calculation {
+
+    /**
+     * Angle of the launch in degree
+     */
+    private int LAUNCH_ANGLE = 20;
 
     /**
      * Calculates the cartesian coordinate from polar ones.
@@ -44,9 +51,31 @@ public class Calculation {
     }
 
     public double degreeToRadian(double angle) {
-        if ((angle >= 0) && (angle <= 360)) {
-            return ((angle * Math.PI) / 180);
-        } else return 0;
+        if ((-360 <= angle) && (angle <= 360)) {
+            if (angle < 0) {
+                return -Math.toRadians(angle);
+            }
+            else {
+                return Math.toRadians(angle);
+            }
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public double radianToDegree(double angle) {
+        if ((-6.28319 <= angle) && (angle <= 6.28319)) {
+            if (angle < 0) {
+                return -Math.toDegrees(angle);
+            }
+            else {
+                return Math.toDegrees(angle);
+            }
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -140,18 +169,38 @@ public class Calculation {
 
         double acceleration;
         double deltaMass = 0;
+        int exhaustVelocity;
 
         if ((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) {
             deltaMass = (rocket.getFirstStage().getEngine().getPropellantFlow() * rocket.getFirstStage().getEngineNb());
+            exhaustVelocity = rocket.getFirstStage().getEngine().getExhaustVelocity();
         } else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
             deltaMass = (rocket.getSecondStage().getEngine().getPropellantFlow() * rocket.getSecondStage().getEngineNb());
+            exhaustVelocity = rocket.getSecondStage().getEngine().getExhaustVelocity();
+        }
+        else {
+            exhaustVelocity = 0;
         }
 
-        acceleration = (Constants.DEFAULT_EXHAUST_VELOCITY / rocket.getMass()) * (deltaMass / deltaTime) - calculateGravity(celestialObject.getMass(), calculateDistance(celestialObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()));
+        acceleration = (exhaustVelocity / rocket.getMass()) * (deltaMass / deltaTime) - calculateGravity(celestialObject.getMass(), calculateDistance(celestialObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()));
 
         if (altitude < 80000) {
             double airDensity = calculateAirDensity(altitude);
             acceleration -= ((1 / 2) * Constants.DEFAULT_DRAG_COEFFICIENT * airDensity * Math.pow(rocket.getVelocity(), 2) * Constants.DEFAULT_ROCKET_SURFACE);
+        }
+        return acceleration;
+    }
+
+    public double calculateAcceleration(Stage stage, double deltaTime) {
+
+        double acceleration;
+        CartesianCoordinate coordinate = stage.getCartesianCoordinate();
+        acceleration = - calculateGravity(Constants.EARTH_MASS, calculateDistance(new CartesianCoordinate(), coordinate));
+
+        double attitude = cartesianToPolar(coordinate).getR() - Constants.EARTH_RADIUS;
+        if (attitude < 80000) {
+            double airDensity = calculateAirDensity(attitude);
+            acceleration += ((1 / 2) * Constants.DEFAULT_DRAG_COEFFICIENT * airDensity * Math.pow(stage.getVelocity(), 2) * Constants.DEFAULT_ROCKET_SURFACE);
         }
         return acceleration;
     }
@@ -177,19 +226,43 @@ public class Calculation {
         return altitude;
     }
 
-    /**
-     * Method that calculates the position from the velocity.
-     *
-     * @param velocity     the velocity of the object.
-     * @param acceleration the acceleration of the object.
-     * @return a double, the new position of the object.
-     */
-    public CartesianCoordinate calculateStagePosition(CartesianCoordinate cartesianCoordinate, double velocity, double acceleration, double rotationAngle) {
-        return cartesianCoordinate;
+    public double calculateLaunchAngle(double attitude, boolean orbitingEarth) {
+        double velocity;
+        if (orbitingEarth) {
+            velocity = 7400;
+        }
+        else {
+            velocity = 11500;
+        }
+        double result = Math.pow(velocity, 2) / (2 * Constants.GRAVITY * attitude);
+        result = Math.sqrt(result);
+        result = Math.pow(result, -1);
+        result = Math.toDegrees(Math.asin(result));
+        return result;
+    }
+
+    public double calculateRocketMass(Rocket rocket) {
+
+        double mass = 0;
+        if (rocket.getFirstStage() != null) {
+            mass += (rocket.getFirstStage().getMass() +
+                    (rocket.getFirstStage().getTank().getRemainingPropellant() * rocket.getFirstStage().getTank().getPropellant().getDensity()) +
+                    (rocket.getFirstStage().getEngine().getMass() * rocket.getFirstStage().getEngineNb()));
+        }
+        if (rocket.getSecondStage() != null) {
+            mass += (rocket.getSecondStage().getMass() +
+                    (rocket.getSecondStage().getTank().getRemainingPropellant() * rocket.getSecondStage().getTank().getPropellant().getDensity()) +
+                    (rocket.getSecondStage().getEngine().getMass() * rocket.getSecondStage().getEngineNb()));
+        }
+        if (rocket.getPayload() != null) {
+            mass += rocket.getPayload().getMass();
+        }
+
+        return mass;
     }
 
     public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject destination, int destinationOrbit, double altitude, double deltaTime) {
-
+        // TODO : add trajectory system
         CartesianCoordinate returnCoordinate;
         if (((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) || ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring()))) {
             if ((0 <= altitude) && (altitude < destinationOrbit)) {
@@ -236,23 +309,8 @@ public class Calculation {
         return returnCoordinate;
     }
 
-    public double calculateRocketMass(Rocket rocket) {
-
-        double mass = 0;
-        if (rocket.getFirstStage() != null) {
-            mass += (rocket.getFirstStage().getMass() +
-                    (rocket.getFirstStage().getTank().getRemainingPropellant() * rocket.getFirstStage().getTank().getPropellant().getDensity()) +
-                    (rocket.getFirstStage().getEngine().getMass() * rocket.getFirstStage().getEngineNb()));
-        }
-        if (rocket.getSecondStage() != null) {
-            mass += (rocket.getSecondStage().getMass() +
-                    (rocket.getSecondStage().getTank().getRemainingPropellant() * rocket.getSecondStage().getTank().getPropellant().getDensity()) +
-                    (rocket.getSecondStage().getEngine().getMass() * rocket.getSecondStage().getEngineNb()));
-        }
-        if (rocket.getPayload() != null) {
-            mass += rocket.getPayload().getMass();
-        }
-
-        return mass;
+    public CartesianCoordinate calculateStagePosition(Stage stage, double deltaTime) {
+        // TODO : add trajectory system
+        return stage.getCartesianCoordinate();
     }
 }

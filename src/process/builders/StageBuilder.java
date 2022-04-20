@@ -22,23 +22,23 @@ public class StageBuilder {
      *
      * @param tankCapacity          {@link Integer} the capacity in L.
      * @param propellantDensity     {@link Double} the density of the propellant to use in kg.L^-1.
-     * @param propellantTemperature {@link Integer} the ideal temperature of the propellant to use in °C.
      * @param engineNb              {@link Integer} the number of engine.
      * @param engineThrust          {@link Double} the thrust produced per engine in N.
      * @param engineThrustRatio     {@link Double} the "Weight to Thrust Ratio" of the engine.
      * @param engineIsp             {@link Integer} the Specific Impulse of the engine.
+     * @param exhaustVelocity       {@link Integer} the speed of the gas at the exit of the engine nozzle.
      * @return {@link Stage}
      */
-    public Stage buildStage(int tankCapacity, double propellantDensity, int propellantTemperature, int engineNb, double engineThrust, double engineThrustRatio, int engineIsp) {
+    public Stage buildStage(int tankCapacity, double propellantDensity, int engineNb, double engineThrust, double engineThrustRatio, int engineIsp, int exhaustVelocity) {
 
         // create the propellant for the stage
-        Propellant propellant = StageComponentFactory.createPropellant(propellantDensity, propellantTemperature);
+        Propellant propellant = StageComponentFactory.createPropellant(propellantDensity);
 
         // create the tank
         Tank tank = StageComponentFactory.createTank(propellant, tankCapacity);
 
         // create the engine
-        RocketEngine rocketEngine = StageComponentFactory.createRocketEngine(engineThrust, engineThrustRatio, engineIsp);
+        RocketEngine rocketEngine = StageComponentFactory.createRocketEngine(engineThrust, engineThrustRatio, engineIsp, exhaustVelocity);
 
         // To get the area to use to calculate material weight on the stage, we represent the tank as a sphere
         double radius = Math.pow(((3 * tankCapacity) / (4 * Math.PI)), (1.0 / 3.0)) / 10;

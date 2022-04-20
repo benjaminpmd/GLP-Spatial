@@ -3,6 +3,7 @@ package process.builders;
 import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
 import data.mission.Mission;
+import data.mission.SpaceCenter;
 import data.rocket.Rocket;
 import exceptions.MissingPartException;
 import exceptions.TooLowThrustException;
@@ -24,17 +25,17 @@ public class SimulationBuilder {
 
     private final Logger logger = LoggerUtility.getLogger(SimulationBuilder.class, "html");
 
-    private MissionBuilder missionBuilder;
-    private CelestialObjectBuilder celestialObjectBuilder;
-    private SpaceCenterBuilder spaceCenterBuilder;
-    private RocketBuilder rocketBuilder;
+    private final MissionBuilder missionBuilder;
+    private final CelestialObjectBuilder celestialObjectBuilder;
+    private final SpaceCenterBuilder spaceCenterBuilder;
+    private final RocketBuilder rocketBuilder;
 
     public SimulationBuilder() {
         celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
         spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
 
         rocketBuilder = new RocketBuilder();
-        missionBuilder = new MissionBuilder(celestialObjectBuilder, spaceCenterBuilder);
+        missionBuilder = new MissionBuilder();
     }
 
     public SimulationBuilder(CelestialObjectBuilder celestialObjectBuilder, SpaceCenterBuilder spaceCenterBuilder) {
@@ -42,7 +43,7 @@ public class SimulationBuilder {
         this.spaceCenterBuilder = spaceCenterBuilder;
 
         rocketBuilder = new RocketBuilder();
-        missionBuilder = new MissionBuilder(celestialObjectBuilder, spaceCenterBuilder);
+        missionBuilder = new MissionBuilder();
     }
 
     /**
@@ -56,16 +57,17 @@ public class SimulationBuilder {
      * @param destinationName  {@link String} the name of the destination object.
      * @param orbit            {@link Integer} the orbit targeted around the object.
      * @return {@link SimulationManager} the manager of the simulation.
-     * @throws TooLowThrustException in case the rocket is not powerful enough to lift off.
-     * @throws MissingPartException  in case a part of the rocket is missing.
+     * @throws TooLowThrustException    in case the rocket is not powerful enough to lift off.
+     * @throws MissingPartException     in case a part of the rocket is missing.
      * @throws IllegalArgumentException in case the data passed are not correct.
      */
-    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, String name, String description, String spaceCenterName, String destinationName, int orbit) throws TooLowThrustException, MissingPartException, IllegalArgumentException {
+    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, String name, String description, String spaceCenterName, String destinationName, String orbit) throws TooLowThrustException, MissingPartException, IllegalArgumentException {
 
         // checking mass of the payload
         if (payloadMass == null) {
             throw new IllegalArgumentException("Mass of the payload cannot be empty.");
         }
+
         int pMass = Integer.valueOf(payloadMass);
         if (pMass < 0) {
             throw new IllegalArgumentException("The payload mass must be more than 0.");
@@ -76,11 +78,12 @@ public class SimulationBuilder {
             throw new IllegalArgumentException("You must choose a space center.");
         }
 
-        Mission mission = missionBuilder.buildMission(name, description, spaceCenterName, destinationName, orbit);
+        Mission mission = missionBuilder.buildMission(name, description, spaceCenterName, destinationName, Integer.valueOf(orbit));
         Rocket rocket;
 
         try {
-            CartesianCoordinate coordinate = spaceCenterBuilder.buildSpaceCenter(mission.getSpaceCenterName()).getCartesianCoordinate();
+            SpaceCenter spaceCenter = spaceCenterBuilder.buildSpaceCenter(mission.getSpaceCenterName());
+            CartesianCoordinate coordinate = spaceCenter.getCartesianCoordinate();
             rocket = rocketBuilder.buildRocket(firstStageParam, secondStageParam, pMass, coordinate);
 
         } catch (MissingPartException | TooLowThrustException e) {

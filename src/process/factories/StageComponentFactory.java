@@ -20,13 +20,12 @@ public class StageComponentFactory {
     /**
      * Creates a new propellant object.
      *
-     * @param density     {@link Double} the density of the propellant in kg.L^-1.
-     * @param temperature {@link Integer} the ideal temperature of the propellant in °C.
+     * @param density {@link Double} the density of the propellant in kg.L^-1.
      * @return {@link Propellant}
      */
-    public static Propellant createPropellant(double density, int temperature) {
+    public static Propellant createPropellant(double density) {
 
-        return new Propellant(density, temperature);
+        return new Propellant(density);
     }
 
     /**
@@ -44,16 +43,17 @@ public class StageComponentFactory {
     /**
      * Create an engine with and calculates its performances.
      *
-     * @param thrust      {@link Double} the mass output of the engine (kg.s^-1).
-     * @param thrustRatio {@link Double} the ratio thrust/weight of the engine.
-     * @param isp         {@link Integer} the Specific impulse of the engine.
+     * @param thrust          {@link Double} the mass output of the engine (kg.s^-1).
+     * @param thrustRatio     {@link Double} the ratio thrust/weight of the engine.
+     * @param isp             {@link Integer} the Specific impulse of the engine.
+     * @param exhaustVelocity {@link Integer} the speed of the gas at the exit of the nozzle.
      * @return {@link RocketEngine}
      */
-    public static RocketEngine createRocketEngine(double thrust, double thrustRatio, int isp) {
+    public static RocketEngine createRocketEngine(double thrust, double thrustRatio, int isp, int exhaustVelocity) {
 
         double engineMass = (thrust / (thrustRatio * Constants.GRAVITY));
         double propellantFlow = (thrust / (Constants.GRAVITY * isp));
 
-        return new RocketEngine(isp, thrust, propellantFlow, engineMass);
+        return new RocketEngine(thrust, propellantFlow, engineMass, exhaustVelocity);
     }
 }

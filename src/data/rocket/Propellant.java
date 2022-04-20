@@ -10,36 +10,22 @@ import config.Constants;
  * @since 11.02.22
  */
 public class Propellant {
-
-    // in Celsius degrees
-    private int temperature;
     // in kg.L^-1
     private double density;
 
     /**
      * Constructor of the Propellant.
      */
-    public Propellant(double density, int temperature) {
+    public Propellant(double density) {
         this.density = density;
-        this.temperature = temperature;
     }
 
     @Override
     public String toString() {
         return "Propellant{" +
-                "temperature=" + temperature +
                 ", density=" + density +
                 '}';
     }
-
-    public int getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
-    }
-
     public double getDensity() {
         return density;
     }

@@ -1,10 +1,11 @@
 package tests.unit;
-import static org.junit.Assert.assertEquals;
 
 import data.rocket.Stage;
 import org.junit.Before;
 import org.junit.Test;
 import process.builders.StageBuilder;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class StageBuildTest {
@@ -15,7 +16,7 @@ public class StageBuildTest {
     public void prepareCalculation() {
         StageBuilder stageBuilder = new StageBuilder();
 
-        stage = stageBuilder.buildStage(218750, 0.8, -200, 1, 1350000, 76.50, 434);
+        stage = stageBuilder.buildStage(218750, 0.8, 1, 1350000, 76.50, 434, 3800);
     }
 
     @Test

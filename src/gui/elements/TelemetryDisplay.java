@@ -11,10 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class TelemetryDisplay extends JPanel {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	private CartesianCoordinate speedArcCircleCenterCoordinate = new CartesianCoordinate();
@@ -31,7 +28,7 @@ public class TelemetryDisplay extends JPanel {
 	private double speedCurrentAngle = 25.0;
 	private double altitudeCurrentAngle = 45.0;
 	
-	private String speedUnitName = "Speed (km.h^-1)";
+	private String speedUnitName = "Speed (km.s^-1)";
 	private String altitudeUnitName = "Altitude (km)";
 	
 	private String speedMinUnit = "0";

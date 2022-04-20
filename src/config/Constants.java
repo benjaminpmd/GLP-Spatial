@@ -21,12 +21,7 @@ public class Constants {
     public static final int EARTH_RADIUS = (int) (6.371 * Math.pow(10, 6));
     public static final double EARTH_MASS = 5.9722 * Math.pow(10, 24);
 
-    // Propellant default values
-    public static final double DEFAULT_PROPELLANT_DENSITY = 1.0;
-    public static final int DEFAULT_PROPELLANT_TEMPERATURE = 15;
-
     // rocket values
-    public static final int DEFAULT_EXHAUST_VELOCITY = 4150;
     public static final double DEFAULT_DRAG_COEFFICIENT = 0.75;
     public static final int DEFAULT_ROCKET_SURFACE = 4;
 }

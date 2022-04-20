@@ -24,42 +24,6 @@ public class Mission {
 	/**
 	 * Constructor of a mission.
 	 */
-	public Mission(String spaceCenterName, String destinationName, int orbitAltitude) {
-		this.spaceCenterName = spaceCenterName;
-		this.destinationName = destinationName;
-		this.orbitAltitude = orbitAltitude;
-		name = "mission-" + new SimpleDateFormat("yyMMddmmss").format(new Date());
-		description = "No description provided.";
-		launchTime = new Date();
-	}
-
-	/**
-	 * Constructor of a mission.
-	 */
-	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name) {
-		this.name = name;
-		this.spaceCenterName = spaceCenterName;
-		this.destinationName = destinationName;
-		this.orbitAltitude = orbitAltitude;
-		description = "No description provided.";
-		launchTime = new Date();
-	}
-
-	/**
-	 * Constructor of a mission.
-	 */
-	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description) {
-		this.name = name;
-		this.description = description;
-		this.spaceCenterName = spaceCenterName;
-		this.destinationName = destinationName;
-		this.orbitAltitude = orbitAltitude;
-		launchTime = new Date();
-	}
-
-	/**
-	 * Constructor of a mission.
-	 */
 	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description, Date launchTime) {
 		this.name = name;
 		this.description = description;

@@ -41,7 +41,6 @@ public class MainGUI extends JFrame {
 	// since values from files are registered in the repositories, we init the builder before anything else
 	private CelestialObjectBuilder celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
 	private SpaceCenterBuilder spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
-	private MissionBuilder missionBuilder = new MissionBuilder(celestialObjectBuilder, spaceCenterBuilder);
 	private SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);
 
 	private FileManager fileManager = new FileManager(celestialObjectBuilder, spaceCenterBuilder);
@@ -317,11 +316,11 @@ public class MainGUI extends JFrame {
 				String missionName = missionNameField.getText();
 				String missionDescription = missionNameField.getText();
 
-				int orbit = Integer.valueOf(orbitField.getText());
-				if (orbit < ORBIT_MIN) {
+				String orbit = orbitField.getText();
+				if (Integer.valueOf(orbit) < ORBIT_MIN) {
 					errorTextPane.setText("Cannot create launch : the chosen orbit must be positive or null.");
 				}
-				else if (orbit > ORBIT_MAX) {
+				else if (Integer.valueOf(orbit) > ORBIT_MAX) {
 					errorTextPane.setText("Cannot create launch : the chosen orbit must be inferior to 60 000 km.");
 				}
 				else {
@@ -329,7 +328,6 @@ public class MainGUI extends JFrame {
 					SimulationManager manager = simulationBuilder.buildSimulation(stage1Values, stage2Values, payloadMass, missionName, missionDescription, spaceCenterName, destination, orbit);
 
 					new SimulationGUI(getTitle(), manager, fileManager);
-					setVisible(false);
 					dispose();
 				}
 			}
@@ -357,27 +355,18 @@ public class MainGUI extends JFrame {
 				HashMap<String,String> stage2Values = stagePanel2.getValues();
 				String payloadMass = payloadPanel.getMassInput();
 				String missionName = missionNameField.getText();
-				String missionDescription = missionDescriptionField.getText();
+				String missionDescription = missionNameField.getText();
 
-				HashMap<String, String> payloadValues = new HashMap<>();
-				payloadValues.put("mass", payloadMass);
-
-				int orbit = Integer.valueOf(orbitField.getText());
-				if (orbit < ORBIT_MIN) {
+				String orbit = orbitField.getText();
+				if (Integer.valueOf(orbit) < ORBIT_MIN) {
 					errorTextPane.setText("Cannot create launch : the chosen orbit must be positive or null.");
 				}
-				else if (orbit > ORBIT_MAX) {
+				else if (Integer.valueOf(orbit) > ORBIT_MAX) {
 					errorTextPane.setText("Cannot create launch : the chosen orbit must be inferior to 60 000 km.");
 				}
 				else {
 					String spaceCenterName = spaceCentersPanel.getSelectedCenter();
-					Mission mission = missionBuilder.buildMission(missionName, missionDescription, destination, spaceCenterName, orbit);
-					HashMap<String, String> missionValues = new HashMap<>();
-					missionValues.put("missionName", missionName);
-					missionValues.put("description", missionDescription);
-					missionValues.put("spaceCenterName", spaceCenterName);
-					missionValues.put("destinationName", destination);
-					missionValues.put("orbit", String.valueOf(orbit));
+					SimulationManager manager = simulationBuilder.buildSimulation(stage1Values, stage2Values, payloadMass, missionName, missionDescription, spaceCenterName, destination, orbit);
 
 					fileChooser.setDialogTitle("Export simulation");
 
@@ -385,13 +374,17 @@ public class MainGUI extends JFrame {
 
 					if (userSelection == JFileChooser.APPROVE_OPTION) {
 						File fileToSave = fileChooser.getSelectedFile();
-						fileManager.exportSimulation(stage1Values, stage2Values, payloadValues, missionValues, fileToSave.getAbsolutePath());
+						fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
 					}
 				}
 			}
 			catch (NumberFormatException ex) {
 				System.err.println(ex);
 				errorTextPane.setText("Please write an integer between 0 and 60 000 as the orbit height.");
+			} catch (MissingPartException ex) {
+				errorTextPane.setText(ex.getMessage());
+			} catch (TooLowThrustException ex) {
+				errorTextPane.setText(ex.getMessage());
 			} catch (IllegalArgumentException ex) {
 				errorTextPane.setText(ex.getMessage());
 			}
