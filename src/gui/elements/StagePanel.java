@@ -163,12 +163,12 @@ public class StagePanel extends JPanel {
 	 */
 	public HashMap<String,String> getValues() {
 		HashMap<String,String> values = new HashMap<String,String>();
-		values.put("tankCapacity", capacityField.getText());
-		values.put("propellantDensity", densityField.getText());
+		values.put("capacity", capacityField.getText());
+		values.put("density", densityField.getText());
 		values.put("engineNb", String.valueOf(engNumSlider.getValue()));
-		values.put("engineThrust", engineThrustField.getText());
+		values.put("thrust", engineThrustField.getText());
 		values.put("exhaustVelocity", exhaustVelocityField.getText());
-		values.put("engineThrustRatio", thrustToWeightField.getText());
+		values.put("thrustRatio", thrustToWeightField.getText());
 		values.put("isp", ispField.getText());
 		return values;
 	}

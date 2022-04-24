@@ -40,7 +40,7 @@ public class MissionBuilder {
             description = "No description provided.";
         }
 
-        mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name, description, new Date());
+        mission = new Mission(spaceCenterName, destinationName, Integer.valueOf(orbit), name, description);
         logger.trace("Mission successfully built");
         return mission;
     }

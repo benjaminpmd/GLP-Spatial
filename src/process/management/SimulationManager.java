@@ -116,6 +116,10 @@ public class SimulationManager {
         updateTrajectoryHistory();
     }
 
+    public void launch() {
+        rocket.getFirstStage().setFiring(true);
+    }
+
     /**
      * Method that updates the rocket. It removes the used propellant mass and manage stage once the tank is empty.
      */

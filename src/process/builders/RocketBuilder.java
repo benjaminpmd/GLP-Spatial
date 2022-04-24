@@ -48,22 +48,22 @@ public class RocketBuilder {
 
         // building the first stage
         Stage firstStage = stageBuilder.buildStage(
-                Integer.valueOf(firstStageParam.get("tankCapacity")),
-                Double.valueOf(firstStageParam.get("propellantDensity")),
+                Integer.valueOf(firstStageParam.get("capacity")),
+                Double.valueOf(firstStageParam.get("density")),
                 Integer.valueOf(firstStageParam.get("engineNb")),
-                Double.valueOf(firstStageParam.get("engineThrust")),
-                Double.valueOf(firstStageParam.get("engineThrustRatio")),
+                Double.valueOf(firstStageParam.get("thrust")),
+                Double.valueOf(firstStageParam.get("thrustRatio")),
                 Integer.valueOf(firstStageParam.get("isp")),
                 Integer.valueOf(firstStageParam.get("exhaustVelocity"))
         );
 
         // building the second stage
         Stage secondStage = stageBuilder.buildStage(
-                Integer.valueOf(secondStageParam.get("tankCapacity")),
-                Double.valueOf(firstStageParam.get("propellantDensity")),
+                Integer.valueOf(secondStageParam.get("capacity")),
+                Double.valueOf(firstStageParam.get("density")),
                 Integer.valueOf(secondStageParam.get("engineNb")),
-                Double.valueOf(secondStageParam.get("engineThrust")),
-                Double.valueOf(secondStageParam.get("engineThrustRatio")),
+                Double.valueOf(secondStageParam.get("thrust")),
+                Double.valueOf(secondStageParam.get("thrustRatio")),
                 Integer.valueOf(secondStageParam.get("isp")),
                 Integer.valueOf(firstStageParam.get("exhaustVelocity"))
         );

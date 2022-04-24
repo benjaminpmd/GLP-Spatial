@@ -1,8 +1,5 @@
 package data.mission;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * The mission object contains all information like destination of the mission, orbit target or the center where the
  * rocket will be launched.
@@ -19,18 +16,16 @@ public class Mission {
 	private String spaceCenterName;
 	private String destinationName;
 	private int orbitAltitude;
-	private Date launchTime;
 
 	/**
 	 * Constructor of a mission.
 	 */
-	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description, Date launchTime) {
+	public Mission(String spaceCenterName, String destinationName, int orbitAltitude, String name, String description) {
 		this.name = name;
 		this.description = description;
 		this.spaceCenterName = spaceCenterName;
 		this.destinationName = destinationName;
 		this.orbitAltitude = orbitAltitude;
-		this.launchTime = launchTime;
 	}
 
 	@Override
@@ -41,25 +36,7 @@ public class Mission {
 				", spaceCenterName='" + spaceCenterName + '\'' +
 				", destinationName='" + destinationName + '\'' +
 				", orbitAltitude=" + orbitAltitude +
-				", launchTime=" + launchTime +
 				'}';
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Mission)) return false;
-
-		Mission mission = (Mission) o;
-
-		if (orbitAltitude != mission.orbitAltitude) return false;
-		if (name != null ? !name.equals(mission.name) : mission.name != null) return false;
-		if (description != null ? !description.equals(mission.description) : mission.description != null) return false;
-		if (spaceCenterName != null ? !spaceCenterName.equals(mission.spaceCenterName) : mission.spaceCenterName != null)
-			return false;
-		if (destinationName != null ? !destinationName.equals(mission.destinationName) : mission.destinationName != null)
-			return false;
-		return launchTime != null ? launchTime.equals(mission.launchTime) : mission.launchTime == null;
 	}
 
 	public String getName() {
@@ -100,13 +77,5 @@ public class Mission {
 
 	public void setOrbitAltitude(int orbitAltitude) {
 		this.orbitAltitude = orbitAltitude;
-	}
-
-	public Date getLaunchTime() {
-		return launchTime;
-	}
-
-	public void setLaunchTime(Date launchTime) {
-		this.launchTime = launchTime;
 	}
 }

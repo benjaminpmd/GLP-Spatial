@@ -12,7 +12,7 @@ public class Tank {
 
     private Propellant propellant;
     // maximum propellant that can be stored in the tank, the unit is a volume (L)
-    private double capacity;
+    private int capacity;
     // the remaining volume of fuel in the tank (kg)
     private double remainingPropellant;
 
@@ -21,8 +21,8 @@ public class Tank {
      */
     public Tank(Propellant propellant, int capacity) {
         this.propellant = propellant;
-        this.capacity = capacity * propellant.getDensity();
-        this.remainingPropellant = this.capacity;
+        this.capacity = capacity;
+        this.remainingPropellant = (int) (capacity * propellant.getDensity());
     }
 
     @Override
@@ -42,11 +42,11 @@ public class Tank {
         this.propellant = propellant;
     }
 
-    public double getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(double capacity) {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 

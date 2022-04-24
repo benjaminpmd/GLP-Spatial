@@ -10,6 +10,7 @@ import config.Constants;
  * @since 11.02.22
  */
 public class Propellant {
+
     // in kg.L^-1
     private double density;
 
@@ -23,7 +24,7 @@ public class Propellant {
     @Override
     public String toString() {
         return "Propellant{" +
-                ", density=" + density +
+                "density=" + density +
                 '}';
     }
     public double getDensity() {

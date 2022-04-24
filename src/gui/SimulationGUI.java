@@ -78,7 +78,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 	private JLabel speedLabel = new JLabel("Speed: x" + speed);
 
 	private JButton startButton = new JButton("Play");
-	private JButton delayButton = new JButton("Delay start");
 	private JButton speedupButton = new JButton("Speed up");
 	private JButton slowdownButton = new JButton("Slow down");
 	private JButton zoomInButton = new JButton("Zoom in");
@@ -206,7 +205,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 		
 		//right panel : play, pause buttons
 		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new GridLayout(9,1));
+		rightPanel.setLayout(new GridLayout(8,1));
 		((GridLayout) rightPanel.getLayout()).setVgap(10);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.2;
@@ -224,7 +223,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 		trackButton.addActionListener(new TrackAction());
 
 		speedLabel.setForeground(TEXT_COLOR);
-		delayButton.setForeground(TEXT_COLOR);
 		startButton.setForeground(TEXT_COLOR);
 		speedupButton.setForeground(TEXT_COLOR);
 		slowdownButton.setForeground(TEXT_COLOR);
@@ -234,7 +232,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 		trackButton.setForeground(TEXT_COLOR);
 
 		speedLabel.setBackground(BACKGROUND_COLOR);
-		delayButton.setBackground(BUTTON_COLOR);
 		startButton.setBackground(BUTTON_COLOR);
 		speedupButton.setBackground(BUTTON_COLOR);
 		slowdownButton.setBackground(BUTTON_COLOR);
@@ -244,7 +241,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 		trackButton.setBackground(BUTTON_COLOR);
 
 		rightPanel.add(speedLabel);
-		rightPanel.add(delayButton);
 		rightPanel.add(startButton);
 		rightPanel.add(speedupButton);
 		rightPanel.add(slowdownButton);
@@ -316,7 +312,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 				stop = false;
 				startButton.setText(" Pause ");
 				if (firstRun) {
-					manager.getRocket().getFirstStage().setFiring(true);
+					manager.launch();
 					firstRun = false;
 				}
 				Thread simThread = new Thread(instance);

@@ -18,6 +18,10 @@ public class RocketEngine {
     //m.s^-1
     private int exhaustVelocity;
 
+    private int isp;
+
+    private double thrustRatio;
+
     /**
      * Constructor of RocketEngine.
      *
@@ -26,11 +30,13 @@ public class RocketEngine {
      * @param mass            the weight of the engine.
      * @param exhaustVelocity the ejection rate of the engine.
      */
-    public RocketEngine(double thrust, double propellantFlow, double mass, int exhaustVelocity) {
+    public RocketEngine(double thrust, double propellantFlow, double mass, int exhaustVelocity, int isp, double thrustRatio) {
         this.thrust = thrust;
         this.propellantFlow = propellantFlow;
         this.mass = mass;
         this.exhaustVelocity = exhaustVelocity;
+        this.isp = isp;
+        this.thrustRatio = thrustRatio;
     }
 
     @Override
@@ -40,6 +46,8 @@ public class RocketEngine {
                 ", propellantFlow=" + propellantFlow +
                 ", mass=" + mass +
                 ", exhaustVelocity=" + exhaustVelocity +
+                ", isp=" + isp +
+                ", thrustRatio=" + thrustRatio +
                 '}';
     }
 
@@ -47,7 +55,7 @@ public class RocketEngine {
         return thrust;
     }
 
-    public void setThrust(int thrust) {
+    public void setThrust(double thrust) {
         this.thrust = thrust;
     }
 
@@ -55,7 +63,7 @@ public class RocketEngine {
         return propellantFlow;
     }
 
-    public void setPropellantFlow(int propellantFlow) {
+    public void setPropellantFlow(double propellantFlow) {
         this.propellantFlow = propellantFlow;
     }
 
@@ -63,7 +71,7 @@ public class RocketEngine {
         return mass;
     }
 
-    public void setMass(int mass) {
+    public void setMass(double mass) {
         this.mass = mass;
     }
 
@@ -73,5 +81,21 @@ public class RocketEngine {
 
     public void setExhaustVelocity(int exhaustVelocity) {
         this.exhaustVelocity = exhaustVelocity;
+    }
+
+    public int getIsp() {
+        return isp;
+    }
+
+    public void setIsp(int isp) {
+        this.isp = isp;
+    }
+
+    public double getThrustRatio() {
+        return thrustRatio;
+    }
+
+    public void setThrustRatio(double thrustRatio) {
+        this.thrustRatio = thrustRatio;
     }
 }

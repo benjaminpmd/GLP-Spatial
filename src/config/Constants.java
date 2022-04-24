@@ -23,5 +23,5 @@ public class Constants {
 
     // rocket values
     public static final double DEFAULT_DRAG_COEFFICIENT = 0.75;
-    public static final int DEFAULT_ROCKET_SURFACE = 4;
+    public static final int DEFAULT_ROCKET_SURFACE = 16;
 }
