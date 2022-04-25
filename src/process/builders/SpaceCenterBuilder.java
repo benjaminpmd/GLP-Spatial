@@ -67,8 +67,7 @@ public class SpaceCenterBuilder {
     public SpaceCenter buildSpaceCenter(String name) {
         try {
             int angleValue = spaceCenterRepository.getValue(name);
-            PolarCoordinate polarCoordinate = new PolarCoordinate(Constants.EARTH_RADIUS, Math.toRadians(angleValue-90));
-
+            PolarCoordinate polarCoordinate = new PolarCoordinate(Constants.EARTH_RADIUS, Math.toRadians(-angleValue));
             return new SpaceCenter(name, calculation.polarToCartesian(polarCoordinate));
 
         } catch (IllegalArgumentException e) {

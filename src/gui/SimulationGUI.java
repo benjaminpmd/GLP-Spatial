@@ -9,8 +9,6 @@ import javax.swing.event.MouseInputAdapter;
 
 import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
-import exceptions.MissingPartException;
-import exceptions.TooLowThrustException;
 import gui.elements.GraphPanel;
 import gui.elements.TelemetryDisplay;
 import gui.elements.TrajectoryDisplay;
@@ -352,9 +350,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 					SimulationManager newManager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
 					new SimulationGUI(getTitle(), newManager, fileManager);
 					dispose();
-				} catch (MissingPartException ex) {
-					ex.printStackTrace();
-				} catch (TooLowThrustException ex) {
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			}

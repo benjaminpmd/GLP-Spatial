@@ -4,8 +4,6 @@ import data.mission.Mission;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 import data.rocket.Tank;
-import exceptions.MissingPartException;
-import exceptions.TooLowThrustException;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
 import process.builders.CelestialObjectBuilder;
@@ -25,8 +23,9 @@ import java.util.List;
  *
  * @author Benjamin P
  * @version 22.03.13 (1.0.0)
- * @see data.mission.Mission
- * @see data.rocket.Rocket
+ * @see SimulationManager
+ * @see CelestialObjectBuilder
+ * @see SpaceCenterBuilder
  * @since 07.03.22
  */
 public class FileManager {
@@ -135,9 +134,9 @@ public class FileManager {
      * @return {@link SimulationManager} a SimulationManager object ready to be used.
      * @throws IllegalArgumentException in case the simulation could not be correctly initiated
      */
-    public SimulationManager importSimulation(String filePath) throws IllegalArgumentException, MissingPartException, TooLowThrustException {
+    public SimulationManager importSimulation(String filePath) throws IllegalArgumentException {
 
-        HashMap<String, HashMap<String, String>> save = null;
+        HashMap<String, HashMap<String, String>> save;
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath));
             logger.trace("InputStream created");
@@ -145,20 +144,17 @@ public class FileManager {
             ois.close();
             logger.trace("Map successfully read");
         } catch (EOFException e) {
-            System.err.println(e);
             logger.error(e);
-
+            throw new IllegalArgumentException("Simulation data could not be retrieved, perhaps the file may be corrupted?");
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
-
+            throw new IllegalArgumentException("Simulation data could not be retrieved, perhaps the file may be corrupted?");
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage());
-
-        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Simulation data could not be retrieved, perhaps the file may be corrupted?");
-
         } catch (IOException e) {
             logger.error(e.getMessage());
+            throw new IllegalArgumentException("Simulation data could not be retrieved, perhaps the file may be corrupted?");
         }
 
         SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);

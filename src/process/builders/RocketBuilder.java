@@ -1,12 +1,9 @@
 package process.builders;
 
-import config.Constants;
 import data.coordinate.CartesianCoordinate;
 import data.rocket.Payload;
 import data.rocket.Rocket;
 import data.rocket.Stage;
-import exceptions.MissingPartException;
-import exceptions.TooLowThrustException;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
 
@@ -41,10 +38,8 @@ public class RocketBuilder {
      * @param payloadMass         {@link Integer} an integer that represent the mass of the payload in kg.
      * @param cartesianCoordinate {@link CartesianCoordinate} the cartesian coordinate of the rocket.
      * @return {@link data.rocket.Rocket}
-     * @throws MissingPartException  first stage, second stage or payload is or are missing.
-     * @throws TooLowThrustException the thrust produced is not enough to lift the rocket off.
      */
-    public Rocket buildRocket(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, int payloadMass, CartesianCoordinate cartesianCoordinate) throws MissingPartException, TooLowThrustException {
+    public Rocket buildRocket(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, int payloadMass, CartesianCoordinate cartesianCoordinate) {
 
         // building the first stage
         Stage firstStage = stageBuilder.buildStage(
@@ -70,35 +65,9 @@ public class RocketBuilder {
 
         // building the payload
         Payload payload = new Payload(payloadMass);
-
         // building and creating the rocket
         rocket = new Rocket(firstStage, secondStage, payload, cartesianCoordinate);
-
-        if (!completeRocket()) {
-            throw new MissingPartException();
-        } else if (!validPayloadMass()) {
-            throw new TooLowThrustException();
-        }
         logger.trace("Rocket successfully built.");
         return rocket;
-    }
-
-    /**
-     * Check if the payload can be launched by the rocket
-     *
-     * @return boolean, true if the weight is correct, false in the other case.
-     */
-    private boolean validPayloadMass() {
-        double thrust = rocket.getFirstStage().getEngineNb() * rocket.getFirstStage().getEngine().getThrust();
-        return ((thrust * Constants.GRAVITY) > rocket.getMass());
-    }
-
-    /**
-     * Method to check if the rocket is complete or not and is able to lift off the pad.
-     *
-     * @return a boolean, true if the rocket is correct, false in others cases.
-     */
-    private boolean completeRocket() {
-        return ((rocket.getFirstStage() != null) && (rocket.getSecondStage() != null) && (rocket.getPayload() != null));
     }
 }

@@ -9,13 +9,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.JOptionPane;
 
 import config.SimConfig;
-import exceptions.MissingPartException;
-import exceptions.TooLowThrustException;
+import exceptions.BadValueException;
 import gui.elements.SpaceCentersPanel;
 import gui.elements.PayloadPanel;
 import gui.elements.StagePanel;
@@ -303,47 +304,69 @@ public class MainGUI extends JFrame {
 		setVisible(true);
 	}
 
+	private SimulationManager createManager() throws BadValueException, IllegalArgumentException {
+
+		// payload data
+		String payloadMass = payloadPanel.getMassInput();
+		if (payloadMass.equals("")) {
+			throw new BadValueException("payload mass", "empty");
+		}
+
+		// orbit data
+		if (orbitField.getText().equals("")) {
+			throw new IllegalArgumentException("The chosen orbit must be between " + ORBIT_MIN + " and " + ORBIT_MAX + " km.");
+		}
+		int orbit = Integer.valueOf(orbitField.getText());
+		if (orbit < ORBIT_MIN) {
+			throw new IllegalArgumentException("The chosen orbit must be higher than " + ORBIT_MIN + "km.");
+		}
+		else if (orbit > ORBIT_MAX) {
+			throw new IllegalArgumentException("The chosen orbit must be inferior to " + ORBIT_MAX + " km.");
+		}
+
+		// stages data
+		HashMap<String,String> firstStageParam = stagePanel1.getValues();
+		HashMap<String,String> secondStageParam = stagePanel2.getValues();
+		for (Entry param : firstStageParam.entrySet()) {
+			if (param.getValue().equals("")) {
+				throw new BadValueException(param.getKey() + " on first stage", "empty");
+			}
+		}
+		for (Entry param : secondStageParam.entrySet()) {
+			if (param.getValue().equals("")) {
+				throw new BadValueException(param.getKey() + " on second stage", "empty");
+			}
+		}
+
+
+		if (spaceCentersPanel.getSelectedCenter() == null) {
+			throw new IllegalArgumentException("You must choose a space center");
+		}
+
+		// mission data
+		HashMap<String, String> missionParam = new HashMap<>();
+		missionParam.put("name", missionNameField.getText());
+		missionParam.put("description", missionDescriptionField.getText());
+		missionParam.put("destinationName", (String) destinationMenu.getSelectedItem());
+		missionParam.put("spaceCenterName", spaceCentersPanel.getSelectedCenter());
+		missionParam.put("orbitAltitude", String.valueOf(orbit));
+
+		return simulationBuilder.buildSimulation(firstStageParam, secondStageParam, payloadMass, missionParam);
+	}
+
 	private class LaunchAction implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
-			// stages data
-			HashMap<String,String> firstStageParam = stagePanel1.getValues();
-			HashMap<String,String> secondStageParam = stagePanel2.getValues();
-
-			// payload data
-			String payloadMass = payloadPanel.getMassInput();
-
 			// try to build mission and rocket
 			try {
-				int orbit = Integer.valueOf(orbitField.getText());
-				if (orbit < ORBIT_MIN) {
-					errorTextPane.setText("Cannot create simulation: the chosen orbit must be higher than " + ORBIT_MIN + "km.");
-				}
-				else if (orbit > ORBIT_MAX) {
-					errorTextPane.setText("Cannot create simulation: the chosen orbit must be inferior to " + ORBIT_MAX + " km.");
-				}
-				else {
-					HashMap<String, String> missionParam = new HashMap<>();
-					missionParam.put("name", missionNameField.getText());
-					missionParam.put("description", missionDescriptionField.getText());
-					missionParam.put("destinationName", (String) destinationMenu.getSelectedItem());
-					missionParam.put("spaceCenterName", spaceCentersPanel.getSelectedCenter());
-					missionParam.put("orbitAltitude", String.valueOf(orbit));
-
-					SimulationManager manager = simulationBuilder.buildSimulation(firstStageParam, secondStageParam, payloadMass, missionParam);
-					new SimulationGUI(getTitle(), manager, fileManager);
-					dispose();
-				}
+				SimulationManager manager = createManager();
+				new SimulationGUI(getTitle(), manager, fileManager);
+				dispose();
 			}
-			catch (NumberFormatException ex) {
-				System.err.println(ex);
-				errorTextPane.setText("Cannot create simulation: the orbit must be an integer between " + ORBIT_MIN + " and " + ORBIT_MAX + ".");
-			} catch (IllegalArgumentException ex) {
-				errorTextPane.setText(ex.getMessage());
+			catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, ex.getMessage());
 			}
-			topBanner.add(errorTextPane);
 		}
 	}
 
@@ -351,50 +374,21 @@ public class MainGUI extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// stages data
-			HashMap<String,String> firstStageParam = stagePanel1.getValues();
-			HashMap<String,String> secondStageParam = stagePanel2.getValues();
-
-			// payload data
-			String payloadMass = payloadPanel.getMassInput();
-
-			// mission data
-			String orbit = orbitField.getText();
-			HashMap<String, String> missionParam = new HashMap<>();
-			missionParam.put("name", missionNameField.getText());
-			missionParam.put("description", missionDescriptionField.getText());
-			missionParam.put("destinationName", (String) destinationMenu.getSelectedItem());
-			missionParam.put("spaceCenterName", spaceCentersPanel.getSelectedCenter());
-			missionParam.put("orbitAltitude", orbit);
-
 			// try to build mission and rocket
 			try {
-				// checking if the orbit is correct
-				if (Integer.valueOf(orbit) < ORBIT_MIN) {
-					errorTextPane.setText("Cannot create simulation: the chosen orbit must be higher than " + ORBIT_MIN + "km.");
-				}
-				else if (Integer.valueOf(orbit) > ORBIT_MAX) {
-					errorTextPane.setText("Cannot create simulation: the chosen orbit must be inferior to " + ORBIT_MAX + " km.");
-				}
-				else {
-					SimulationManager manager = simulationBuilder.buildSimulation(firstStageParam, secondStageParam, payloadMass, missionParam);
+				SimulationManager manager = createManager();
+				fileChooser.setDialogTitle("Export simulation");
+				int userSelection = fileChooser.showSaveDialog(contentPane);
 
-					fileChooser.setDialogTitle("Export simulation");
-					int userSelection = fileChooser.showSaveDialog(contentPane);
-
-					if (userSelection == JFileChooser.APPROVE_OPTION) {
-						File fileToSave = fileChooser.getSelectedFile();
-						fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
-					}
+				if (userSelection == JFileChooser.APPROVE_OPTION) {
+					File fileToSave = fileChooser.getSelectedFile();
+					fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
 				}
 			}
-			catch (NumberFormatException ex) {
+			catch (Exception ex) {
 				ex.printStackTrace();
-				errorTextPane.setText("Cannot create simulation: the orbit must be an integer between " + ORBIT_MIN + " and " + ORBIT_MAX + ".");
-			} catch (IllegalArgumentException ex) {
-				errorTextPane.setText(ex.getMessage());
+				JOptionPane.showMessageDialog(null, ex.getMessage());
 			}
-			topBanner.add(errorTextPane);
 		}
 	}
 
@@ -415,10 +409,7 @@ public class MainGUI extends JFrame {
 					new SimulationGUI(getTitle(), manager, fileManager);
 					setVisible(false);
 					dispose();
-				} catch (MissingPartException ex) {
-					// TODO: add logger here
-					ex.printStackTrace();
-				} catch (TooLowThrustException ex) {
+				} catch (Exception ex) {
 					// TODO: add logger here
 					ex.printStackTrace();
 				}
@@ -450,6 +441,5 @@ public class MainGUI extends JFrame {
 			new HelpGUI("Help");
 		}
 	}
-
 
 }

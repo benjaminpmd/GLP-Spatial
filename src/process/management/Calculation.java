@@ -4,7 +4,6 @@ import config.Constants;
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
-import data.mission.SpaceCenter;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 
@@ -18,11 +17,6 @@ import data.rocket.Stage;
  * @since 17.02.22
  */
 public class Calculation {
-
-    /**
-     * Angle of the launch in degree
-     */
-    private int LAUNCH_ANGLE = 20;
 
     /**
      * Calculates the cartesian coordinate from polar ones.
@@ -48,34 +42,6 @@ public class Calculation {
         double r = Math.sqrt(Math.pow(cartesianCoordinate.getX(), 2) + Math.pow(cartesianCoordinate.getY(), 2));
         double angle = Math.atan2(cartesianCoordinate.getY(), cartesianCoordinate.getX());
         return new PolarCoordinate(r, angle);
-    }
-
-    public double degreeToRadian(double angle) {
-        if ((-360 <= angle) && (angle <= 360)) {
-            if (angle < 0) {
-                return -Math.toRadians(angle);
-            }
-            else {
-                return Math.toRadians(angle);
-            }
-        }
-        else {
-            return 0;
-        }
-    }
-
-    public double radianToDegree(double angle) {
-        if ((-6.28319 <= angle) && (angle <= 6.28319)) {
-            if (angle < 0) {
-                return -Math.toDegrees(angle);
-            }
-            else {
-                return Math.toDegrees(angle);
-            }
-        }
-        else {
-            return 0;
-        }
     }
 
     /**
@@ -139,32 +105,13 @@ public class Calculation {
         return Constants.AIR_PRESSURE_SEA_LEVEL * Math.pow((1 - ((0.0065 * altitude) / (temperature + (0.0065 * altitude) + Constants.ABSOLUTE_ZERO))), 5.257);
     }
 
-    /**
-     * Method to calculate the density of the air in kg.m^-3 at a given altitude.
-     *
-     * @param altitude double The altitude in meter.
-     * @return double The air density in kg.m^-3.
-     */
     public double calculateAirDensity(double altitude) {
 
         double T = calculateTemperatureAtAltitude(altitude) + Constants.ABSOLUTE_ZERO;
-
         double pd = calculatePressureAtAltitude(altitude, T) * 100;
-
         return (pd / (Constants.AIR_CONSTANT * T));
     }
 
-    /**
-     * Method that calculate the acceleration of the rocket. The method take in count multiple configuration such as what stage
-     * is powering the rocket, if the rocket is in the atmosphere or if it is near a large celestial object such as a planet and
-     * calculate the gravity of atmosphere drag in consequence.
-     *
-     * @param rocket {@link Rocket} The rocket to use for calculations.
-     * @param celestialObject {@link CelestialObject} The nearest celestial object of the rocket.
-     * @param altitude double The altitude of the rocket from Earth ground.
-     * @param deltaTime double The delta time to use for calculation.
-     * @return double The acceleration in m.s^-2.
-     */
     public double calculateAcceleration(Rocket rocket, CelestialObject celestialObject, double altitude, double deltaTime) {
 
         double acceleration;
@@ -181,26 +128,10 @@ public class Calculation {
         else {
             exhaustVelocity = 0;
         }
-
         acceleration = (exhaustVelocity / rocket.getMass()) * (deltaMass / deltaTime) - calculateGravity(celestialObject.getMass(), calculateDistance(celestialObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()));
-
         if (altitude < 80000) {
             double airDensity = calculateAirDensity(altitude);
             acceleration -= ((1 / 2) * Constants.DEFAULT_DRAG_COEFFICIENT * airDensity * Math.pow(rocket.getVelocity(), 2) * Constants.DEFAULT_ROCKET_SURFACE);
-        }
-        return acceleration;
-    }
-
-    public double calculateAcceleration(Stage stage, double deltaTime) {
-
-        double acceleration;
-        CartesianCoordinate coordinate = stage.getCartesianCoordinate();
-        acceleration = - calculateGravity(Constants.EARTH_MASS, calculateDistance(new CartesianCoordinate(), coordinate));
-
-        double attitude = cartesianToPolar(coordinate).getR() - Constants.EARTH_RADIUS;
-        if (attitude < 80000) {
-            double airDensity = calculateAirDensity(attitude);
-            acceleration += ((1 / 2) * Constants.DEFAULT_DRAG_COEFFICIENT * airDensity * Math.pow(stage.getVelocity(), 2) * Constants.DEFAULT_ROCKET_SURFACE);
         }
         return acceleration;
     }
@@ -214,7 +145,6 @@ public class Calculation {
      * @return double The new velocity of the object in m.s^-1.
      */
     public double calculateVelocity(double initialVelocity, double acceleration, double deltaTime) {
-
         return initialVelocity + (acceleration * deltaTime);
     }
 
@@ -238,7 +168,10 @@ public class Calculation {
         result = Math.sqrt(result);
         result = Math.pow(result, -1);
         result = Math.toDegrees(Math.asin(result));
-        return result;
+        if (Double.isNaN(result)) {
+            result = 55;
+        }
+        return Math.toRadians(result);
     }
 
     public double calculateRocketMass(Rocket rocket) {
@@ -257,60 +190,78 @@ public class Calculation {
         if (rocket.getPayload() != null) {
             mass += rocket.getPayload().getMass();
         }
-
         return mass;
     }
 
-    public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject destination, int destinationOrbit, double altitude, double deltaTime) {
-        // TODO : add trajectory system
+
+    public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject destination, int destinationOrbit,  double altitude, double launchAngle, double deltaTime, boolean exitEarth) {
         CartesianCoordinate returnCoordinate;
-        if (((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) || ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring()))) {
-            if ((0 <= altitude) && (altitude < destinationOrbit)) {
+        if (exitEarth) {
+            if ((0 <= altitude) && (altitude < 500) && (rocket.getVelocity() < 11186)) {
                 PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-
                 polarCoordinate.setR(polarCoordinate.getR() + rocket.getVelocity() * deltaTime);
-
                 double angle = polarCoordinate.getAngle();
-                angle += degreeToRadian(0.02 + (altitude/10000000));
-                polarCoordinate.setAngle(angle);
-
+                if (altitude > 10000) {
+                    angle -= Math.toRadians(0.02 + (altitude / 10000000));
+                    polarCoordinate.setAngle(angle);
+                }
                 return polarToCartesian(polarCoordinate);
+            } else if (rocket.getVelocity() > 11186) {
+                returnCoordinate = rocket.getCartesianCoordinate();
+                returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
             }
             else {
                 PolarCoordinate coordinate = cartesianToPolar(rocket.getCartesianCoordinate());
                 double orbitCircumference = 2 * Math.PI * (destinationOrbit + destination.getRadius());
                 double orbitTime = orbitCircumference / rocket.getVelocity();
                 double orbitAngle = (359 * deltaTime) / orbitTime;
-                coordinate.setAngle(coordinate.getAngle() + degreeToRadian(orbitAngle));
+                coordinate.setAngle(coordinate.getAngle() - Math.toRadians(orbitAngle));
                 returnCoordinate = polarToCartesian(coordinate);
             }
         }
         else {
             if ((0 <= altitude) && (altitude < destinationOrbit)) {
                 PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-
                 polarCoordinate.setR(polarCoordinate.getR() + rocket.getVelocity() * deltaTime);
-
                 double angle = polarCoordinate.getAngle();
-                angle += degreeToRadian(0.02 + (altitude/10000000));
+                angle -= Math.toRadians(0.02 + (altitude / 10000000));
                 polarCoordinate.setAngle(angle);
-
                 return polarToCartesian(polarCoordinate);
-            }
-            else {
+            } else {
                 PolarCoordinate coordinate = cartesianToPolar(rocket.getCartesianCoordinate());
                 double orbitCircumference = 2 * Math.PI * (destinationOrbit + destination.getRadius());
                 double orbitTime = orbitCircumference / rocket.getVelocity();
                 double orbitAngle = (359 * deltaTime) / orbitTime;
-                coordinate.setAngle(coordinate.getAngle() + degreeToRadian(orbitAngle));
+                coordinate.setAngle(coordinate.getAngle() - Math.toRadians(orbitAngle));
                 returnCoordinate = polarToCartesian(coordinate);
             }
         }
         return returnCoordinate;
     }
 
-    public CartesianCoordinate calculateStagePosition(Stage stage, double deltaTime) {
-        // TODO : add trajectory system
-        return stage.getCartesianCoordinate();
+    public CartesianCoordinate calculateStagePosition(Stage stage, CelestialObject earth, double launchAngle, double t) {
+
+        CartesianCoordinate initialCartesian = stage.getCartesianCoordinate();
+        PolarCoordinate initialPolar = cartesianToPolar(initialCartesian);
+
+        CartesianCoordinate tempCartesian = new CartesianCoordinate();
+
+        double vx = stage.getVelocity() * Math.cos(launchAngle);
+        double vy = stage.getVelocity() * Math.sin(launchAngle);
+
+        double g = calculateGravity(earth.getMass(), initialPolar.getR());
+
+        // x = Vₓ * t
+        // y = h + x * tan(α) - g * x² / (2 * V₀² * cos²(α))
+        int x = (int) (vx * t);
+        int y = (int) (tempCartesian.getY() + x * Math.tan(launchAngle) - g * Math.pow(x, 2) / (2 * Math.pow(stage.getVelocity(), 2) * Math.pow(Math.cos(launchAngle), 2)));
+        tempCartesian.setX(x);
+        tempCartesian.setY(y);
+
+        PolarCoordinate tempPolar = cartesianToPolar(tempCartesian);
+        double newR = initialPolar.getR() -100;
+        double newAngle = initialPolar.getAngle() + 0.02;
+        PolarCoordinate newPolar = new PolarCoordinate(newR, newAngle);
+        return polarToCartesian(newPolar);
     }
 }

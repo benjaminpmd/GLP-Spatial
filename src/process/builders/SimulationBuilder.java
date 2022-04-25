@@ -5,10 +5,9 @@ import data.coordinate.CartesianCoordinate;
 import data.mission.Mission;
 import data.mission.SpaceCenter;
 import data.rocket.Rocket;
-import exceptions.MissingPartException;
-import exceptions.TooLowThrustException;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
+import process.management.Calculation;
 import process.management.SimulationManager;
 
 import java.util.HashMap;
@@ -47,29 +46,18 @@ public class SimulationBuilder {
     }
 
     public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, HashMap<String, String>missionParam) {
-        System.out.println(Integer.valueOf(missionParam.get("orbitAltitude")));
         Mission mission = missionBuilder.buildMission(missionParam.get("name"),
                 missionParam.get("description"),
                 missionParam.get("spaceCenterName"),
                 missionParam.get("destinationName"),
-                Integer.valueOf(missionParam.get("orbitAltitude")));
-        Rocket rocket;
+                Integer.valueOf(missionParam.get("orbitAltitude"))
+        );
 
-        try {
-            SpaceCenter spaceCenter = spaceCenterBuilder.buildSpaceCenter(mission.getSpaceCenterName());
-            CartesianCoordinate coordinate = spaceCenter.getCartesianCoordinate();
-            rocket = rocketBuilder.buildRocket(firstStageParam, secondStageParam, Integer.valueOf(payloadMass), coordinate);
+        SpaceCenter spaceCenter = spaceCenterBuilder.buildSpaceCenter(mission.getSpaceCenterName());
+        CartesianCoordinate coordinate = spaceCenter.getCartesianCoordinate();
+        Rocket rocket = rocketBuilder.buildRocket(firstStageParam, secondStageParam, Integer.valueOf(payloadMass), coordinate);
 
-        } catch (MissingPartException | TooLowThrustException e) {
-            logger.error(e.getMessage());
-            try {
-                throw e;
-            } catch (MissingPartException ex) {
-                throw new RuntimeException(ex);
-            } catch (TooLowThrustException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+
         SimulationManager manager = new SimulationManager(rocket, mission, celestialObjectBuilder);
         logger.trace("Simulation manager successfully built");
         return manager;

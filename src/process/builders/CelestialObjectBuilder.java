@@ -76,9 +76,8 @@ public class CelestialObjectBuilder {
             // try to get the String array with the provided name.
             String[] props = celestialObjectRepository.getValue(name);
 
-            PolarCoordinate polarCoordinate = new PolarCoordinate(Double.valueOf(props[2]), Math.toRadians(Double.valueOf(props[3])-90));
+            PolarCoordinate polarCoordinate = new PolarCoordinate(Double.valueOf(props[2]), Math.toRadians(-Double.valueOf(props[3])));
             CartesianCoordinate coordinate = calculation.polarToCartesian(polarCoordinate);
-
             return new CelestialObject(name, Integer.valueOf(props[0]), Double.valueOf(props[1]), coordinate);
 
         } catch (IllegalArgumentException e) {

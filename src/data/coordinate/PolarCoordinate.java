@@ -27,12 +27,6 @@ public class PolarCoordinate extends Coordinate {
 		this.angle = angle;
 	}
 
-	public PolarCoordinate(double r, double angle, double selfAngle) {
-		super(selfAngle);
-		this.r = r;
-		this.angle = angle;
-	}
-
 	@Override
 	public String toString() {
 		return "PolarCoordinate{" +

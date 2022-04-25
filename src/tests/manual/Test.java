@@ -4,6 +4,7 @@ import gui.MainGUI;
 
 public class Test {
     public static void main(String[] args) {
-        new MainGUI("SimLaunch");
+        System.out.println(Math.cos(Math.toRadians(10)));
+        new MainGUI("SimLaunch 1.0.0");
     }
 }
