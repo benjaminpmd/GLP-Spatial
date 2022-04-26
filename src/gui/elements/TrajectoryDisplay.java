@@ -87,13 +87,17 @@ public class TrajectoryDisplay extends JPanel {
             }
         }
 
-        if (!manager.getMission().getDestinationName().equals("Earth")) {
-            CelestialObject destination = manager.getCelestialObjects().get(manager.getMission().getDestinationName());
-            PolarCoordinate polarCoordinate = calculation.cartesianToPolar(destination.getCartesianCoordinate());
-            polarCoordinate.setR(polarCoordinate.getR() - destination.getRadius() - manager.getMission().getOrbitAltitude());
-            paintStrategy.paint(manager.getRocket(), calculation.polarToCartesian(polarCoordinate), scale, centerX, centerY, g);
+        CelestialObject destination = manager.getCelestialObjects().get(manager.getMission().getDestinationName());
+        if ((!destination.getName().equals("Earth"))) {
+            int distance = (int) calculation.calculateDistance(manager.getRocket().getCartesianCoordinate(), destination.getCartesianCoordinate());
+            distance -= destination.getRadius();
+            if (distance > 36000000) {
+                PolarCoordinate polarCoordinate = calculation.cartesianToPolar(destination.getCartesianCoordinate());
+                polarCoordinate.setR(polarCoordinate.getR() - destination.getRadius() - manager.getMission().getOrbitAltitude());
+                paintStrategy.paint(manager.getRocket(), calculation.polarToCartesian(polarCoordinate), scale, centerX, centerY, g);
+            }
         }
-        paintStrategy.paint(manager.getMission().getOrbitAltitude(), manager.getCelestialObjects().get(manager.getMission().getDestinationName()), scale, centerX, centerY, g);
+        paintStrategy.paint(manager.getMission().getOrbitAltitude(), destination, scale, centerX, centerY, g);
 
         paintStrategy.paint(manager.getRocket(), scale, centerX, centerY, g);
     }

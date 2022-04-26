@@ -88,6 +88,7 @@ public class TelemetryDisplay extends JPanel {
 
 		paintStrategy.paint(speedArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, speedCurrentAngle, speedUnitName, speedUnitNameCoordinate, speedMinUnit, speedMaxUnit, g2);
 		paintStrategy.paint(altitudeArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, altitudeCurrentAngle, altitudeUnitName, altitudeUnitNameCoordinate, altitudeMinUnit, altitudeMaxUnit, g2);
+		paintStrategy.paint(manager.getRocketConfig(), g2);
 	}
 	
 }

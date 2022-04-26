@@ -184,22 +184,6 @@ public class SimulationGUI extends JFrame implements Runnable {
 		contentPane.add(telemetryDisplay, c);
 		
 		
-		//below the middle panel : rocket schema
-		JPanel rocketPanel = new JPanel();
-		c.gridx = MIDDLE_RIGHT;
-		c.gridy = MIDDLE_BOTTOM;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-
-		JLabel rocketLabel = new JLabel("Rocket Schema");
-		rocketLabel.setForeground(TEXT_COLOR);
-		rocketPanel.add(rocketLabel);
-
-		rocketPanel.setBackground(BACKGROUND_COLOR);
-
-		contentPane.add(rocketPanel, c);
-		
-		
 		
 		//right panel : play, pause buttons
 		JPanel rightPanel = new JPanel();

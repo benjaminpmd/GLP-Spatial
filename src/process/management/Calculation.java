@@ -68,6 +68,10 @@ public class Calculation {
         return Math.sqrt(((Constants.GRAVITATIONAL_CONST * object.getMass()) / object.getRadius()));
     }
 
+    public double calculateEscapeVelocity(CelestialObject object, double distanceFromCenter) {
+        return Math.sqrt((( 2 * Constants.GRAVITATIONAL_CONST * object.getMass()) / distanceFromCenter));
+    }
+
     /**
      * Method to calculate the distance in meters between two cartesian coordinates.
      *
@@ -145,7 +149,7 @@ public class Calculation {
      * @return double The new velocity of the object in m.s^-1.
      */
     public double calculateVelocity(double initialVelocity, double acceleration, double deltaTime) {
-        return initialVelocity + (acceleration * deltaTime);
+        return (initialVelocity * deltaTime) + (acceleration * deltaTime);
     }
 
     public double calculateAltitude(CartesianCoordinate objectCoordinate, CelestialObject celestialObject) {
@@ -197,7 +201,7 @@ public class Calculation {
     public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject destination, int destinationOrbit,  double altitude, double launchAngle, double deltaTime, boolean exitEarth) {
         CartesianCoordinate returnCoordinate;
         if (exitEarth) {
-            if ((0 <= altitude) && (altitude < 500) && (rocket.getVelocity() < 11186)) {
+            if ((0 <= altitude) && (altitude < 510000) && (rocket.getVelocity() < 11186)) {
                 PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
                 polarCoordinate.setR(polarCoordinate.getR() + rocket.getVelocity() * deltaTime);
                 double angle = polarCoordinate.getAngle();
@@ -206,17 +210,9 @@ public class Calculation {
                     polarCoordinate.setAngle(angle);
                 }
                 return polarToCartesian(polarCoordinate);
-            } else if (rocket.getVelocity() > 11186) {
+            } else {
                 returnCoordinate = rocket.getCartesianCoordinate();
                 returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
-            }
-            else {
-                PolarCoordinate coordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-                double orbitCircumference = 2 * Math.PI * (destinationOrbit + destination.getRadius());
-                double orbitTime = orbitCircumference / rocket.getVelocity();
-                double orbitAngle = (359 * deltaTime) / orbitTime;
-                coordinate.setAngle(coordinate.getAngle() - Math.toRadians(orbitAngle));
-                returnCoordinate = polarToCartesian(coordinate);
             }
         }
         else {
@@ -239,29 +235,48 @@ public class Calculation {
         return returnCoordinate;
     }
 
+    public double calculateStageVelocity(Stage stage, CelestialObject earth) {
+
+        double stageVelocity = stage.getVelocity();
+        CartesianCoordinate stageCoordinate = stage.getCartesianCoordinate();
+        PolarCoordinate tempPolarCoordinate = cartesianToPolar(stageCoordinate);
+        double g = calculateGravity(earth.getMass(), tempPolarCoordinate.getR());
+
+        return stageVelocity - g;
+    }
+
     public CartesianCoordinate calculateStagePosition(Stage stage, CelestialObject earth, double launchAngle, double t) {
 
-        CartesianCoordinate initialCartesian = stage.getCartesianCoordinate();
-        PolarCoordinate initialPolar = cartesianToPolar(initialCartesian);
+        CartesianCoordinate newCoordinate;
+        CartesianCoordinate stageCoordinate = stage.getCartesianCoordinate();
+        PolarCoordinate tempPolarCoordinate = cartesianToPolar(stageCoordinate);
+        double stageVelocity = stage.getVelocity();
+        double minimalOrbitVelocity = calculateMiniOrbitalVelocity(earth);
+        double escapeVelocity = calculateEscapeVelocity(earth, tempPolarCoordinate.getR());
 
-        CartesianCoordinate tempCartesian = new CartesianCoordinate();
+        if (stageVelocity < minimalOrbitVelocity) {
 
-        double vx = stage.getVelocity() * Math.cos(launchAngle);
-        double vy = stage.getVelocity() * Math.sin(launchAngle);
+            double orbitCircumference = 2 * Math.PI * (tempPolarCoordinate.getR() + earth.getRadius());
+            double orbitTime = orbitCircumference / stage.getVelocity();
+            double orbitAngle = (359 * t) / orbitTime;
+            tempPolarCoordinate.setAngle(tempPolarCoordinate.getAngle() - Math.toRadians(orbitAngle));
+            tempPolarCoordinate.setR(tempPolarCoordinate.getR() - 1000);
+            newCoordinate = polarToCartesian(tempPolarCoordinate);
+        }
+        else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
 
-        double g = calculateGravity(earth.getMass(), initialPolar.getR());
+            double orbitCircumference = 2 * Math.PI * (tempPolarCoordinate.getR() + earth.getRadius());
+            double orbitTime = orbitCircumference / stage.getVelocity();
+            double orbitAngle = (359 * t) / orbitTime;
+            tempPolarCoordinate.setAngle(tempPolarCoordinate.getAngle() - Math.toRadians(orbitAngle));
+            tempPolarCoordinate.setR(tempPolarCoordinate.getR());
+            newCoordinate = polarToCartesian(tempPolarCoordinate);
+        }
+        else {
 
-        // x = Vₓ * t
-        // y = h + x * tan(α) - g * x² / (2 * V₀² * cos²(α))
-        int x = (int) (vx * t);
-        int y = (int) (tempCartesian.getY() + x * Math.tan(launchAngle) - g * Math.pow(x, 2) / (2 * Math.pow(stage.getVelocity(), 2) * Math.pow(Math.cos(launchAngle), 2)));
-        tempCartesian.setX(x);
-        tempCartesian.setY(y);
-
-        PolarCoordinate tempPolar = cartesianToPolar(tempCartesian);
-        double newR = initialPolar.getR() -100;
-        double newAngle = initialPolar.getAngle() + 0.02;
-        PolarCoordinate newPolar = new PolarCoordinate(newR, newAngle);
-        return polarToCartesian(newPolar);
+            stageCoordinate.setX((int) (stageCoordinate.getX() + stageVelocity));
+            newCoordinate = stageCoordinate;
+        }
+        return newCoordinate;
     }
 }

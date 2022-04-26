@@ -1,13 +1,18 @@
 package gui.instruments;
+import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
 import data.mission.CelestialObject;
 import data.rocket.Rocket;
 import data.rocket.Stage;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * This class draws the trajectory of the rocket. Used in {@link gui.SimulationGUI}.
@@ -61,19 +66,55 @@ public class PaintStrategy {
 	}
 
 	public void paint(Rocket rocket, int scale, int centerX, int centerY, Graphics g) {
+		String imagePath = SimConfig.IMAGE_PATH + "rocket.png";
 		g.setColor(Color.RED);
+		BufferedImage image;
+		try {
+			image = ImageIO.read(new File(imagePath));
+		} catch (IOException e) {
+			image = null;
+		}
 		CartesianCoordinate coordinate = rocket.getCartesianCoordinate();
-		int x = centerX + (coordinate.getX() / scale) - 3;
-		int y = centerY + (coordinate.getY() / scale) - 3;
-		g.fillOval(x, y, 6, 6);
+		int x = centerX + (coordinate.getX() / scale) - 5;
+		int y = centerY + (coordinate.getY() / scale) - 2;
+		if (image != null) {
+			try {
+				int width = (image.getWidth() * 6) / image.getHeight();
+				g.drawImage(image.getScaledInstance(width, 6, Image.SCALE_DEFAULT), x, y, null);
+			}
+			catch (Exception e) {
+				g.fillOval(x, y, 6, 6);
+			}
+		}
+		else {
+			g.fillOval(x, y, 6, 6);
+		}
 	}
 
 	public void paint(Stage stage, int scale, int centerX, int centerY, Graphics g) {
-		g.setColor(Color.GREEN);
+		String imagePath = SimConfig.IMAGE_PATH + "stage.png";
+		g.setColor(Color.BLUE);
+		BufferedImage image;
+		try {
+			image = ImageIO.read(new File(imagePath));
+		} catch (IOException e) {
+			image = null;
+		}
 		CartesianCoordinate coordinate = stage.getCartesianCoordinate();
-		int x = centerX + (coordinate.getX() / scale) - 3;
-		int y = centerY + (coordinate.getY() / scale) - 3;
-		g.fillOval(x, y, 6, 6);
+		int x = centerX + (coordinate.getX() / scale) - 5;
+		int y = centerY + (coordinate.getY() / scale) - 2;
+		if (image != null) {
+			try {
+				int width = (image.getWidth() * 3) / image.getHeight();
+				g.drawImage(image.getScaledInstance(width, 3, Image.SCALE_DEFAULT), x, y, null);
+			}
+			catch (Exception e) {
+				g.fillOval(x, y, 6, 6);
+			}
+		}
+		else {
+			g.fillOval(x, y, 6, 6);
+		}
 	}
 
 	public void paint(Rocket rocket, CartesianCoordinate objectCoordinate, int scale, int centerX, int centerY, Graphics g) {
@@ -112,5 +153,37 @@ public class PaintStrategy {
 		g2.drawString(unitName, unitNameCoordinates.getX(), unitNameCoordinates.getY());
 		g2.drawString(minUnit, centerArcCircleCoordinates.getX()-arcCircleRadius, centerArcCircleCoordinates.getY()+15);
 		g2.drawString(maxUnit, centerArcCircleCoordinates.getX()+(arcCircleRadius-(arcCircleRadius/2)), centerArcCircleCoordinates.getY()+15);
+	}
+
+	public void paint(int rocketConfig, Graphics g) {
+		String imagePath = SimConfig.IMAGE_PATH + rocketConfig + ".png";
+		g.setColor(Color.WHITE);
+		BufferedImage image;
+		try {
+			image = ImageIO.read(new File(imagePath));
+		} catch (IOException e) {
+			image = null;
+		}
+
+		int x = SimConfig.ROCKET_SCHEMA_X;
+		int y = SimConfig.ROCKET_SCHEMA_Y;
+		int rocketY = SimConfig.ROCKET_SCHEMA_Y + 15;
+		g.drawString("Rocket Schema", x+80, y);
+		g.setColor(Color.GRAY);
+		if (image != null) {
+			try {
+				int height = (image.getHeight() * 250) / image.getWidth();
+				if (height > 80) {
+					height = 80;
+				}
+				g.drawImage(image.getScaledInstance(250, height, Image.SCALE_DEFAULT), x, rocketY, null);
+			}
+			catch (Exception e) {
+				g.drawString("No schema found.", x, rocketY);
+			}
+		}
+		else {
+			g.drawString("No schema found.", x, rocketY);
+		}
 	}
 }
