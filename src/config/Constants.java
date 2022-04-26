@@ -16,7 +16,7 @@ public class Constants {
     // Earth values
     public static final double GRAVITY = 9.80066;
     public static final double AIR_PRESSURE_SEA_LEVEL = 1013.25;
-    public static final double AIR_TEMPERATURE_SEA_LEVEL = 15;
+    public static final int AIR_TEMPERATURE_SEA_LEVEL = 15;
     public static final double AIR_CONSTANT = 287.058;
     public static final int EARTH_RADIUS = (int) (6.371 * Math.pow(10, 6));
     public static final double EARTH_MASS = 5.9722 * Math.pow(10, 24);
@@ -24,4 +24,6 @@ public class Constants {
     // rocket values
     public static final double DEFAULT_DRAG_COEFFICIENT = 0.75;
     public static final int DEFAULT_ROCKET_SURFACE = 16;
+
+    public static final int PARKING_ORBIT = 500000;
 }
