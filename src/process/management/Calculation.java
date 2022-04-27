@@ -144,26 +144,30 @@ public class Calculation {
 
         double acceleration;
         double deltaMass = 0;
-        double gravity = calculateGravity(nearestObject.getMass(), calculateDistance(nearestObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()));
-
+        double distanceFromNearestObject = calculateDistance(nearestObject.getCartesianCoordinate(), rocket.getCartesianCoordinate());
+        double gravity = calculateGravity(nearestObject.getMass(), distanceFromNearestObject);
+        double centripetalForce = Math.pow(rocket.getVelocity(), 2) / distanceFromNearestObject;
         int exhaustVelocity;
 
         if ((rocket.getFirstStage() != null) && (rocket.getFirstStage().isFiring())) {
-
             deltaMass = (rocket.getFirstStage().getEngine().getPropellantFlow() * rocket.getFirstStage().getEngineNb());
             exhaustVelocity = rocket.getFirstStage().getEngine().getExhaustVelocity();
 
         } else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
-
             deltaMass = (rocket.getSecondStage().getEngine().getPropellantFlow() * rocket.getSecondStage().getEngineNb());
             exhaustVelocity = rocket.getSecondStage().getEngine().getExhaustVelocity();
-        } else {
 
+        } else {
             exhaustVelocity = 0;
 
         }
+        acceleration = (exhaustVelocity / rocket.getMass()) * (deltaMass / deltaTime);
+        if (!Double.isNaN(centripetalForce)) {
+            if (centripetalForce < gravity) {
+                acceleration -= gravity;
+            }
+        }
 
-        acceleration = (exhaustVelocity / rocket.getMass()) * (deltaMass / deltaTime) - gravity;
 
         if (altitude < 80000) {
             double airDensity = calculateAirDensity(altitude);
@@ -205,46 +209,10 @@ public class Calculation {
     }
 
     /**
-     * Calculate the angle for the launch of the rocket.
-     *
-     * @param altitude      The initial altitude in m.
-     * @param orbitingEarth True if the mission must escape earth gravity, else false, depending on the choice, the speed
-     *                      used in the calculs will not be the same.
-     * @param earth         The earth object.
-     * @return the angle of for the rocket launch.
-     */
-    public double calculateLaunchAngle(double altitude, boolean orbitingEarth, CelestialObject earth) {
-
-        double velocity;
-
-        if (orbitingEarth) {
-            velocity = calculateMiniOrbitalVelocity(earth);
-
-        } else {
-            velocity = calculateEscapeVelocity(earth, Constants.EARTH_RADIUS);
-
-        }
-
-        double result = Math.pow(velocity, 2) / (2 * Constants.GRAVITY * altitude);
-
-        result = Math.sqrt(result);
-        result = Math.pow(result, -1);
-        result = Math.toDegrees(Math.asin(result));
-
-        if (Double.isNaN(result)) {
-            // some configurations may lead to a NaN for the angle of launch, in this case, we will use 55 degrees which
-            // is the average launch angle.
-            result = 55;
-        }
-
-        return Math.toRadians(result);
-    }
-
-    /**
      * Calculs the mass of the rocket
      *
      * @param rocket the rocket to take for calculs.
-     * @return double, the total mass of the rocket.
+     * @return The total mass of the rocket.
      */
     public double calculateRocketMass(Rocket rocket) {
 
@@ -273,85 +241,69 @@ public class Calculation {
      * Method that calculate the position of the rocket.
      *
      * @param rocket           The rocket to use.
-     * @param destination      The destination, can be the earth or another planet/moon.
-     * @param destinationOrbit The orbit at destination in m.
-     * @param altitude         The current altitude of the rocket in m.
-     * @param launchAngle      The angle of launch in radian.
+     * @param nearestObject      The destination, can be the earth or another planet/moon.
      * @param deltaTime        The delta time between 2 updates in s.
-     * @param exitEarth        A boolean that trigger some variation in the trajectory.
+     * @param escapeGravity        A boolean that trigger some variation in the trajectory.
      * @return A {@link CartesianCoordinate} object.
      */
-    public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject destination, int destinationOrbit, double altitude, double launchAngle, double deltaTime, boolean exitEarth) {
+    public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject nearestObject, double altitude, double deltaTime, boolean escapeGravity) {
 
         CartesianCoordinate returnCoordinate;
+        double escapeVelocity = calculateEscapeVelocity(nearestObject, altitude + nearestObject.getRadius());
 
-        if (exitEarth) {
+        if (escapeGravity) {
 
-            if ((0 <= altitude) && (altitude < Constants.PARKING_ORBIT) && (rocket.getVelocity() < 11186)) {
+            if (nearestObject.getName().equals("Earth")) {
 
-                PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-                polarCoordinate.setR(polarCoordinate.getR() + rocket.getVelocity() * deltaTime);
+                if (rocket.getVelocity() < escapeVelocity) {
 
-                double angle = polarCoordinate.getAngle();
-
-                if (altitude > 10000) {
-                    angle -= Math.toRadians(0.02 + (altitude / 10000000));
+                    double rocketAngle = rocket.getCartesianCoordinate().getSelfAngle();
+                    double vx = rocket.getVelocity() * Math.cos(rocketAngle);
+                    double vy = rocket.getVelocity() * Math.sin(rocketAngle);
+                    PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
+                    polarCoordinate.setR(polarCoordinate.getR() + (vy * deltaTime));
+                    double angle = polarCoordinate.getAngle() - (vx / (nearestObject.getRadius() + altitude));
                     polarCoordinate.setAngle(angle);
+                    returnCoordinate = polarToCartesian(polarCoordinate);
+                    returnCoordinate.setSelfAngle(rocketAngle);
                 }
+                else {
 
-                returnCoordinate = polarToCartesian(polarCoordinate);
-
-            } else {
+                    returnCoordinate = rocket.getCartesianCoordinate();
+                    returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
+                }
+            }
+            else {
 
                 returnCoordinate = rocket.getCartesianCoordinate();
                 returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
-
             }
         } else {
 
-            if ((0 <= altitude) && (altitude < destinationOrbit)) {
+            CartesianCoordinate rocketCoordinate = rocket.getCartesianCoordinate();
+            CartesianCoordinate destinationCoordinate = nearestObject.getCartesianCoordinate();
+            int tempX = rocketCoordinate.getX() - destinationCoordinate.getX();
+            int tempY = rocketCoordinate.getY() - destinationCoordinate.getY();
+            rocketCoordinate.setX(tempX);
+            rocketCoordinate.setY(tempY);
 
-                PolarCoordinate polarCoordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-                polarCoordinate.setR(polarCoordinate.getR() + rocket.getVelocity() * deltaTime);
+            double rocketAngle = rocket.getCartesianCoordinate().getSelfAngle();
+            double vx = rocket.getVelocity() * Math.cos(rocketAngle);
+            double vy = rocket.getVelocity() * Math.sin(rocketAngle);
 
-                double angle = polarCoordinate.getAngle();
+            PolarCoordinate polarCoordinate = cartesianToPolar(rocketCoordinate);
+            polarCoordinate.setR(polarCoordinate.getR() + (vy * deltaTime));
 
-                angle -= Math.toRadians(0.02 + (altitude / 10000000));
-                polarCoordinate.setAngle(angle);
-                returnCoordinate = polarToCartesian(polarCoordinate);
+            double angle = polarCoordinate.getAngle() - (vx / (nearestObject.getRadius() + altitude));
+            polarCoordinate.setAngle(angle);
 
-            } else {
-
-                PolarCoordinate coordinate = cartesianToPolar(rocket.getCartesianCoordinate());
-
-                double orbitCircumference = 2 * Math.PI * (destinationOrbit + destination.getRadius());
-                double orbitTime = orbitCircumference / rocket.getVelocity();
-                double orbitAngle = (359 * deltaTime) / orbitTime;
-
-                coordinate.setAngle(coordinate.getAngle() - Math.toRadians(orbitAngle));
-                returnCoordinate = polarToCartesian(coordinate);
-
-            }
+            returnCoordinate = polarToCartesian(polarCoordinate);
+            returnCoordinate.setX(returnCoordinate.getX() + destinationCoordinate.getX());
+            returnCoordinate.setY(returnCoordinate.getY() + destinationCoordinate.getY());
+            returnCoordinate.setSelfAngle(rocketCoordinate.getSelfAngle());
         }
 
         return returnCoordinate;
-    }
-
-    /**
-     * Method that calculate the velocity of a released stage.
-     *
-     * @param stage The stage to use.
-     * @param earth The earth object.
-     * @return The velocity of the stage in m.s^-1.
-     */
-    public double calculateStageVelocity(Stage stage, CelestialObject earth) {
-
-        double stageVelocity = stage.getVelocity();
-        CartesianCoordinate stageCoordinate = stage.getCartesianCoordinate();
-        PolarCoordinate tempPolarCoordinate = cartesianToPolar(stageCoordinate);
-        double g = calculateGravity(earth.getMass(), tempPolarCoordinate.getR());
-
-        return stageVelocity - g;
     }
 
     /**
@@ -359,40 +311,62 @@ public class Calculation {
      *
      * @param stage       The stage to use.
      * @param earth       The earth object.
-     * @param launchAngle The angle of the launch in radian.
      * @param deltaTime   The delta time between 2 updates in s.
      * @return A {@link CartesianCoordinate} object.
      */
-    public CartesianCoordinate calculateStagePosition(Stage stage, CelestialObject earth, double launchAngle, double deltaTime) {
+    public CartesianCoordinate calculateStagePosition(Stage stage, CelestialObject earth, double deltaTime) {
 
-        CartesianCoordinate newCoordinate;
+        CartesianCoordinate returnCoordinate;
         CartesianCoordinate stageCoordinate = stage.getCartesianCoordinate();
-        PolarCoordinate tempPolarCoordinate = cartesianToPolar(stageCoordinate);
+
         double stageVelocity = stage.getVelocity();
+        double distanceFromEarth = calculateDistance(earth.getCartesianCoordinate(), stageCoordinate);
+        double escapeVelocity = calculateEscapeVelocity(earth, distanceFromEarth);
         double minimalOrbitVelocity = calculateMiniOrbitalVelocity(earth);
-        double escapeVelocity = calculateEscapeVelocity(earth, tempPolarCoordinate.getR());
 
-        if (stageVelocity < minimalOrbitVelocity) {
+        if ((stageVelocity < minimalOrbitVelocity)) {
 
-            double orbitCircumference = 2 * Math.PI * (tempPolarCoordinate.getR() + earth.getRadius());
-            double orbitTime = orbitCircumference / stage.getVelocity();
-            double orbitAngle = (359 * deltaTime) / orbitTime;
-            tempPolarCoordinate.setAngle(tempPolarCoordinate.getAngle() - Math.toRadians(orbitAngle));
-            tempPolarCoordinate.setR(tempPolarCoordinate.getR() - 1000);
-            newCoordinate = polarToCartesian(tempPolarCoordinate);
-        } else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
+            double centripetalForce = Math.pow(stage.getVelocity(), 2) / distanceFromEarth;
+            double gravity = calculateGravity(earth.getMass(), distanceFromEarth);
 
-            double orbitCircumference = 2 * Math.PI * (tempPolarCoordinate.getR() + earth.getRadius());
-            double orbitTime = orbitCircumference / stage.getVelocity();
-            double orbitAngle = (359 * deltaTime) / orbitTime;
-            tempPolarCoordinate.setAngle(tempPolarCoordinate.getAngle() - Math.toRadians(orbitAngle));
-            tempPolarCoordinate.setR(tempPolarCoordinate.getR());
-            newCoordinate = polarToCartesian(tempPolarCoordinate);
+            // if velocity is not high enough to remain in orbit, stage fall back to earth, angle is then negative
+            double vx = stage.getVelocity() * Math.cos(Math.toRadians(-60));
+            double vy = stage.getVelocity() * Math.sin(Math.toRadians(-60)) - (centripetalForce - gravity);
+
+            PolarCoordinate polarCoordinate = cartesianToPolar(stageCoordinate);
+            polarCoordinate.setR(polarCoordinate.getR() + (vy * deltaTime));
+
+            double angle = polarCoordinate.getAngle() - (vx / distanceFromEarth);
+
+            polarCoordinate.setAngle(angle);
+            returnCoordinate = polarToCartesian(polarCoordinate);
+        }
+        else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
+
+            // if stage velocity is high enough to remain in orbit, then angle is 90 (remain at a stable altitude)
+            double vx = stageVelocity * Math.cos(90);
+            double vy = stageVelocity * Math.sin(90);
+
+            PolarCoordinate polarCoordinate = cartesianToPolar(stage.getCartesianCoordinate());
+            polarCoordinate.setR(polarCoordinate.getR() + (vy * deltaTime));
+
+            double angle = polarCoordinate.getAngle() - (vx / distanceFromEarth);
+            if (angle > 0) {
+                angle = -angle;
+            }
+            polarCoordinate.setAngle(angle);
+            returnCoordinate = polarToCartesian(polarCoordinate);
         } else {
 
-            stageCoordinate.setX((int) (stageCoordinate.getX() + stageVelocity));
-            newCoordinate = stageCoordinate;
+            // if stage velocity exceed escape velocity, it will increase its orbit until leaving earth gravitation
+            int vx = (int) (stageVelocity * Math.cos(stageCoordinate.getSelfAngle()));
+            int vy = (int) (stageVelocity * Math.sin(stageCoordinate.getSelfAngle()));
+
+            stageCoordinate.setX(stageCoordinate.getX() + vx);
+            stageCoordinate.setY(stageCoordinate.getY() + vy);
+
+            returnCoordinate = stageCoordinate;
         }
-        return newCoordinate;
+        return returnCoordinate;
     }
 }

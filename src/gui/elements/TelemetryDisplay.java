@@ -28,11 +28,11 @@ public class TelemetryDisplay extends JPanel {
 	private double speedCurrentAngle = 25.0;
 	private double altitudeCurrentAngle = 45.0;
 	
-	private String speedUnitName = "Speed (km.s^-1)";
+	private String speedUnitName = "Speed (km/h)";
 	private String altitudeUnitName = "Altitude (km)";
 	
 	private String speedMinUnit = "0";
-	private String speedMaxUnit = "11.5";
+	private String speedMaxUnit = "41400";
 	
 	private String altitudeMinUnit = speedMinUnit;
 	private int altitudeMax;
@@ -70,7 +70,9 @@ public class TelemetryDisplay extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		altitudeCurrentAngle = (int) (((manager.getAltitude() * 180) / altitudeMax));
+		int rocketVelocity = (int) (manager.getRocket().getVelocity() * 3600) / 1000;
+		double rocketAltitude =  manager.getAltitude();
+		altitudeCurrentAngle = (rocketAltitude * 180) / altitudeMax;
 		if(altitudeCurrentAngle > 180) {
 			altitudeCurrentAngle = 180;
 		}
@@ -78,7 +80,7 @@ public class TelemetryDisplay extends JPanel {
 			altitudeCurrentAngle = 0;
 		}
 
-		speedCurrentAngle = (int) (manager.getRocket().getVelocity() * 180) / 11500;
+		speedCurrentAngle = (rocketVelocity * 180) / 41400;
 		if(speedCurrentAngle > 180) {
 			speedCurrentAngle = 180;
 		}
@@ -86,8 +88,11 @@ public class TelemetryDisplay extends JPanel {
 			speedCurrentAngle = 0;
 		}
 
-		paintStrategy.paint(speedArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, speedCurrentAngle, speedUnitName, speedUnitNameCoordinate, speedMinUnit, speedMaxUnit, g2);
-		paintStrategy.paint(altitudeArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, altitudeCurrentAngle, altitudeUnitName, altitudeUnitNameCoordinate, altitudeMinUnit, altitudeMaxUnit, g2);
+		String rocketVelocityInfo = rocketVelocity + " km/h";
+		String rocketAltitudeInfo = (int) (rocketAltitude/1000) + " km";
+
+		paintStrategy.paint(speedArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, speedCurrentAngle, speedUnitName, speedUnitNameCoordinate, speedMinUnit, speedMaxUnit, rocketVelocityInfo, g2);
+		paintStrategy.paint(altitudeArcCircleCenterCoordinate, arcCircleRadius, startArcCircleAngle, maxArcCircleAngle, altitudeCurrentAngle, altitudeUnitName, altitudeUnitNameCoordinate, altitudeMinUnit, altitudeMaxUnit,  rocketAltitudeInfo, g2);
 		paintStrategy.paint(manager.getRocketConfig(), g2);
 	}
 	

@@ -95,7 +95,7 @@ public class MainGUI extends JFrame {
 
 	//the lowest and highest orbits possible
 	private final int ORBIT_MIN = 200;
-	private final int ORBIT_MAX = 60000;
+	private final int ORBIT_MAX = 36000;
 
 	public MainGUI(String title) {
 		super(title);

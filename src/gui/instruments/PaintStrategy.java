@@ -140,7 +140,7 @@ public class PaintStrategy {
 		g.drawOval(x, y, diameter, diameter);
 	}
 
-	public void paint(CartesianCoordinate centerArcCircleCoordinates, int arcCircleRadius, int startingArcCircleAngle, int maxArcCircleAngle, double currentAngle, String unitName, CartesianCoordinate unitNameCoordinates, String minUnit, String maxUnit, Graphics2D g2) {
+	public void paint(CartesianCoordinate centerArcCircleCoordinates, int arcCircleRadius, int startingArcCircleAngle, int maxArcCircleAngle, double currentAngle, String unitName, CartesianCoordinate unitNameCoordinates, String minUnit, String maxUnit, String value, Graphics2D g2) {
 		g2.setPaint(Color.YELLOW);
 		Arc2D arcCircle = new Arc2D.Float();
 		arcCircle.setArcByCenter(centerArcCircleCoordinates.getX(), centerArcCircleCoordinates.getY(), arcCircleRadius, startingArcCircleAngle, maxArcCircleAngle, Arc2D.PIE);
@@ -153,6 +153,7 @@ public class PaintStrategy {
 		g2.drawString(unitName, unitNameCoordinates.getX(), unitNameCoordinates.getY());
 		g2.drawString(minUnit, centerArcCircleCoordinates.getX()-arcCircleRadius, centerArcCircleCoordinates.getY()+15);
 		g2.drawString(maxUnit, centerArcCircleCoordinates.getX()+(arcCircleRadius-(arcCircleRadius/2)), centerArcCircleCoordinates.getY()+15);
+		g2.drawString(value, unitNameCoordinates.getX(), unitNameCoordinates.getY() + 110);
 	}
 
 	public void paint(int rocketConfig, Graphics g) {

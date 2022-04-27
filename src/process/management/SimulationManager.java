@@ -32,20 +32,21 @@ import java.util.List;
 public class SimulationManager {
 
     private final Logger logger = LoggerUtility.getLogger(SimulationManager.class, "html");
-    private final double launchAngle;
     private final Calculation calculation;
     private final TelemetryRecord telemetry;
     private final Mission mission;
     private final Rocket rocket;
-    private final List<CartesianCoordinate> coordinatesHistory = new ArrayList<>(); // record the last 255 postions of the rocket.
-    private final List<CartesianCoordinate> trajectoryHistory = new ArrayList<>(); // record path of the rocket.
+    private volatile List<CartesianCoordinate> coordinatesHistory = new ArrayList<>(); // record the last 255 postions of the rocket.
+    private volatile List<CartesianCoordinate> trajectoryHistory = new ArrayList<>(); // record path of the rocket.
     private final HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>(); // celestial objects that will interact with the mission.
-    private final List<Stage> releasedStages = new ArrayList<>(); // separated stages
+    private volatile List<Stage> releasedStages = new ArrayList<>(); // separated stages
     private double deltaTime;
     private int rocketConfig;
-    private boolean escapeEarth;
+    private boolean escapeGravity;
+    private boolean isOrbiting;
     private double altitude;
     private int recordCycle;
+    private CelestialObject nearestObject;
 
     /**
      * Constructor of the simulation manager.
@@ -66,18 +67,16 @@ public class SimulationManager {
 
         deltaTime = SimConfig.DELTA_TIME;
         rocketConfig = 2;
-        escapeEarth = false;
+        escapeGravity = false;
+        isOrbiting = false;
 
 
         celestialObjects.put("Earth", celestialObjectBuilder.buildCelestialObject("Earth"));
+        nearestObject = celestialObjects.get("Earth");
 
         if (!mission.getDestinationName().equals("Earth")) {
             CelestialObject destination = celestialObjectBuilder.buildCelestialObject(mission.getDestinationName());
             celestialObjects.put(destination.getName(), destination);
-            launchAngle = calculation.calculateLaunchAngle(2000, false, celestialObjects.get("Earth"));
-
-        } else {
-            launchAngle = calculation.calculateLaunchAngle(mission.getOrbitAltitude(), true, celestialObjects.get("Earth"));
         }
     }
 
@@ -126,15 +125,17 @@ public class SimulationManager {
         updateRocketMass();
         updateRocket();
 
-        // released stages
-        updateReleasedStagesPosition();
-
         // telemetry
         updateCoordinateHistory();
         updateTrajectoryHistory();
 
         // delta time
         updateDeltaTime();
+
+        // released stages
+        updateReleasedStagesPosition();
+        updateNearestObject();
+
     }
 
     /**
@@ -150,14 +151,24 @@ public class SimulationManager {
      */
     private void updateDeltaTime() {
 
-        if (!mission.getDestinationName().equals("Earth")) {
-            CelestialObject destination = celestialObjects.get(mission.getDestinationName());
-            double distanceFromDestination = calculation.calculateDistance(rocket.getCartesianCoordinate(), destination.getCartesianCoordinate()) - destination.getRadius();
+        if (altitude > 40000000) {
+            deltaTime = 86400;
+        } else {
+            deltaTime = 1;
+        }
+    }
 
-            if ((altitude > 10000000) && (distanceFromDestination > 10000000)) {
-                deltaTime = 86400;
-            } else {
-                deltaTime = 1;
+    private void updateNearestObject() {
+
+        if (!nearestObject.getName().equals(mission.getDestinationName())) {
+            // comparing distances from objects in the list to get the nearest object.
+            for (CelestialObject celestialObject : celestialObjects.values()) {
+                CartesianCoordinate rocketCoordinate = rocket.getCartesianCoordinate();
+                double distanceFromObject = calculation.calculateDistance(celestialObject.getCartesianCoordinate(), rocketCoordinate);
+                double distanceFromNearest = calculation.calculateDistance(nearestObject.getCartesianCoordinate(), rocketCoordinate);
+                if (Math.abs(distanceFromObject) <= Math.abs(distanceFromNearest)) {
+                    nearestObject = celestialObject;
+                }
             }
         }
     }
@@ -179,20 +190,14 @@ public class SimulationManager {
                 stage.getTank().setRemainingPropellant(remainingPropellant);
 
             } else {
-                stage.setFiring(false);
-
-                CartesianCoordinate coordinate = new CartesianCoordinate();
-                coordinate.setX(rocket.getCartesianCoordinate().getX());
-                coordinate.setY(rocket.getCartesianCoordinate().getY());
-
-                stage.setCartesianCoordinate(coordinate);
-                stage.setVelocity(rocket.getVelocity());
+                releaseStage(stage);
                 releasedStages.add(rocket.getFirstStage());
 
                 rocket.setFirstStage(null);
                 rocket.getSecondStage().setFiring(true);
                 rocketConfig = 3;
-                logger.trace("Ignition of second stage at " + altitude);
+
+                logger.trace("First Stage release and Second Stage ignition at " + altitude + "m");
             }
 
         } else if ((rocket.getSecondStage() != null) && (rocket.getSecondStage().isFiring())) {
@@ -206,21 +211,15 @@ public class SimulationManager {
                 stage.getTank().setRemainingPropellant(remainingPropellant);
 
             } else {
-                stage.setFiring(false);
-
-                CartesianCoordinate coordinate = new CartesianCoordinate();
-                coordinate.setX(rocket.getCartesianCoordinate().getX());
-                coordinate.setY(rocket.getCartesianCoordinate().getY());
-
-                stage.setCartesianCoordinate(coordinate);
-                stage.setVelocity(rocket.getVelocity());
-                releasedStages.add(rocket.getSecondStage());
+                releaseStage(stage);
+                releasedStages.add(stage);
 
                 rocket.setSecondStage(null);
                 rocketConfig = 5;
-                logger.trace("Stage 2 released at " + altitude);
+                logger.trace("Second Stage released at " + altitude + "m");
             }
         }
+        rocket.setMass(calculation.calculateRocketMass(rocket));
     }
 
     /**
@@ -229,29 +228,59 @@ public class SimulationManager {
      */
     private void updateRocket() {
 
-        CelestialObject nearestObject = celestialObjects.get("Earth");
         CelestialObject destination = celestialObjects.get(mission.getDestinationName());
 
-        // comparing distances from objects in the list to get the nearest object.
-        for (CelestialObject celestialObject : celestialObjects.values()) {
-            if (calculation.calculateDistance(celestialObject.getCartesianCoordinate(), rocket.getCartesianCoordinate()) < calculation.calculateDistance(nearestObject.getCartesianCoordinate(), rocket.getCartesianCoordinate())) {
-                nearestObject = celestialObject;
+        CartesianCoordinate previousCoordinate;
+        if (coordinatesHistory.size() > 1) {
+            previousCoordinate = coordinatesHistory.get(coordinatesHistory.size()-1);
+        } else {
+            previousCoordinate = rocket.getCartesianCoordinate();
+        }
+
+        double previousAltitude = calculation.calculateAltitude(previousCoordinate, nearestObject);
+
+        // adjusting the angle of the rocket
+        double targetAltitude;
+        if (mission.getDestinationName().equals("Earth")) {
+            targetAltitude = mission.getOrbitAltitude();
+        } else {
+            if (!escapeGravity && !nearestObject.getName().equals("Earth")) {
+                targetAltitude = mission.getOrbitAltitude();
+            } else {
+                targetAltitude = Constants.PARKING_ORBIT;
+            }
+        }
+
+        if (escapeGravity) {
+            rocket.getCartesianCoordinate().setSelfAngle(0);
+
+        } else if (nearestObject.getName().equals("Earth")) {
+            double delta = (altitude * 90) / targetAltitude;
+            rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(90 - delta));
+
+        } else {
+            if (((altitude < targetAltitude) && (targetAltitude < previousAltitude)) || ((altitude > targetAltitude) && (targetAltitude > previousAltitude)) || isOrbiting) {
+                rocket.getCartesianCoordinate().setSelfAngle(0);
+                isOrbiting = true;
+
+            }
+            else if (altitude < targetAltitude) {
+                rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(10));
+
+            } else if (altitude > targetAltitude) {
+                rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(-10));
+
+            } else {
+                rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(-20));
             }
         }
 
         // altitude relative to the nearest object.
         altitude = calculation.calculateAltitude(rocket.getCartesianCoordinate(), nearestObject);
-
+        double distanceFromObject = calculation.calculateDistance(rocket.getCartesianCoordinate(), nearestObject.getCartesianCoordinate());
+        double destinationX = destination.getCartesianCoordinate().getX();
         // acceleration of the rocket
         double acceleration = (calculation.calculateRocketAcceleration(rocket, nearestObject, altitude, deltaTime) / deltaTime);
-
-        // TODO: TO BE MOVED IN THE VELOCITY CALCULATION METHOD
-        if ((mission.getDestinationName().equals("Earth")) && (acceleration < 0)) {
-            acceleration = 0;
-        } else if ((!escapeEarth) && (!mission.getDestinationName().equals("Earth")) && (acceleration < 0)) {
-            acceleration = 0;
-        }
-        // END OF TEMP
         double velocity = (calculation.calculateVelocity(rocket.getVelocity(), acceleration, deltaTime) / deltaTime);
 
         rocket.setVelocity(velocity);
@@ -262,35 +291,43 @@ public class SimulationManager {
         // In real life, not all engines are able to start multiple time, to simplify operations
         // we will assume it is the case here.
         if (rocket.getSecondStage() != null) {
-
+            Stage stage = rocket.getSecondStage();
             if (!mission.getDestinationName().equals("Earth")) {
-                if ((velocity > calculation.calculateMiniOrbitalVelocity(nearestObject)) && (rocket.getSecondStage().isFiring()) && (!escapeEarth)) {
-                    logger.trace("SECO");
+                if ((velocity > calculation.calculateMiniOrbitalVelocity(nearestObject)) && (stage.isFiring()) && (!escapeGravity)) {
+                    logger.trace("SECO 1");
                     rocketConfig = 4;
                     rocket.getSecondStage().setFiring(false);
                 }
                 if ((rocketCoordinate.getX() < 15000) && (rocketCoordinate.getX() > -15000) && (rocketCoordinate.getY() > 0)) {
-                    if ((velocity > calculation.calculateMiniOrbitalVelocity(nearestObject)) && (!rocket.getSecondStage().isFiring())) {
-                        escapeEarth = true;
-                        rocket.getSecondStage().setFiring(true);
-                        logger.trace("SEI");
+                    if ((velocity > calculation.calculateMiniOrbitalVelocity(nearestObject)) && (!stage.isFiring())) {
+                        escapeGravity = true;
+                        stage.setFiring(true);
+                        logger.trace("Second Engine Ignition 2");
                         rocketConfig = 3;
                     }
                 }
             } else {
                 if (velocity > calculation.calculateMiniOrbitalVelocity(nearestObject)) {
-                    if ((rocket.getFirstStage() == null) && (altitude >= mission.getOrbitAltitude())) {
-                        rocket.getSecondStage().setFiring(false);
-                        releasedStages.add(rocket.getSecondStage());
+                    if (rocket.getFirstStage() == null) {
+                        releaseStage(stage);
+                        releasedStages.add(stage);
+
                         rocket.setSecondStage(null);
+                        rocketConfig = 5;
+                        logger.trace("SECO 2 at " + altitude + "m");
                     }
-                } else {
-                    rocket.getSecondStage().setFiring(true);
                 }
             }
+        } else if ((rocket.getVelocity() > calculation.calculateEscapeVelocity(nearestObject, distanceFromObject)) && !nearestObject.getName().equals("Earth")) {
+            // if approaching the destination, mission use onboard thrusters to reduce their speed to be captured by the gravitational force of the object
+            rocket.setVelocity(rocket.getVelocity() - 1);
         }
 
-        rocket.setCartesianCoordinate(calculation.calculateRocketPosition(rocket, destination, mission.getOrbitAltitude(), altitude, launchAngle, deltaTime, escapeEarth));
+        if (rocket.getCartesianCoordinate().getX() > destinationX && escapeGravity) {
+            escapeGravity = false;
+        }
+
+        rocket.setCartesianCoordinate(calculation.calculateRocketPosition(rocket, nearestObject, altitude, deltaTime, escapeGravity));
 
         updateTelemetry((int) acceleration, (int) velocity);
     }
@@ -339,12 +376,10 @@ public class SimulationManager {
     private void updateReleasedStagesPosition() {
 
         for (int i = 0; i < releasedStages.size(); i++) {
+
             Stage stage = releasedStages.get(i);
 
-            double velocity = calculation.calculateStageVelocity(stage, celestialObjects.get("Earth"));
-            stage.setVelocity(velocity);
-
-            CartesianCoordinate newCoordinate = calculation.calculateStagePosition(stage, celestialObjects.get("Earth"), launchAngle, deltaTime);
+            CartesianCoordinate newCoordinate = calculation.calculateStagePosition(stage, celestialObjects.get("Earth"), deltaTime);
             PolarCoordinate tempCoordinate = calculation.cartesianToPolar(stage.getCartesianCoordinate());
 
             if ((tempCoordinate.getR() <= Constants.EARTH_RADIUS) || (tempCoordinate.getR() >= Constants.EARTH_RADIUS + 40000000)) {
@@ -353,5 +388,19 @@ public class SimulationManager {
                 stage.setCartesianCoordinate(newCoordinate);
             }
         }
+    }
+
+    private void releaseStage(Stage stage) {
+        stage.setFiring(false);
+
+        CartesianCoordinate coordinate = new CartesianCoordinate();
+        CartesianCoordinate rocketCoordinate = rocket.getCartesianCoordinate();
+
+        coordinate.setX(rocketCoordinate.getX());
+        coordinate.setY(rocketCoordinate.getY());
+        coordinate.setSelfAngle(rocketCoordinate.getSelfAngle());
+
+        stage.setCartesianCoordinate(coordinate);
+        stage.setVelocity(rocket.getVelocity());
     }
 }
