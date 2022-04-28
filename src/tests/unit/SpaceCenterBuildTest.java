@@ -22,7 +22,7 @@ public class SpaceCenterBuildTest {
 
     @Test
     public void TestCelestialObjectValues() {
-        CartesianCoordinate exceptedCoordinate = new CartesianCoordinate(-4659454, 4345011);
+        CartesianCoordinate exceptedCoordinate = new CartesianCoordinate(-4095199, 4880469);
         assertEquals(exceptedCoordinate.getX(), spaceCenter.getCartesianCoordinate().getX(), 100);
         assertEquals(exceptedCoordinate.getY(), spaceCenter.getCartesianCoordinate().getY(), 100);
     }
