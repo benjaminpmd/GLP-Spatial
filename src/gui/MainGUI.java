@@ -410,7 +410,7 @@ public class MainGUI extends JFrame {
 					setVisible(false);
 					dispose();
 				} catch (Exception ex) {
-					// TODO: add logger here
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 					ex.printStackTrace();
 				}
 			}
@@ -438,7 +438,7 @@ public class MainGUI extends JFrame {
 
 	private class HelpAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			new HelpGUI("Help");
+			new HelpGUI("Help", null);
 		}
 	}
 

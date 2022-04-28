@@ -146,6 +146,16 @@ public class SimulationManager {
         rocketConfig = 1;
     }
 
+    public boolean hasCrashed() {
+        double distance = Math.abs(calculation.calculateDistance(rocket.getCartesianCoordinate(), nearestObject.getCartesianCoordinate()));
+
+        if (distance < nearestObject.getRadius()-10) {
+            rocketConfig = 6;
+            return true;
+        }
+        else return false;
+    }
+
     /**
      * Update the delta time depending on the rocket position from the destination.
      */

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
@@ -17,40 +16,39 @@ import config.SimConfig;
 import process.management.TelemetryRecord;
 
 /**
- * This class draws a graph of one out of three possible types : Speed, Acceleration, and Altitude.
+ * This class draw a chart either the velocity or the acceleration of the rocket.
  * Used in {@link gui.SimulationGUI}.
  * 
- * @see gui.SimulationGUI
+ * @see TelemetryRecord
  * @author Alice Mabille
  */
-public class GraphPanel extends JPanel {
+public class ChartPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private TelemetryRecord telemetryRecord;
 	private ArrayList<Integer> dataArray = new ArrayList<Integer>();
-	private ChartPanel chartPanel;
+	private org.jfree.chart.ChartPanel chartPanel;
 
 	private final Color BACKGROUND_COLOR = new Color(60,61,64);
 	private final Color TEXT_COLOR = new Color(240, 240, 240);
 	private final Color LINES_COLOR = new Color(255, 10, 10);
 
-	
 	private String title;
 	
 	/**
-	 * Draws a graph using an array of data from {@link MissionManager} at t=0, so it will probably be empty until you call the update() and repaint() methods.
+	 * Draws a graph using an array of data from {@link process.management.SimulationManager} at t=0, so it will probably be empty until you call the update() and repaint() methods.
 	 *
 	 * @param title should be either "Speed", "Acceleration", or "Altitude".
-	 * @see MissionManager
+	 * @see {@link gui.SimulationGUI}
 	 */
-	public GraphPanel(String title, TelemetryRecord telemetryRecord) {
+	public ChartPanel(String title, TelemetryRecord telemetryRecord) {
 		super();
 		this.telemetryRecord = telemetryRecord;
 		setPreferredSize(SimConfig.IDEAL_GRAPH_DIMENSION);
 		setBackground(Color.DARK_GRAY);
 		this.title = title;
 
-		chartPanel = new ChartPanel(getEvolutionChart());
+		chartPanel = new org.jfree.chart.ChartPanel(getEvolutionChart());
 		update();
 
 		chartPanel.setPreferredSize(SimConfig.IDEAL_GRAPH_DIMENSION);
@@ -61,8 +59,6 @@ public class GraphPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		chartPanel.getChart().setBackgroundPaint(BACKGROUND_COLOR);
-		chartPanel.getChart().getTitle().setPaint(TEXT_COLOR);
 
 	}
 
@@ -84,7 +80,7 @@ public class GraphPanel extends JPanel {
 	}
 
 	/**
-	 * Gets the latest data corresponding to the title of the GraphPanel from the class {@link MissionManager}
+	 * Gets the latest data from the the {@link TelemetryRecord}
 	 */
 	public void update() {
 		switch(title) {
@@ -100,7 +96,5 @@ public class GraphPanel extends JPanel {
 			throw new IllegalArgumentException("Cannot draw a graph about "+title);
 		}
 		chartPanel.setChart(getEvolutionChart());
-		chartPanel.getChart().setBackgroundPaint(BACKGROUND_COLOR);
-		chartPanel.getChart().getTitle().setPaint(TEXT_COLOR);
 	}
 }

@@ -1,500 +1,487 @@
 package gui;
 
+import config.SimConfig;
+
+import gui.elements.ChartPanel;
+import gui.elements.TelemetryDisplay;
+import gui.elements.TrajectoryDisplay;
+
+import data.coordinate.CartesianCoordinate;
+import process.management.FileManager;
+import process.management.SimulationManager;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-
-import config.SimConfig;
-import data.coordinate.CartesianCoordinate;
-import gui.elements.GraphPanel;
-import gui.elements.TelemetryDisplay;
-import gui.elements.TrajectoryDisplay;
-import log.LoggerUtility;
-import org.apache.log4j.Logger;
-import process.management.FileManager;
-import process.management.SimulationManager;
-
 /**
  * This is the third window. It shows the trajectory and telemetry of the rocket.
- * 
- * @author Alice Mabille
  *
+ * @author Alice Mabille
  */
 public class SimulationGUI extends JFrame implements Runnable {
 
-	private static final long serialVersionUID = 1L;
-	private final Logger logger = LoggerUtility.getLogger(SimulationGUI.class, "html");
-	
-	private SimulationManager manager;
-	private FileManager fileManager;
-
-	private Container contentPane;
-
-	private GraphPanel speedGraph;
-	private GraphPanel accelerationGraph;
-
-	private float speed = 1;
-	private boolean firstRun = true;
-
-	private JPanel graphPanel = new JPanel();
-	Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
-
-	private JMenuBar menuBar = new JMenuBar();
-	private JMenu fileMenu = new JMenu("File");
-	private JMenu helpMenu = new JMenu("Help");
-
-	private JMenuItem newSimulationItem = new JMenuItem("New");
-	private JMenuItem importSimulationItem = new JMenuItem("Import");
-	private JMenuItem exportSimulationItem = new JMenuItem("Export");
-	private JMenuItem exitItem = new JMenuItem("Exit");
-
-	private JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
-
-
-	private JFileChooser fileChooser = new JFileChooser("./");
-	
-	/* total width = 7
-	 * total height = 6
-	 */
-	private final int LEFT = 0;
-	private final int MIDDLE = 2;
-	private final int MIDDLE_RIGHT = 4;
-	private final int RIGHT = 6;
-	private final int TOP = 0;
-	private final int MIDDLE_BOTTOM = 4;
-	private final int BOTTOM = 5;
-
+    private static final long serialVersionUID = 1L;
 	// colors
-	private final Color BACKGROUND_COLOR = new Color(60,61,64);
-	private final Color TEXT_COLOR = new Color(240, 240, 240);
-	private final Color BUTTON_COLOR = new Color(95, 0, 0);
-	private final Color BUTTON_ENGAGE_COLOR = new Color(58, 162, 0);
+    private final Color BACKGROUND_COLOR = new Color(60, 61, 64);
+    private final Color TEXT_COLOR = new Color(240, 240, 240);
+    private final Color BUTTON_COLOR = new Color(95, 0, 0);
+    private final Color BUTTON_ENGAGE_COLOR = new Color(58, 162, 0);
+    Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+    private final SimulationManager manager;
+    private final FileManager fileManager;
+    private Container contentPane;
+    private final ChartPanel velocityChart;
+    private final ChartPanel accelerationChart;
+    private float speed = 1;
+    private boolean firstRun = true;
+    private final JPanel chartPanel = new JPanel();
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu fileMenu = new JMenu("File");
+    private final JMenu helpMenu = new JMenu("Help");
+    private final JMenuItem newSimulationItem = new JMenuItem("New");
+    private final JMenuItem importSimulationItem = new JMenuItem("Import");
+    private final JMenuItem exportSimulationItem = new JMenuItem("Export");
+    private final JMenuItem exitItem = new JMenuItem("Exit");
+    private final JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
+    private final JFileChooser fileChooser = new JFileChooser("./");
+    private final JLabel speedLabel = new JLabel("Speed: x" + speed);
+    private final JButton startButton = new JButton("Play");
+    private final JButton speedupButton = new JButton("Speed up");
+    private final JButton slowdownButton = new JButton("Slow down");
+    private final JButton zoomInButton = new JButton("Zoom in");
+    private final JButton zoomOutButton = new JButton("Zoom out");
+    private final JButton resetViewButton = new JButton("Reset View");
+    private final JButton trackButton = new JButton("Start tracking");
 
-	private JLabel speedLabel = new JLabel("Speed: x" + speed);
+    private final TrajectoryDisplay trajectoryDisplay;
+    private final TelemetryDisplay telemetryDisplay;
 
-	private JButton startButton = new JButton("Play");
-	private JButton speedupButton = new JButton("Speed up");
-	private JButton slowdownButton = new JButton("Slow down");
-	private JButton zoomInButton = new JButton("Zoom in");
-	private JButton zoomOutButton = new JButton("Zoom out");
-	private JButton resetViewButton = new JButton("Reset View");
-	private JButton trackButton = new JButton("Start tracking");
+    private final GridBagConstraints c = new GridBagConstraints();
 
-	private TrajectoryDisplay trajectoryDisplay;
-	private TelemetryDisplay telemetryDisplay;
+    // Initial status of the start button.
+    private boolean stop = true;
+    private final SimulationGUI instance = this;
+    private int simulationSpeed = SimConfig.SIMULATION_SPEED;
 
-	private GridBagConstraints c = new GridBagConstraints();
-	
+
 	/**
-	 * Initial status of the start button.
+	 * Constructor of the window.
+	 * @param title the title of the window.
+	 * @param manager the {@link SimulationManager} to use.
+	 * @param fileManager the {@link FileManager} to use for imports/exports.
 	 */
-	private boolean stop = true;
-	private SimulationGUI instance = this;
-	private int simulationSpeed = SimConfig.SIMULATION_SPEED;
+    public SimulationGUI(String title, SimulationManager manager, FileManager fileManager) {
+        super(title);
+        this.manager = manager;
+        this.fileManager = fileManager;
+        velocityChart = new ChartPanel("Speed", manager.getTelemetry());
+        accelerationChart = new ChartPanel("Acceleration", manager.getTelemetry());
+        trajectoryDisplay = new TrajectoryDisplay(manager);
+        telemetryDisplay = new TelemetryDisplay(manager);
+        MouseInput mouseInput = new MouseInput();
+        trajectoryDisplay.addMouseListener(mouseInput);
+        trajectoryDisplay.addMouseMotionListener(mouseInput);
+        trajectoryDisplay.addMouseWheelListener(new MouseWheelControls());
+        init();
+    }
 
+	/**
+	 * Method to build the window
+	 */
+    private void init() {
 
-	public SimulationGUI(String title, SimulationManager manager, FileManager fileManager) {
-		super(title);
-		this.manager = manager;
-		this.fileManager = fileManager;
-		speedGraph = new GraphPanel("Speed", manager.getTelemetry());
-		accelerationGraph = new GraphPanel("Acceleration", manager.getTelemetry());
-		trajectoryDisplay = new TrajectoryDisplay(manager);
-		telemetryDisplay = new TelemetryDisplay(manager);
-		MouseInput mouseInput = new MouseInput();
-		trajectoryDisplay.addMouseListener(mouseInput);
-		trajectoryDisplay.addMouseMotionListener(mouseInput);
-		trajectoryDisplay.addMouseWheelListener(new MouseWheelControls());
-		init();
-	}
-	
-	private void init() {
-		contentPane = getContentPane();
-		contentPane.setLayout(new GridBagLayout());
-		contentPane.setBackground(BACKGROUND_COLOR);
-		c.fill = GridBagConstraints.BOTH;
+		int MIDDLE = 2;
+		int TOP = 0;
 
-		newSimulationItem.addActionListener(new NewSimulationAction());
-		exportSimulationItem.addActionListener(new exportAction());
-		importSimulationItem.addActionListener(new ImportAction());
-		exitItem.addActionListener(new ExitAction());
-		simulationHelpItem.addActionListener(new HelpAction());
-		fileMenu.add(newSimulationItem);
-		fileMenu.add(importSimulationItem);
-		fileMenu.add(exportSimulationItem);
-		fileMenu.add(exitItem);
+        contentPane = getContentPane();
+        contentPane.setLayout(new GridBagLayout());
+        contentPane.setBackground(BACKGROUND_COLOR);
+        c.fill = GridBagConstraints.BOTH;
 
-		menuBar.add(fileMenu);
+        newSimulationItem.addActionListener(new NewSimulationAction());
+        exportSimulationItem.addActionListener(new exportAction());
+        importSimulationItem.addActionListener(new ImportAction());
+        exitItem.addActionListener(new ExitAction());
+        simulationHelpItem.addActionListener(new HelpAction());
+        fileMenu.add(newSimulationItem);
+        fileMenu.add(importSimulationItem);
+        fileMenu.add(exportSimulationItem);
+        fileMenu.add(exitItem);
 
-		helpMenu.add(simulationHelpItem);
+        menuBar.add(fileMenu);
 
-		menuBar.add(helpMenu);
-		setJMenuBar(menuBar);
-		
-		//top banner
-		JPanel topBanner = new JPanel();
+        helpMenu.add(simulationHelpItem);
+
+        menuBar.add(helpMenu);
+        setJMenuBar(menuBar);
+
+        //top banner
+        JPanel topBanner = new JPanel();
+
 		c.gridx = MIDDLE;
 		c.gridy = TOP;
-		c.gridwidth = 5;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 0;
-		
-		JLabel topLabel = new JLabel(manager.getMission().getName());
-		topLabel.setForeground(TEXT_COLOR);
-		topBanner.setBackground(BACKGROUND_COLOR);
-		topBanner.add(topLabel);
-		contentPane.add(topBanner, c);
-		
-		//left panel : graphs
-		graphPanel.setLayout(new BoxLayout(graphPanel, BoxLayout.PAGE_AXIS));
-		c.weightx = 0.2;
-		c.weighty = 1;
-		c.gridx = LEFT;
-		c.gridy = TOP;
-		c.gridwidth = 2;
-		c.gridheight = 6;
+        c.gridwidth = 5;
+        c.gridheight = 1;
+        c.weightx = 1;
+        c.weighty = 0;
 
-		graphPanel.add(speedGraph);
+        JLabel topLabel = new JLabel(manager.getMission().getName());
+        topLabel.setForeground(TEXT_COLOR);
+        topBanner.setBackground(BACKGROUND_COLOR);
+        topBanner.add(topLabel);
+        contentPane.add(topBanner, c);
 
-		graphPanel.add(accelerationGraph);
+        //left panel : graphs
+        chartPanel.setLayout(new BoxLayout(chartPanel, BoxLayout.PAGE_AXIS));
+        c.weightx = 0.2;
+        c.weighty = 1;
+		c.gridx = 0;
+        c.gridy = TOP;
+        c.gridwidth = 2;
+        c.gridheight = 6;
 
-		contentPane.add(graphPanel, c);
+        chartPanel.add(velocityChart);
 
-		c.weightx = 0.6;
-		c.weighty = 0.5;
-		c.gridx = MIDDLE;
-		c.gridy = 1;
-		c.gridwidth = 4;
-		c.gridheight = 3;
+        chartPanel.add(accelerationChart);
 
-		contentPane.add(trajectoryDisplay, c);
+        contentPane.add(chartPanel, c);
 
-		c.weighty = 1;
-		c.weightx = 0.5;
-		c.gridx = MIDDLE;
-		c.gridy = MIDDLE_BOTTOM;
-		c.gridwidth = 2;
-		c.gridheight = 1;
+        c.weightx = 0.6;
+        c.weighty = 0.5;
+        c.gridx = MIDDLE;
+        c.gridy = 1;
+        c.gridwidth = 4;
+        c.gridheight = 3;
 
-		telemetryDisplay.setBackground(BACKGROUND_COLOR);
-		contentPane.add(telemetryDisplay, c);
-		
-		
-		
-		//right panel : play, pause buttons
-		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new GridLayout(8,1));
-		((GridLayout) rightPanel.getLayout()).setVgap(10);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.2;
-		c.gridx = RIGHT;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 4;
+        contentPane.add(trajectoryDisplay, c);
 
-		startButton.addActionListener(new StartStopAction());
-		speedupButton.addActionListener(new IncreaseSpeedAction());
-		slowdownButton.addActionListener(new DecreaseSpeedAction());
-		zoomInButton.addActionListener(new ZoomInAction());
-		zoomOutButton.addActionListener(new ZoomOutAction());
-		resetViewButton.addActionListener(new ResetViewAction());
-		trackButton.addActionListener(new TrackAction());
+        c.weighty = 1;
+        c.weightx = 0.5;
+        c.gridx = MIDDLE;
+		c.gridy = 4;
+        c.gridwidth = 2;
+        c.gridheight = 1;
 
-		speedLabel.setForeground(TEXT_COLOR);
-		startButton.setForeground(TEXT_COLOR);
-		speedupButton.setForeground(TEXT_COLOR);
-		slowdownButton.setForeground(TEXT_COLOR);
-		zoomInButton.setForeground(TEXT_COLOR);
-		zoomOutButton.setForeground(TEXT_COLOR);
-		resetViewButton.setForeground(TEXT_COLOR);
-		trackButton.setForeground(TEXT_COLOR);
+        telemetryDisplay.setBackground(BACKGROUND_COLOR);
+        contentPane.add(telemetryDisplay, c);
 
-		speedLabel.setBackground(BACKGROUND_COLOR);
-		startButton.setBackground(BUTTON_COLOR);
-		speedupButton.setBackground(BUTTON_COLOR);
-		slowdownButton.setBackground(BUTTON_COLOR);
-		zoomInButton.setBackground(BUTTON_COLOR);
-		zoomOutButton.setBackground(BUTTON_COLOR);
-		resetViewButton.setBackground(BUTTON_COLOR);
-		trackButton.setBackground(BUTTON_COLOR);
 
-		rightPanel.add(speedLabel);
-		rightPanel.add(startButton);
-		rightPanel.add(speedupButton);
-		rightPanel.add(slowdownButton);
-		rightPanel.add(zoomInButton);
-		rightPanel.add(zoomOutButton);
-		rightPanel.add(resetViewButton);
-		rightPanel.add(trackButton);
+        //right panel : play, pause buttons
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new GridLayout(8, 1));
+        ((GridLayout) rightPanel.getLayout()).setVgap(10);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.2;
+		c.gridx = 6;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.gridheight = 4;
 
-		rightPanel.setBackground(BACKGROUND_COLOR);
-		contentPane.add(rightPanel, c);
-		
-		
-		//bottom panel
-		JPanel launchPanel = new JPanel();
-		c.weightx = 1;
-		c.weighty = 0.1;
-		c.gridx = MIDDLE;
-		c.gridy = BOTTOM;
-		c.gridwidth = 6;
-		c.gridheight = 1;
+        startButton.addActionListener(new StartStopAction());
+        speedupButton.addActionListener(new IncreaseSpeedAction());
+        slowdownButton.addActionListener(new DecreaseSpeedAction());
+        zoomInButton.addActionListener(new ZoomInAction());
+        zoomOutButton.addActionListener(new ZoomOutAction());
+        resetViewButton.addActionListener(new ResetViewAction());
+        trackButton.addActionListener(new TrackAction());
 
-		launchPanel.setBackground(BACKGROUND_COLOR);
-		contentPane.add(launchPanel, c);
-		
+        speedLabel.setForeground(TEXT_COLOR);
+        startButton.setForeground(TEXT_COLOR);
+        speedupButton.setForeground(TEXT_COLOR);
+        slowdownButton.setForeground(TEXT_COLOR);
+        zoomInButton.setForeground(TEXT_COLOR);
+        zoomOutButton.setForeground(TEXT_COLOR);
+        resetViewButton.setForeground(TEXT_COLOR);
+        trackButton.setForeground(TEXT_COLOR);
 
-				
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setMinimumSize(preferredSize);
-		pack();
-		setVisible(true);
-		setResizable(false);
-	}
+        speedLabel.setBackground(BACKGROUND_COLOR);
+        startButton.setBackground(BUTTON_COLOR);
+        speedupButton.setBackground(BUTTON_COLOR);
+        slowdownButton.setBackground(BUTTON_COLOR);
+        zoomInButton.setBackground(BUTTON_COLOR);
+        zoomOutButton.setBackground(BUTTON_COLOR);
+        resetViewButton.setBackground(BUTTON_COLOR);
+        trackButton.setBackground(BUTTON_COLOR);
 
-	private void updateValues() {
-		manager.next();
-		trajectoryDisplay.repaint();
-		telemetryDisplay.repaint();
-		speedGraph.update();
-		accelerationGraph.update();
-	}
+        rightPanel.add(speedLabel);
+        rightPanel.add(startButton);
+        rightPanel.add(speedupButton);
+        rightPanel.add(slowdownButton);
+        rightPanel.add(zoomInButton);
+        rightPanel.add(zoomOutButton);
+        rightPanel.add(resetViewButton);
+        rightPanel.add(trackButton);
 
-	@Override
-	public void run() {
-		while (!stop) {
-			try {
-				Thread.sleep(simulationSpeed);
-			} catch (InterruptedException e) {
-				System.out.println(e.getMessage());
-			}
-			speedGraph.repaint();
-			accelerationGraph.repaint();
-			trajectoryDisplay.repaint();
-			telemetryDisplay.repaint();
+        rightPanel.setBackground(BACKGROUND_COLOR);
+        contentPane.add(rightPanel, c);
 
-			// Ensure that the simulation is not stopped during the iteration.
-			if (!stop) {
-				updateValues();
-			}
-		}
-	}
 
-	private class StartStopAction implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (!stop) {
-				stop = true;
-				startButton.setText(" Play ");
-			} else {
-				stop = false;
-				startButton.setText(" Pause ");
-				if (firstRun) {
-					manager.launch();
-					firstRun = false;
-				}
-				Thread simThread = new Thread(instance);
-				simThread.start();
-			}
-		}
-	}
+        //bottom panel
+        JPanel launchPanel = new JPanel();
+        c.weightx = 1;
+        c.weighty = 0.1;
+        c.gridx = MIDDLE;
+		c.gridy = 5;
+        c.gridwidth = 6;
+        c.gridheight = 1;
 
-	private class exportAction implements ActionListener {
+        launchPanel.setBackground(BACKGROUND_COLOR);
+        contentPane.add(launchPanel, c);
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fileChooser.setDialogTitle("Export simulation");
 
-			int userSelection = fileChooser.showSaveDialog(contentPane);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(preferredSize);
+        pack();
+        setVisible(true);
+        setResizable(false);
+    }
 
-			if (userSelection == JFileChooser.APPROVE_OPTION) {
-				File fileToSave = fileChooser.getSelectedFile();
-				fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
-			}
-		}
-	}
+    private void updateValues() {
+        if (!manager.hasCrashed()) {
+            manager.next();
+            trajectoryDisplay.repaint();
+            telemetryDisplay.repaint();
+            velocityChart.update();
+            accelerationChart.update();
+        }
+    }
 
-	private class ImportAction implements ActionListener {
+    @Override
+    public void run() {
+        while (!stop) {
+            try {
+                Thread.sleep(simulationSpeed);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+            velocityChart.repaint();
+            accelerationChart.repaint();
+            trajectoryDisplay.repaint();
+            telemetryDisplay.repaint();
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
+            // Ensure that the simulation is not stopped during the iteration.
+            if (!stop) {
+                updateValues();
+            }
+        }
+    }
 
-			fileChooser.setDialogTitle("Export simulation");
+    private class StartStopAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!stop) {
+                stop = true;
+                startButton.setText(" Play ");
+            } else {
+                stop = false;
+                startButton.setText(" Pause ");
+                if (firstRun) {
+                    manager.launch();
+                    firstRun = false;
+                }
+                Thread simThread = new Thread(instance);
+                simThread.start();
+            }
+        }
+    }
 
-			int userSelection = fileChooser.showOpenDialog(contentPane);
+    private class exportAction implements ActionListener {
 
-			if (userSelection == JFileChooser.APPROVE_OPTION) {
-				File fileToOpen = fileChooser.getSelectedFile();
-				try {
-					stop = true;
-					SimulationManager newManager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
-					new SimulationGUI(getTitle(), newManager, fileManager);
-					dispose();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-	}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fileChooser.setDialogTitle("Export simulation");
 
-	private class ExitAction implements ActionListener {
+            int userSelection = fileChooser.showSaveDialog(contentPane);
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			setVisible(false);
-			dispose();
-		}
-	}
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                fileManager.exportSimulation(manager, fileToSave.getAbsolutePath());
+            }
+        }
+    }
 
-	private class NewSimulationAction implements ActionListener {
+    private class ImportAction implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			stop = true;
-			new MainGUI("Sim Launch 1.0.0");
-			setVisible(false);
-			dispose();
-		}
-	}
+        @Override
+        public void actionPerformed(ActionEvent e) {
 
-	private class IncreaseSpeedAction implements ActionListener {
+            fileChooser.setDialogTitle("Export simulation");
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if ((simulationSpeed / 2) > 0) {
-				speed *= 2;
-				speedLabel.setText("Speed: x" + speed);
-				simulationSpeed /= 2;
-			}
-		}
-	}
+            int userSelection = fileChooser.showOpenDialog(contentPane);
 
-	private class DecreaseSpeedAction implements ActionListener {
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToOpen = fileChooser.getSelectedFile();
+                try {
+                    stop = true;
+                    SimulationManager newManager = fileManager.importSimulation(fileToOpen.getAbsolutePath());
+                    new SimulationGUI(getTitle(), newManager, fileManager);
+                    dispose();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
+            }
+        }
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (((simulationSpeed * 2) > 0) && ((speed / 2) >= 0.0625)) {
-				speed /= 2;
-				speedLabel.setText("Speed: x" + speed);
-				simulationSpeed *= 2;
-			}
-		}
-	}
+    private class ExitAction implements ActionListener {
 
-	private class ZoomInAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int close;
+            if (!stop) {
+                close = JOptionPane.showConfirmDialog(null, "A simulation is launched, confirm you want to exit?");
+            }
+            else close = 1;
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if ((trajectoryDisplay.getScale() / 2) > 0) {
-				trajectoryDisplay.setScale(trajectoryDisplay.getScale() / 2);
-			}
-			trajectoryDisplay.repaint();
+            if (close == 1) {
+                setVisible(false);
+                dispose();
+            }
+        }
+    }
 
-		}
-	}
+    private class NewSimulationAction implements ActionListener {
 
-	private class ZoomOutAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stop = true;
+            new MainGUI(getTitle());
+            setVisible(false);
+            dispose();
+        }
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if ((trajectoryDisplay.getScale() * 2) > 0) {
-				trajectoryDisplay.setScale(trajectoryDisplay.getScale() * 2);
-			}
-			trajectoryDisplay.repaint();
-		}
-	}
+    private class IncreaseSpeedAction implements ActionListener {
 
-	private class ResetViewAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if ((simulationSpeed / 2) > 0) {
+                speed *= 2;
+                speedLabel.setText("Speed: x" + speed);
+                simulationSpeed /= 2;
+            }
+        }
+    }
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			CartesianCoordinate coordinate = manager.getRocket().getCartesianCoordinate();
+    private class DecreaseSpeedAction implements ActionListener {
 
-			trajectoryDisplay.setScale(SimConfig.DEFAULT_SCALE);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (((simulationSpeed * 2) > 0) && ((speed / 2) >= 0.0625)) {
+                speed /= 2;
+                speedLabel.setText("Speed: x" + speed);
+                simulationSpeed *= 2;
+            }
+        }
+    }
 
-			int rocketX = SimConfig.GRAPHIC_CENTER_X - (coordinate.getX() / trajectoryDisplay.getScale());
-			int rocketY = SimConfig.GRAPHIC_CENTER_Y - (coordinate.getY() / trajectoryDisplay.getScale());
+    private class ZoomInAction implements ActionListener {
 
-			trajectoryDisplay.setCenterX(rocketX);
-			trajectoryDisplay.setCenterY(rocketY);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if ((trajectoryDisplay.getScale() / 2) > 0) {
+                trajectoryDisplay.setScale(trajectoryDisplay.getScale() / 2);
+            }
+            trajectoryDisplay.repaint();
 
-			trajectoryDisplay.repaint();
-		}
-	}
+        }
+    }
 
-	private class TrackAction implements ActionListener {
+    private class ZoomOutAction implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if(!trajectoryDisplay.isLock()) {
-				trajectoryDisplay.setLock(true);
-				trackButton.setText("Stop tracking");
-				trackButton.setBackground(BUTTON_ENGAGE_COLOR);
-			}
-			else {
-				trajectoryDisplay.setLock(false);
-				trackButton.setText("Start tracking");
-				trackButton.setBackground(BUTTON_COLOR);
-			}
-			trajectoryDisplay.repaint();
-		}
-	}
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if ((trajectoryDisplay.getScale() * 2) > 0) {
+                trajectoryDisplay.setScale(trajectoryDisplay.getScale() * 2);
+            }
+            trajectoryDisplay.repaint();
+        }
+    }
 
-	private class MouseInput extends MouseInputAdapter {
+    private class ResetViewAction implements ActionListener {
 
-		private int initialX = 0;
-		private int initialY = 0;
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CartesianCoordinate coordinate = manager.getRocket().getCartesianCoordinate();
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-			initialX = e.getX();
-			initialY = e.getY();
-		}
+            trajectoryDisplay.setScale(SimConfig.DEFAULT_SCALE);
 
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			int deltaX = (e.getX() - initialX);
-			int deltaY = (e.getY() - initialY);
+            int rocketX = SimConfig.GRAPHIC_CENTER_X - (coordinate.getX() / trajectoryDisplay.getScale());
+            int rocketY = SimConfig.GRAPHIC_CENTER_Y - (coordinate.getY() / trajectoryDisplay.getScale());
 
-			initialX = e.getX();
-			initialY = e.getY();
+            trajectoryDisplay.setCenterX(rocketX);
+            trajectoryDisplay.setCenterY(rocketY);
 
-			CartesianCoordinate coordinate = manager.getRocket().getCartesianCoordinate();
-			int rocketX = trajectoryDisplay.getCenterX() + (coordinate.getX() / trajectoryDisplay.getScale()) + deltaX;
-			int rocketY = trajectoryDisplay.getCenterY() + (coordinate.getY() / trajectoryDisplay.getScale()) + deltaY;
+            trajectoryDisplay.repaint();
+        }
+    }
+
+    private class TrackAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!trajectoryDisplay.isLock()) {
+                trajectoryDisplay.setLock(true);
+                trackButton.setText("Stop tracking");
+                trackButton.setBackground(BUTTON_ENGAGE_COLOR);
+            } else {
+                trajectoryDisplay.setLock(false);
+                trackButton.setText("Start tracking");
+                trackButton.setBackground(BUTTON_COLOR);
+            }
+            trajectoryDisplay.repaint();
+        }
+    }
+
+    private class MouseInput extends MouseInputAdapter {
+
+        private int initialX = 0;
+        private int initialY = 0;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            initialX = e.getX();
+            initialY = e.getY();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            int deltaX = (e.getX() - initialX);
+            int deltaY = (e.getY() - initialY);
+
+            initialX = e.getX();
+            initialY = e.getY();
 
 			trajectoryDisplay.setCenterX(trajectoryDisplay.getCenterX() + deltaX);
-			trajectoryDisplay.setCenterY(trajectoryDisplay.getCenterY() + deltaY);
+            trajectoryDisplay.setCenterY(trajectoryDisplay.getCenterY() + deltaY);
 
-			trajectoryDisplay.repaint();
-		}
-	}
+            trajectoryDisplay.repaint();
+        }
+    }
 
-	private class MouseWheelControls implements MouseWheelListener {
+    private class MouseWheelControls implements MouseWheelListener {
 
-		@Override
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() == 1) {
-				if ((trajectoryDisplay.getScale() * 2) > 0) {
-					trajectoryDisplay.setScale(trajectoryDisplay.getScale() * 2);
-				}
-			}
-			else {
-				if ((trajectoryDisplay.getScale() / 2) > 0) {
-					trajectoryDisplay.setScale(trajectoryDisplay.getScale() / 2);
-				}
-			}
-			trajectoryDisplay.repaint();
-		}
-	}
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            if (e.getWheelRotation() == 1) {
+                if ((trajectoryDisplay.getScale() * 2) > 0) {
+                    trajectoryDisplay.setScale(trajectoryDisplay.getScale() * 2);
+                }
+            } else {
+                if ((trajectoryDisplay.getScale() / 2) > 0) {
+                    trajectoryDisplay.setScale(trajectoryDisplay.getScale() / 2);
+                }
+            }
+            trajectoryDisplay.repaint();
+        }
+    }
 
-	private class HelpAction implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			new HelpGUI("Help");
-		}
-	}
+    private class HelpAction implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            new HelpGUI("Help", manager.getMission());
+        }
+    }
 }

@@ -13,6 +13,7 @@ import process.management.SimulationManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ConcurrentModificationException;
 
 /**
  * This class draws the trajectory of the rocket. Used in {@link gui.SimulationGUI}.
@@ -63,7 +64,12 @@ public class TrajectoryDisplay extends JPanel {
         }
 
         for (Stage stage : manager.getReleasedStages()) {
-            paintStrategy.paint(stage, scale, centerX, centerY, g);
+            try {
+                paintStrategy.paint(stage, scale, centerX, centerY, g);
+            }
+            catch (ConcurrentModificationException e) {
+                logger.error("Could not paint a stage due to update in progress");
+            }
         }
 
         // paining trajectory

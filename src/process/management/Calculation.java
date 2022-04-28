@@ -256,7 +256,6 @@ public class Calculation {
             if (nearestObject.getName().equals("Earth")) {
 
                 if (rocket.getVelocity() < escapeVelocity) {
-
                     double rocketAngle = rocket.getCartesianCoordinate().getSelfAngle();
                     double vx = rocket.getVelocity() * Math.cos(rocketAngle);
                     double vy = rocket.getVelocity() * Math.sin(rocketAngle);
@@ -288,7 +287,7 @@ public class Calculation {
             rocketCoordinate.setY(tempY);
 
             double rocketAngle = rocket.getCartesianCoordinate().getSelfAngle();
-            double vx = rocket.getVelocity() * Math.cos(rocketAngle);
+            double vx = Math.abs(rocket.getVelocity() * Math.cos(rocketAngle));
             double vy = rocket.getVelocity() * Math.sin(rocketAngle);
 
             PolarCoordinate polarCoordinate = cartesianToPolar(rocketCoordinate);
@@ -330,7 +329,7 @@ public class Calculation {
             double gravity = calculateGravity(earth.getMass(), distanceFromEarth);
 
             // if velocity is not high enough to remain in orbit, stage fall back to earth, angle is then negative
-            double vx = stage.getVelocity() * Math.cos(Math.toRadians(-60));
+            double vx = Math.abs(stage.getVelocity() * Math.cos(Math.toRadians(-60)));
             double vy = stage.getVelocity() * Math.sin(Math.toRadians(-60)) - (centripetalForce - gravity);
 
             PolarCoordinate polarCoordinate = cartesianToPolar(stageCoordinate);
@@ -344,16 +343,14 @@ public class Calculation {
         else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
 
             // if stage velocity is high enough to remain in orbit, then angle is 90 (remain at a stable altitude)
-            double vx = stageVelocity * Math.cos(90);
-            double vy = stageVelocity * Math.sin(90);
+            double vx = stageVelocity * Math.cos(0);
+            double vy = stageVelocity * Math.sin(0);
 
             PolarCoordinate polarCoordinate = cartesianToPolar(stage.getCartesianCoordinate());
             polarCoordinate.setR(polarCoordinate.getR() + (vy * deltaTime));
 
             double angle = polarCoordinate.getAngle() - (vx / distanceFromEarth);
-            if (angle > 0) {
-                angle = -angle;
-            }
+
             polarCoordinate.setAngle(angle);
             returnCoordinate = polarToCartesian(polarCoordinate);
         } else {
