@@ -18,29 +18,26 @@ import java.util.ConcurrentModificationException;
 /**
  * Class containing methods allowing the trajectory of the rocket to be drawn in {@link gui.SimulationGUI}.
  *
- * @see gui.SimulationGUI
  * @author Alice Mabille
  * @version 22.04.28 (1.0.0)
+ * @see gui.SimulationGUI
  * @since 22.02.22
  */
 public class TrajectoryDisplay extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    
+
     // Logger input
     private final Logger logger = LoggerUtility.getLogger(TrajectoryDisplay.class, "html");
-
+    // Algorithmical configuration
+    private final SimulationManager manager;
+    private final PaintStrategy paintStrategy;
     // Graphical configuration
     private int scale = SimConfig.DEFAULT_SCALE;
     private boolean lock = false;
     private int centerX = SimConfig.GRAPHIC_CENTER_X;
     private int centerY = SimConfig.GRAPHIC_CENTER_Y;
-    
-    // Algorithmical configuration
-    private final SimulationManager manager;
-    private Calculation calculation = new Calculation();
-    
-    private final PaintStrategy paintStrategy;
+    private final Calculation calculation = new Calculation();
 
     public TrajectoryDisplay(SimulationManager manager) {
         super();
@@ -58,7 +55,7 @@ public class TrajectoryDisplay extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if(lock) {
+        if (lock) {
             CartesianCoordinate coordinate = manager.getRocket().getCartesianCoordinate();
 
             centerX = SimConfig.GRAPHIC_CENTER_X - (coordinate.getX() / scale);
@@ -74,8 +71,7 @@ public class TrajectoryDisplay extends JPanel {
         for (Stage stage : manager.getReleasedStages()) {
             try {
                 paintStrategy.paint(stage, scale, centerX, centerY, g);
-            }
-            catch (ConcurrentModificationException e) {
+            } catch (ConcurrentModificationException e) {
                 logger.error("Could not paint a stage due to update in progress");
             }
         }

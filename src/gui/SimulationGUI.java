@@ -1,60 +1,47 @@
 package gui;
 
 import config.SimConfig;
-
-import gui.elements.ChartPanel;
+import data.coordinate.CartesianCoordinate;
+import gui.elements.ChartsPanel;
 import gui.elements.TelemetryDisplay;
 import gui.elements.TrajectoryDisplay;
-
-import data.coordinate.CartesianCoordinate;
-
 import process.management.FileManager;
 import process.management.SimulationManager;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-
 import java.awt.*;
 import java.awt.event.*;
-
 import java.io.File;
 
 /**
  * Class containing all the processes required for the displaying of the software's second window. This is where the user can witness the simulation, by consulting all the different panels placed at their disposal.
  * Is opened by using {@link MainGUI} first.
  *
- * @see gui.MainGUI
  * @author Alice Mabille
  * @version 22.04.28 (1.0.0)
+ * @see gui.MainGUI
  * @since 22.02.22
  */
 public class SimulationGUI extends JFrame implements Runnable {
 
     private static final long serialVersionUID = 1L;
-    
-	// Colors used
+
+    // Colors used
     private final Color BACKGROUND_COLOR = new Color(60, 61, 64);
     private final Color TEXT_COLOR = new Color(240, 240, 240);
     private final Color BUTTON_COLOR = new Color(95, 0, 0);
     private final Color BUTTON_ENGAGE_COLOR = new Color(58, 162, 0);
-    
+
     // Window Dimension
     private final Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
-    
+
     // Managers
     private final SimulationManager manager;
     private final FileManager fileManager;
-    
-    // Utility elements
-    private float speed = 1;
-    private boolean firstRun = true;
-    
     // Charts
-    private final ChartPanel velocityChart;
-    private final ChartPanel accelerationChart;
-    
-    // Graphical elements
-    private Container contentPane;
+    private final ChartsPanel velocityChart;
+    private final ChartsPanel accelerationChart;
     private final GridBagConstraints c = new GridBagConstraints();
     private final JPanel chartPanel = new JPanel();
     private final JMenuBar menuBar = new JMenuBar();
@@ -66,7 +53,6 @@ public class SimulationGUI extends JFrame implements Runnable {
     private final JMenuItem exitItem = new JMenuItem("Exit");
     private final JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
     private final JFileChooser fileChooser = new JFileChooser("./");
-    private final JLabel speedLabel = new JLabel("Speed: x" + speed);
     private final JButton startButton = new JButton("Play");
     private final JButton speedupButton = new JButton("Speed up");
     private final JButton slowdownButton = new JButton("Slow down");
@@ -74,29 +60,34 @@ public class SimulationGUI extends JFrame implements Runnable {
     private final JButton zoomOutButton = new JButton("Zoom out");
     private final JButton resetViewButton = new JButton("Reset View");
     private final JButton trackButton = new JButton("Start tracking");
-    
-    // Displayer
+    // Displayed
     private final TrajectoryDisplay trajectoryDisplay;
     private final TelemetryDisplay telemetryDisplay;
-
+    private final SimulationGUI instance = this;
+    // Utility elements
+    private float speed = 1;
+    private final JLabel speedLabel = new JLabel("Speed: x" + speed);
+    private boolean firstRun = true;
+    // Graphical elements
+    private Container contentPane;
     // Initial status of the start button.
     private boolean stop = true;
-    private final SimulationGUI instance = this;
     private int simulationSpeed = SimConfig.SIMULATION_SPEED;
 
 
-	/**
-	 * Constructor of the SimulationGUI window.
-	 * @param title the title of the window.
-	 * @param manager the {@link SimulationManager} to use.
-	 * @param fileManager the {@link FileManager} to use for imports/exports.
-	 */
+    /**
+     * Constructor of the SimulationGUI window.
+     *
+     * @param title       the title of the window.
+     * @param manager     the {@link SimulationManager} to use.
+     * @param fileManager the {@link FileManager} to use for imports/exports.
+     */
     public SimulationGUI(String title, SimulationManager manager, FileManager fileManager) {
         super(title);
         this.manager = manager;
         this.fileManager = fileManager;
-        velocityChart = new ChartPanel("Speed", manager.getTelemetry());
-        accelerationChart = new ChartPanel("Acceleration", manager.getTelemetry());
+        velocityChart = new ChartsPanel("Speed", manager.getTelemetry());
+        accelerationChart = new ChartsPanel("Acceleration", manager.getTelemetry());
         trajectoryDisplay = new TrajectoryDisplay(manager);
         telemetryDisplay = new TelemetryDisplay(manager);
         MouseInput mouseInput = new MouseInput();
@@ -106,13 +97,13 @@ public class SimulationGUI extends JFrame implements Runnable {
         init();
     }
 
-	/**
-	 * Initializes the JFrame.
-	 */
+    /**
+     * Initializes the JFrame.
+     */
     private void init() {
 
-		int MIDDLE = 2;
-		int TOP = 0;
+        int MIDDLE = 2;
+        int TOP = 0;
 
         contentPane = getContentPane();
         contentPane.setLayout(new GridBagLayout());
@@ -139,8 +130,8 @@ public class SimulationGUI extends JFrame implements Runnable {
         //top banner
         JPanel topBanner = new JPanel();
 
-		c.gridx = MIDDLE;
-		c.gridy = TOP;
+        c.gridx = MIDDLE;
+        c.gridy = TOP;
         c.gridwidth = 5;
         c.gridheight = 1;
         c.weightx = 1;
@@ -156,7 +147,7 @@ public class SimulationGUI extends JFrame implements Runnable {
         chartPanel.setLayout(new BoxLayout(chartPanel, BoxLayout.PAGE_AXIS));
         c.weightx = 0.2;
         c.weighty = 1;
-		c.gridx = 0;
+        c.gridx = 0;
         c.gridy = TOP;
         c.gridwidth = 2;
         c.gridheight = 6;
@@ -179,7 +170,7 @@ public class SimulationGUI extends JFrame implements Runnable {
         c.weighty = 1;
         c.weightx = 0.5;
         c.gridx = MIDDLE;
-		c.gridy = 4;
+        c.gridy = 4;
         c.gridwidth = 2;
         c.gridheight = 1;
 
@@ -193,7 +184,7 @@ public class SimulationGUI extends JFrame implements Runnable {
         ((GridLayout) rightPanel.getLayout()).setVgap(10);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.2;
-		c.gridx = 6;
+        c.gridx = 6;
         c.gridy = 0;
         c.gridwidth = 1;
         c.gridheight = 4;
@@ -242,7 +233,7 @@ public class SimulationGUI extends JFrame implements Runnable {
         c.weightx = 1;
         c.weighty = 0.1;
         c.gridx = MIDDLE;
-		c.gridy = 5;
+        c.gridy = 5;
         c.gridwidth = 6;
         c.gridheight = 1;
 
@@ -354,8 +345,7 @@ public class SimulationGUI extends JFrame implements Runnable {
             int close;
             if (!stop) {
                 close = JOptionPane.showConfirmDialog(null, "A simulation is launched, confirm you want to exit?");
-            }
-            else close = 1;
+            } else close = 1;
 
             if (close == 1) {
                 setVisible(false);
@@ -476,7 +466,7 @@ public class SimulationGUI extends JFrame implements Runnable {
             initialX = e.getX();
             initialY = e.getY();
 
-			trajectoryDisplay.setCenterX(trajectoryDisplay.getCenterX() + deltaX);
+            trajectoryDisplay.setCenterX(trajectoryDisplay.getCenterX() + deltaX);
             trajectoryDisplay.setCenterY(trajectoryDisplay.getCenterY() + deltaY);
 
             trajectoryDisplay.repaint();

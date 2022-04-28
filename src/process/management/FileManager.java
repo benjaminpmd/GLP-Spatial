@@ -21,18 +21,18 @@ import java.util.List;
  * payload and the last one is used to store data for the mission itself. Each key of the maps store the data of an attribute.
  * To simplify operations, keys and related attributes have the exact same name.
  *
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
  * @see process.builders.CelestialObjectBuilder
  * @see process.builders.SpaceCenterBuilder
  * @see process.management.SimulationManager
- * @author Benjamin P
- * @version 22.04.28 (1.0.0)
  * @since 22.03.07
  */
 public class FileManager {
 
     private final Logger logger = LoggerUtility.getLogger(FileManager.class, "html");
     private final CelestialObjectBuilder celestialObjectBuilder;
-    private SpaceCenterBuilder spaceCenterBuilder;
+    private final SpaceCenterBuilder spaceCenterBuilder;
 
     public FileManager(CelestialObjectBuilder celestialObjectBuilder, SpaceCenterBuilder spaceCenterBuilder) {
         this.celestialObjectBuilder = celestialObjectBuilder;
@@ -42,7 +42,7 @@ public class FileManager {
     /**
      * Method that export a simulation settings into a file.
      *
-     * @param manager {@link SimulationManager} the simulation to export.
+     * @param manager    {@link SimulationManager} the simulation to export.
      * @param outputPath {@link String} the path of the file to create, a ".launch" extension will be added to the path.
      */
     public void exportSimulation(SimulationManager manager, String outputPath) {

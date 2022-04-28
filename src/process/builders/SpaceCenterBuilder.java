@@ -16,10 +16,10 @@ import java.io.IOException;
 /**
  * Class to build space centers.
  *
- * @see SpaceCenterRepository
- * @see data.mission.SpaceCenter
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see SpaceCenterRepository
+ * @see data.mission.SpaceCenter
  * @since 22.02.14
  */
 public class SpaceCenterBuilder {

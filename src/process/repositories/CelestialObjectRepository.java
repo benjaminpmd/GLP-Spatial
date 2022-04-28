@@ -12,11 +12,11 @@ import java.util.Set;
  */
 public class CelestialObjectRepository {
 
-    private HashMap<String, String[]> values = new HashMap<>();
+    private static final CelestialObjectRepository instance = new CelestialObjectRepository();
+    private final HashMap<String, String[]> values = new HashMap<>();
 
-    private static CelestialObjectRepository instance = new CelestialObjectRepository();
-
-    private CelestialObjectRepository() {}
+    private CelestialObjectRepository() {
+    }
 
     /**
      * Method to get the only instance of this repository.
@@ -30,10 +30,10 @@ public class CelestialObjectRepository {
     /**
      * Register a value in the repository.
      *
-     * @param name {@link String} the name of the celestial object.
+     * @param name  {@link String} the name of the celestial object.
      * @param value {@link String}[] with the first value as the radius of the object, and the second one, the weight of the object.
      */
-    public void register(String name, String value[]) {
+    public void register(String name, String[] value) {
         if (!values.containsKey(name)) {
             values.put(name, value);
         }

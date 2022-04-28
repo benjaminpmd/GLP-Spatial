@@ -8,29 +8,29 @@ package data.coordinate;
  * @since 22.02.11
  */
 public class Coordinate {
-	// in radian
-	private double selfAngle;
+    // in radian
+    private double selfAngle;
 
-	Coordinate(double selfAngle) {
-		this.selfAngle = selfAngle;
-	}
+    Coordinate(double selfAngle) {
+        this.selfAngle = selfAngle;
+    }
 
-	Coordinate() {
-		this.selfAngle = 0;
-	}
+    Coordinate() {
+        this.selfAngle = 0;
+    }
 
-	@Override
-	public String toString() {
-		return "Coordinate{" +
-				"selfAngle=" + selfAngle +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "selfAngle=" + selfAngle +
+                '}';
+    }
 
-	public double getSelfAngle() {
-		return selfAngle;
-	}
+    public double getSelfAngle() {
+        return selfAngle;
+    }
 
-	public void setSelfAngle(double selfAngle) {
-		this.selfAngle = selfAngle;
-	}
+    public void setSelfAngle(double selfAngle) {
+        this.selfAngle = selfAngle;
+    }
 }

@@ -6,10 +6,10 @@ import data.coordinate.CartesianCoordinate;
 /**
  * Class that contains information about the rocket.
  *
- * @see data.rocket.Stage
- * @see data.rocket.Payload
  * @author Alice M, Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.rocket.Stage
+ * @see data.rocket.Payload
  * @since 22.02.11
  */
 public class Rocket extends MobileElement {

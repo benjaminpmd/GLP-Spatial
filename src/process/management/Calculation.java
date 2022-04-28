@@ -240,10 +240,10 @@ public class Calculation {
     /**
      * Method that calculate the position of the rocket.
      *
-     * @param rocket           The rocket to use.
-     * @param nearestObject      The destination, can be the earth or another planet/moon.
-     * @param deltaTime        The delta time between 2 updates in s.
-     * @param escapeGravity        A boolean that trigger some variation in the trajectory.
+     * @param rocket        The rocket to use.
+     * @param nearestObject The destination, can be the earth or another planet/moon.
+     * @param deltaTime     The delta time between 2 updates in s.
+     * @param escapeGravity A boolean that trigger some variation in the trajectory.
      * @return A {@link CartesianCoordinate} object.
      */
     public CartesianCoordinate calculateRocketPosition(Rocket rocket, CelestialObject nearestObject, double altitude, double deltaTime, boolean escapeGravity) {
@@ -265,14 +265,12 @@ public class Calculation {
                     polarCoordinate.setAngle(angle);
                     returnCoordinate = polarToCartesian(polarCoordinate);
                     returnCoordinate.setSelfAngle(rocketAngle);
-                }
-                else {
+                } else {
 
                     returnCoordinate = rocket.getCartesianCoordinate();
                     returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
                 }
-            }
-            else {
+            } else {
 
                 returnCoordinate = rocket.getCartesianCoordinate();
                 returnCoordinate.setX((int) (returnCoordinate.getX() + rocket.getVelocity()));
@@ -308,9 +306,9 @@ public class Calculation {
     /**
      * Method that calculates the position of a stage.
      *
-     * @param stage       The stage to use.
-     * @param earth       The earth object.
-     * @param deltaTime   The delta time between 2 updates in s.
+     * @param stage     The stage to use.
+     * @param earth     The earth object.
+     * @param deltaTime The delta time between 2 updates in s.
      * @return A {@link CartesianCoordinate} object.
      */
     public CartesianCoordinate calculateStagePosition(Stage stage, CelestialObject earth, double deltaTime) {
@@ -339,8 +337,7 @@ public class Calculation {
 
             polarCoordinate.setAngle(angle);
             returnCoordinate = polarToCartesian(polarCoordinate);
-        }
-        else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
+        } else if ((minimalOrbitVelocity <= stageVelocity) && (stageVelocity < escapeVelocity)) {
 
             // if stage velocity is high enough to remain in orbit, then angle is 90 (remain at a stable altitude)
             double vx = stageVelocity * Math.cos(0);

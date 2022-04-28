@@ -12,8 +12,8 @@ import java.util.Set;
  */
 public class SpaceCenterRepository {
 
-    private static SpaceCenterRepository instance = new SpaceCenterRepository();
-    private HashMap<String, Integer> values = new HashMap<>();
+    private static final SpaceCenterRepository instance = new SpaceCenterRepository();
+    private final HashMap<String, Integer> values = new HashMap<>();
 
     private SpaceCenterRepository() {
     }

@@ -1,6 +1,5 @@
 package data.mission;
 
-import data.MobileElement;
 import data.coordinate.CartesianCoordinate;
 
 /**

@@ -22,11 +22,11 @@ import java.util.List;
  * This class also store the celestial objects that will interact with the rocket, the Earth and the destination object
  * if it is not earth.
  *
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
  * @see data.mission.CelestialObject
  * @see data.rocket.Rocket
  * @see data.rocket.Stage
- * @author Benjamin P
- * @version 22.04.28 (1.0.0)
  * @since 22.02.14
  */
 public class SimulationManager {
@@ -36,10 +36,10 @@ public class SimulationManager {
     private final TelemetryRecord telemetry;
     private final Mission mission;
     private final Rocket rocket;
-    private volatile List<CartesianCoordinate> coordinatesHistory = new ArrayList<>(); // record the last 255 postions of the rocket.
-    private volatile List<CartesianCoordinate> trajectoryHistory = new ArrayList<>(); // record path of the rocket.
     private final HashMap<String, CelestialObject> celestialObjects = new HashMap<String, CelestialObject>(); // celestial objects that will interact with the mission.
-    private volatile List<Stage> releasedStages = new ArrayList<>(); // separated stages
+    private final List<CartesianCoordinate> coordinatesHistory = new ArrayList<>(); // record the last 255 postions of the rocket.
+    private final List<CartesianCoordinate> trajectoryHistory = new ArrayList<>(); // record path of the rocket.
+    private final List<Stage> releasedStages = new ArrayList<>(); // separated stages
     private double deltaTime;
     private int rocketConfig;
     private boolean escapeGravity;
@@ -149,11 +149,10 @@ public class SimulationManager {
     public boolean hasCrashed() {
         double distance = Math.abs(calculation.calculateDistance(rocket.getCartesianCoordinate(), nearestObject.getCartesianCoordinate()));
 
-        if (distance < nearestObject.getRadius()-10) {
+        if (distance < nearestObject.getRadius() - 10) {
             rocketConfig = 6;
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     /**
@@ -242,7 +241,7 @@ public class SimulationManager {
 
         CartesianCoordinate previousCoordinate;
         if (coordinatesHistory.size() > 1) {
-            previousCoordinate = coordinatesHistory.get(coordinatesHistory.size()-1);
+            previousCoordinate = coordinatesHistory.get(coordinatesHistory.size() - 1);
         } else {
             previousCoordinate = rocket.getCartesianCoordinate();
         }
@@ -273,8 +272,7 @@ public class SimulationManager {
                 rocket.getCartesianCoordinate().setSelfAngle(0);
                 isOrbiting = true;
 
-            }
-            else if (altitude < targetAltitude) {
+            } else if (altitude < targetAltitude) {
                 rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(10));
 
             } else if (altitude > targetAltitude) {

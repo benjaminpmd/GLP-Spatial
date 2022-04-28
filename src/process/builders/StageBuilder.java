@@ -9,10 +9,10 @@ import process.factories.StageComponentFactory;
 /**
  * Class to build space centers.
  *
- * @see process.factories.StageComponentFactory
- * @see data.rocket.Stage
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see process.factories.StageComponentFactory
+ * @see data.rocket.Stage
  * @since 22.02.14
  */
 public class StageBuilder {
@@ -20,13 +20,13 @@ public class StageBuilder {
     /**
      * Method to build a stage.
      *
-     * @param tankCapacity          {@link Integer} the capacity in L.
-     * @param propellantDensity     {@link Double} the density of the propellant to use in kg.L^-1.
-     * @param engineNb              {@link Integer} the number of engine.
-     * @param engineThrust          {@link Double} the thrust produced per engine in N.
-     * @param engineThrustRatio     {@link Double} the "Weight to Thrust Ratio" of the engine.
-     * @param engineIsp             {@link Integer} the Specific Impulse of the engine.
-     * @param exhaustVelocity       {@link Integer} the speed of the gas at the exit of the engine nozzle.
+     * @param tankCapacity      {@link Integer} the capacity in L.
+     * @param propellantDensity {@link Double} the density of the propellant to use in kg.L^-1.
+     * @param engineNb          {@link Integer} the number of engine.
+     * @param engineThrust      {@link Double} the thrust produced per engine in N.
+     * @param engineThrustRatio {@link Double} the "Weight to Thrust Ratio" of the engine.
+     * @param engineIsp         {@link Integer} the Specific Impulse of the engine.
+     * @param exhaustVelocity   {@link Integer} the speed of the gas at the exit of the engine nozzle.
      * @return {@link Stage}
      */
     public Stage buildStage(int tankCapacity, double propellantDensity, int engineNb, double engineThrust, double engineThrustRatio, int engineIsp, int exhaustVelocity) {

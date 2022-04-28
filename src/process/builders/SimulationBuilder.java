@@ -7,7 +7,6 @@ import data.mission.SpaceCenter;
 import data.rocket.Rocket;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
-import process.management.Calculation;
 import process.management.SimulationManager;
 
 import java.util.HashMap;
@@ -16,9 +15,9 @@ import java.util.HashMap;
  * Class that build the simulation manager to use. Featuring an overload of the build method, it allows to build a manager
  * from imported file or user input.
  *
- * @see process.management.SimulationManager
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see process.management.SimulationManager
  * @since 22.03.18
  */
 public class SimulationBuilder {
@@ -46,7 +45,7 @@ public class SimulationBuilder {
         missionBuilder = new MissionBuilder();
     }
 
-    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, HashMap<String, String>missionParam) {
+    public SimulationManager buildSimulation(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, String payloadMass, HashMap<String, String> missionParam) {
         Mission mission = missionBuilder.buildMission(missionParam.get("name"),
                 missionParam.get("description"),
                 missionParam.get("spaceCenterName"),

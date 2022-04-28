@@ -1,7 +1,5 @@
 package data.rocket;
 
-import config.Constants;
-
 /**
  * Class that contains information about the propellant.
  *
@@ -27,6 +25,7 @@ public class Propellant {
                 "density=" + density +
                 '}';
     }
+
     public double getDensity() {
         return density;
     }

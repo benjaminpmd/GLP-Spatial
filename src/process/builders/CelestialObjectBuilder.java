@@ -3,10 +3,10 @@ package process.builders;
 import data.coordinate.CartesianCoordinate;
 import data.coordinate.PolarCoordinate;
 import data.mission.CelestialObject;
-import process.management.Calculation;
-import process.repositories.CelestialObjectRepository;
 import log.LoggerUtility;
 import org.apache.log4j.Logger;
+import process.management.Calculation;
+import process.repositories.CelestialObjectRepository;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,10 +17,10 @@ import java.io.IOException;
  * Class to build various celestial objects. All the objects must be registered in the CSV file passed to the constructor.
  * Once the object is initialized, the build method allows to get a built celestial object stored in the CelestialObjectRepository.
  *
- * @see data.mission.CelestialObject
- * @see process.repositories.CelestialObjectRepository
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.mission.CelestialObject
+ * @see process.repositories.CelestialObjectRepository
  * @since 22.02.14
  */
 public class CelestialObjectBuilder {

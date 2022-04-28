@@ -10,9 +10,9 @@ import java.util.Date;
 /**
  * Class to transfer input data from the user input to a new Mission Object.
  *
- * @see data.mission.Mission
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.mission.Mission
  * @since 22.03.07
  */
 public class MissionBuilder {

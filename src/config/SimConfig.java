@@ -4,14 +4,14 @@ import java.awt.Dimension;
 
 /**
  * Class containing all the constants and paths used for the simulation configuration.
- * 
+ *
  * @author Lucas L
  * @version 22.04.28 (1.0.0)
  * @since 22.02.11
  */
 public class SimConfig {
-	
-	//Dimensions of all the windows
+
+    //Dimensions of all the windows
     public static final int WINDOW_WIDTH = 1152;
     public static final int WINDOW_HEIGHT = 648;
 
@@ -32,9 +32,9 @@ public class SimConfig {
     //Relative position of the Rocket Schema in SimulationGUI
     public static final int ROCKET_SCHEMA_X = 270;
     public static final int ROCKET_SCHEMA_Y = 20;
-    
+
     // Dimension of the graphs used in SimulationGUI
-    public static final Dimension IDEAL_GRAPH_DIMENSION = new Dimension(200,200);
+    public static final Dimension IDEAL_GRAPH_DIMENSION = new Dimension(200, 200);
 
     // Update speed of the screen in milliseconds
     public static final int SIMULATION_SPEED = 1000;

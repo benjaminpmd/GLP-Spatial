@@ -14,9 +14,9 @@ import java.io.IOException;
  * Object containing a celestial object and its properties. A celestial object is a naturally occurring object that is
  * in the observable universe. It can be a star, planet, moon, asteroid etc...
  *
- * @see data.MobileElement
  * @author Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.MobileElement
  * @since 22.02.11
  */
 public class CelestialObject extends MobileElement {

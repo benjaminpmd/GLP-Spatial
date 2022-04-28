@@ -3,9 +3,9 @@ package data.rocket;
 /**
  * Class that contains information about the propellant tank.
  *
- * @see data.rocket.Propellant
  * @author Alice M, Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.rocket.Propellant
  * @since 22.02.11
  */
 public class Tank {

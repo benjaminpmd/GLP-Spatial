@@ -5,10 +5,10 @@ import data.MobileElement;
 /**
  * Class that contains information about the stage.
  *
- * @see data.rocket.RocketEngine
- * @see data.rocket.Tank
  * @author Alice M, Benjamin P
  * @version 22.04.28 (1.0.0)
+ * @see data.rocket.RocketEngine
+ * @see data.rocket.Tank
  * @since 22.02.11
  */
 public class Stage extends MobileElement {
