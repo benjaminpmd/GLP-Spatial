@@ -8,8 +8,8 @@ import data.coordinate.CartesianCoordinate;
  * located near the equator to use the full benefit of earth rotation velocity.
  *
  * @author Benjamin P
- * @version 22.03.16 (1.0.0)
- * @since 11.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class SpaceCenter {
 

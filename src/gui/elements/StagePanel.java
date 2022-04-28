@@ -10,22 +10,31 @@ import java.awt.*;
 import java.util.HashMap;
 
 /**
- * JPanel that displays every characteristic of the Stage you need the user to choose so the rocket can fly.
+ * Class containing all the required elements to create a JPanel that displays every characteristic of the Stage which the user has to choose, making the rocket able to take off. 
+ * Used in {@link MainGUI}.
+ * 
+ * @see gui.MainGUI
  * @author Alice Mabille
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class StagePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	// Core attributes
 	private int stage;
 	private int maxEngines;
-	// fields
+	
+	// JTextField used
 	private JTextField capacityField = new JTextField();
 	private JTextField densityField = new JTextField();
 	private JTextField thrustToWeightField = new JTextField();
 	private JTextField engineThrustField = new JTextField();
 	private JTextField ispField = new JTextField();
 	private JTextField exhaustVelocityField = new JTextField();
-	// labels
+	
+	// JLabel used
 	private JLabel titleLabel;
 	private JLabel capacityLabel = new JLabel("Propellant Volume (L)");
 	private JLabel densityLabel = new JLabel("Propellant density (kg.L^-1)");
@@ -35,7 +44,10 @@ public class StagePanel extends JPanel {
 	private JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
 	private JLabel ispLabel = new JLabel("ISP (s)");
 
+	//JSlider
 	private JSlider engNumSlider;
+	
+	// Default values
 	private String defaultCapacity;
 	private String defaultDensity;
 	private String defaultTWRatio;
@@ -46,7 +58,7 @@ public class StagePanel extends JPanel {
 
 
 	/**
-	 * Builds a JPanel that displays every characteristic of the Stage you need the user to choose so the rocket can fly.
+	 * Builds a JPanel that displays every characteristic of the Stage which the user has to choose, making the rocket able to take off.
 	 * @param stage either 1 for the 1st stage or 2 for the 2nd stage
 	 * @param maxEngines the maximum number of engines
 	 */
@@ -98,6 +110,10 @@ public class StagePanel extends JPanel {
 		setDefaultValues();
 	}
 
+	/**
+	 * Sets up the background color of the elements.
+	 * @param c the color of the elements
+	 */
 	public void setElementsBackground(Color c) {
 		capacityField.setBackground(c);
 		densityField.setBackground(c);
@@ -108,6 +124,10 @@ public class StagePanel extends JPanel {
 		ispField.setBackground(c);
 	}
 
+	/**
+	 * Sets up the foreground color of the elements.
+	 * @param c the color of the elements
+	 */
 	public void setElementsForeground(Color c) {
 		capacityField.setForeground(c);
 		densityField.setForeground(c);
@@ -159,7 +179,6 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * Gets the text from the text fields and slider. Used in {@link gui.MainGUI}.
-	 * @author Benjamin Paumard, Alice Mabille
 	 */
 	public HashMap<String,String> getValues() {
 		HashMap<String,String> values = new HashMap<String,String>();

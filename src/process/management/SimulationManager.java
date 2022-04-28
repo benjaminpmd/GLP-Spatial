@@ -17,17 +17,17 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Manager of the simulation. This class updates the rocket mass given the delta time for each update. This manager also
+ * Management class of the simulation. This class updates the rocket mass given the delta time for each update. This manager also
  * manage various rocket elements like stage separation and move them in a List to be displayed separated from the rocket.
  * This class also store the celestial objects that will interact with the rocket, the Earth and the destination object
  * if it is not earth.
  *
- * @author Benjamin P
- * @version 22.02.17 (0.4.0 WIP)
  * @see data.mission.CelestialObject
  * @see data.rocket.Rocket
  * @see data.rocket.Stage
- * @since 14.02.22
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.14
  */
 public class SimulationManager {
 

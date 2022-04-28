@@ -1,28 +1,53 @@
 package gui;
 
 import config.SimConfig;
+
 import data.mission.Mission;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 import java.awt.*;
-
+/**
+ * Class containing all the processes required for the displaying of the software's third window. The user can consult the help menu of the software here.
+ * Is opened by using either {@link MainGUI} or {@link SimulationGUI} first.
+ * 
+ * @see gui.MainGUI
+ * @see gui.SimulationGUI
+ * @author Lucas L
+ * @version 22.04.28 (1.0.0)
+ * @since 22.04.10
+ */
 public class HelpGUI extends JFrame {
 
+	// Dimension and sizes of the elements
     private final static Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
     private Border border = BorderFactory.createEmptyBorder(20, 50, 10, 50);
+    
+    // Colors used
     private final Color TEXT_COLOR = new Color(240, 240, 240);
     private final Color BACKGROUND_COLOR = new Color(60,61,64);
     private final  Color TEXT_BACKGROUND_COLOR = new Color(71,72,75);
+    
+    // The mission currently running
     private Mission currentMission;
     
+    /**
+     * Constructor of the HelpGUI window.
+     * 
+     * @see data.mission.Mission
+     * @param title the title of the window.
+     * @param currentMission the data of the mission currently running
+     */
     public HelpGUI(String title, Mission currentMission){
         super(title);
         this.currentMission = currentMission;
         init();
     }
-
+    
+    /**
+	 * Initializes the JFrame.
+	 */
     private void init() {
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.LINE_AXIS));

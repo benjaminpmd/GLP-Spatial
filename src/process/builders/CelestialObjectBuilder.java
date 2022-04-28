@@ -17,11 +17,11 @@ import java.io.IOException;
  * Class to build various celestial objects. All the objects must be registered in the CSV file passed to the constructor.
  * Once the object is initialized, the build method allows to get a built celestial object stored in the CelestialObjectRepository.
  *
+ * @see data.mission.CelestialObject
+ * @see process.repositories.CelestialObjectRepository
  * @author Benjamin P
- * @version 22.03.13 (1.0.0)
- * @see CelestialObject
- * @see CelestialObjectRepository
- * @since 14.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.14
  */
 public class CelestialObjectBuilder {
 

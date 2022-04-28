@@ -15,10 +15,12 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class draws the trajectory of the rocket. Used in {@link gui.SimulationGUI}.
+ * Class containing methods allowing all the different drawable elements to be drawn in {@link gui.SimulationGUI}.
  * 
  * @see gui.SimulationGUI
  * @author Alice Mabille
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.22
  */
 public class PaintStrategy {
 

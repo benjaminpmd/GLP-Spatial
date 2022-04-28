@@ -21,12 +21,12 @@ import java.util.List;
  * payload and the last one is used to store data for the mission itself. Each key of the maps store the data of an attribute.
  * To simplify operations, keys and related attributes have the exact same name.
  *
+ * @see process.builders.CelestialObjectBuilder
+ * @see process.builders.SpaceCenterBuilder
+ * @see process.management.SimulationManager
  * @author Benjamin P
- * @version 22.03.13 (1.0.0)
- * @see SimulationManager
- * @see CelestialObjectBuilder
- * @see SpaceCenterBuilder
- * @since 07.03.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.03.07
  */
 public class FileManager {
 

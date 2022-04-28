@@ -3,10 +3,10 @@ package data.coordinate;
 /**
  * Class that store the polar location of an object relative to a reference anchor point.
  *
- * @author Benjamin P
- * @version 22.03.06 (1.0.0)
  * @see data.coordinate.Coordinate
- * @since 11.02.22
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class PolarCoordinate extends Coordinate {
 	

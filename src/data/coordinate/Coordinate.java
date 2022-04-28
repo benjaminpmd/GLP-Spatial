@@ -4,8 +4,8 @@ package data.coordinate;
  * Class containing the base of a coordinate, the angle of the object in radian.
  *
  * @author Benjamin P
- * @version 22.03.06 (1.0.0)
- * @since 11.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class Coordinate {
 	// in radian

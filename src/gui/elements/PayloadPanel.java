@@ -14,26 +14,34 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
- * A panel with pre-made buttons. Allows the user to choose the type of payload to send into space.
- * Used in @see MainGUI
+ * Class containing a panel with pre-made buttons. Allows the user to choose the type of payload which is associated with the rocket.
+ * Used in {@link MainGUI}.
  *
+ * @see gui.MainGUI
  * @author Alice Mabille
- *
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class PayloadPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
+	// Top part of the JPanel
 	private JPanel topPanel = new JPanel();
-	private JPanel bottomPanel = new JPanel();
-	private JLabel massLabel = new JLabel("Custom payload mass (kg) :");
-	private JTextField massField = new JTextField();
 	private ButtonGroup radioButtonGroup = new ButtonGroup();
 	private JRadioButton obsButton = new JRadioButton("Observation");
 	private JRadioButton geoButton = new JRadioButton("Geostationary");
 	private JRadioButton cubsatButton = new JRadioButton("Cubsat");
 	private JRadioButton interplanetButton = new JRadioButton("Interplanetary");
-
+	
+	// Bottom part of the JPanel
+	private JPanel bottomPanel = new JPanel();
+	private JLabel massLabel = new JLabel("Custom payload mass (kg) :");
+	private JTextField massField = new JTextField();
+	
+	/**
+	 * Builds a JPanel that shows all the types of payload available for the user to be chosen.
+	 */
 	public PayloadPanel() {
 
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
@@ -73,7 +81,11 @@ public class PayloadPanel extends JPanel {
 
 		add(bottomPanel);
 	}
-
+	
+	/**
+	 * Sets up the background color of the elements.
+	 * @param c the color of the elements
+	 */
 	public void setElementsBackground(Color c) {
 		obsButton.setBackground(c);
 		geoButton.setBackground(c);
@@ -84,6 +96,10 @@ public class PayloadPanel extends JPanel {
 		bottomPanel.setBackground(c);
 	}
 
+	/**
+	 * Sets up the foreground color of the elements.
+	 * @param c the color of the elements
+	 */
 	public void setElementsForeground(Color c) {
 		obsButton.setForeground(c);
 		geoButton.setForeground(c);
@@ -97,6 +113,9 @@ public class PayloadPanel extends JPanel {
 		return massField.getText();
 	}
 
+	/**
+	 * Sets up all the default values of the payload in function of its type, when the user clicks on its associated JRadioButton.
+	 */
 	private void setTypicalPayloadWeight() {
 		if (obsButton.isSelected()) {
 			massField.setText("1500");

@@ -7,36 +7,55 @@ import gui.elements.TelemetryDisplay;
 import gui.elements.TrajectoryDisplay;
 
 import data.coordinate.CartesianCoordinate;
+
 import process.management.FileManager;
 import process.management.SimulationManager;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
+
 import java.awt.*;
 import java.awt.event.*;
+
 import java.io.File;
 
 /**
- * This is the third window. It shows the trajectory and telemetry of the rocket.
+ * Class containing all the processes required for the displaying of the software's second window. This is where the user can witness the simulation, by consulting all the different panels placed at their disposal.
+ * Is opened by using {@link MainGUI} first.
  *
+ * @see gui.MainGUI
  * @author Alice Mabille
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.22
  */
 public class SimulationGUI extends JFrame implements Runnable {
 
     private static final long serialVersionUID = 1L;
-	// colors
+    
+	// Colors used
     private final Color BACKGROUND_COLOR = new Color(60, 61, 64);
     private final Color TEXT_COLOR = new Color(240, 240, 240);
     private final Color BUTTON_COLOR = new Color(95, 0, 0);
     private final Color BUTTON_ENGAGE_COLOR = new Color(58, 162, 0);
-    Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+    
+    // Window Dimension
+    private final Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
+    
+    // Managers
     private final SimulationManager manager;
     private final FileManager fileManager;
-    private Container contentPane;
-    private final ChartPanel velocityChart;
-    private final ChartPanel accelerationChart;
+    
+    // Utility elements
     private float speed = 1;
     private boolean firstRun = true;
+    
+    // Charts
+    private final ChartPanel velocityChart;
+    private final ChartPanel accelerationChart;
+    
+    // Graphical elements
+    private Container contentPane;
+    private final GridBagConstraints c = new GridBagConstraints();
     private final JPanel chartPanel = new JPanel();
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("File");
@@ -55,11 +74,10 @@ public class SimulationGUI extends JFrame implements Runnable {
     private final JButton zoomOutButton = new JButton("Zoom out");
     private final JButton resetViewButton = new JButton("Reset View");
     private final JButton trackButton = new JButton("Start tracking");
-
+    
+    // Displayer
     private final TrajectoryDisplay trajectoryDisplay;
     private final TelemetryDisplay telemetryDisplay;
-
-    private final GridBagConstraints c = new GridBagConstraints();
 
     // Initial status of the start button.
     private boolean stop = true;
@@ -68,7 +86,7 @@ public class SimulationGUI extends JFrame implements Runnable {
 
 
 	/**
-	 * Constructor of the window.
+	 * Constructor of the SimulationGUI window.
 	 * @param title the title of the window.
 	 * @param manager the {@link SimulationManager} to use.
 	 * @param fileManager the {@link FileManager} to use for imports/exports.
@@ -89,7 +107,7 @@ public class SimulationGUI extends JFrame implements Runnable {
     }
 
 	/**
-	 * Method to build the window
+	 * Initializes the JFrame.
 	 */
     private void init() {
 
@@ -239,6 +257,9 @@ public class SimulationGUI extends JFrame implements Runnable {
         setResizable(false);
     }
 
+    /**
+     * Updates the values of all the elements, at each time unit.
+     */
     private void updateValues() {
         if (!manager.hasCrashed()) {
             manager.next();

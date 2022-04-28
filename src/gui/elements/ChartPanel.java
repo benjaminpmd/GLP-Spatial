@@ -16,11 +16,14 @@ import config.SimConfig;
 import process.management.TelemetryRecord;
 
 /**
- * This class draw a chart either the velocity or the acceleration of the rocket.
- * Used in {@link gui.SimulationGUI}.
+ * Class containing methods allowing both the acceleration and velocity data charts of the rocket to be drawn.
+ * Used in {@link SimulationGUI}.
  * 
- * @see TelemetryRecord
+ * @see process.management.TelemetryRecord
+ * @see gui.SimulationGUI
  * @author Alice Mabille
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.22
  */
 public class ChartPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -36,10 +39,11 @@ public class ChartPanel extends JPanel {
 	private String title;
 	
 	/**
-	 * Draws a graph using an array of data from {@link process.management.SimulationManager} at t=0, so it will probably be empty until you call the update() and repaint() methods.
+	 * Draws a graph using an array of data from {@link SimulationManager} at t=0, so it will probably be empty until you call the update() and repaint() methods.
 	 *
-	 * @param title should be either "Speed", "Acceleration", or "Altitude".
-	 * @see {@link gui.SimulationGUI}
+	 * @see gui.SimulationGUI, process.management.SimulationManager
+	 * @param title should be either "Speed", "Acceleration", or "Altitude"
+	 * 
 	 */
 	public ChartPanel(String title, TelemetryRecord telemetryRecord) {
 		super();
@@ -63,7 +67,7 @@ public class ChartPanel extends JPanel {
 	}
 
 	/**
-	 * Generates the curve chart for evolution of the chosen data
+	 * Generates the curve chart for evolution of the chosen data.
 	 * 
 	 * @return the curve chart
 	 */
@@ -80,7 +84,9 @@ public class ChartPanel extends JPanel {
 	}
 
 	/**
-	 * Gets the latest data from the the {@link TelemetryRecord}
+	 * Gets the latest data from the {@link TelemetryRecord}.
+	 * 
+	 * @see process.management.TelemetryRecord
 	 */
 	public void update() {
 		switch(title) {

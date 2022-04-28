@@ -4,10 +4,10 @@ package data.mission;
  * The mission object contains all information like destination of the mission, orbit target or the center where the
  * rocket will be launched.
  *
+ * @see data.mission.SpaceCenter
  * @author Benjamin P
- * @version 22.03.06 (1.0.0)
- * @see SpaceCenter
- * @since 11.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class Mission {
 

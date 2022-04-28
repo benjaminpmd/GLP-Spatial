@@ -12,10 +12,10 @@ import java.util.HashMap;
 /**
  * Builder for the rocket it features two methods for rocket creation.
  *
- * @author Benjamin P
- * @version 22.03.13 (1.0.0)
  * @see data.rocket.Rocket
- * @since 11.02.22
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class RocketBuilder {
 

@@ -1,11 +1,11 @@
 package config;
 
 /**
- * Class containing all scientific constants for calculations.
+ * Class containing all the scientific constants for calculations.
  *
  * @author Benjamin P
- * @version 22.02.13 - I like maths (1.0.0)
- * @since 11.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class Constants {
 

@@ -6,8 +6,8 @@ import config.Constants;
  * Class that contains information about the propellant.
  *
  * @author Alice M, Benjamin P
- * @version 22.03.06 (1.0.0)
- * @since 11.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class Propellant {
 

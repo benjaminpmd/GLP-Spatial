@@ -1,36 +1,42 @@
 package gui;
 
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import javax.swing.JOptionPane;
 
 import config.SimConfig;
+
 import exceptions.BadValueException;
+
 import gui.elements.SpaceCentersPanel;
 import gui.elements.PayloadPanel;
 import gui.elements.StagePanel;
+
 import process.builders.*;
 import process.management.FileManager;
 import process.management.SimulationManager;
 import process.repositories.CelestialObjectRepository;
 
 /**
- * This is the first window. It allows the user to configure their rocket.
- * Leads to the Launch window {@link SimulationGUI}
+ * Class containing all the processes required for the displaying of the software's main window. This is where the user configures the mission and all the parameters of its associated rocket.
+ * Leads to the Simulation window {@link SimulationGUI}.
  *
  * @author Alice Mabille
- *
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class MainGUI extends JFrame {
 
@@ -38,16 +44,14 @@ public class MainGUI extends JFrame {
 
 	private final static Dimension preferredSize = new Dimension(SimConfig.WINDOW_WIDTH, SimConfig.WINDOW_HEIGHT);
 
-	// since values from files are registered in the repositories, we init the builder before anything else
+	// since values from files are registered in the repositories, we initialize the builder before anything else
 	private CelestialObjectBuilder celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
 	private SpaceCenterBuilder spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
 	private SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);
 
 	private FileManager fileManager = new FileManager(celestialObjectBuilder, spaceCenterBuilder);
 
-	private double rocketSchemaWeightY = 0.3;
-	private double orbitPanelWeightY = 0.15;
-	private double stagePanelWeightY = rocketSchemaWeightY + orbitPanelWeightY;
+	// Different simple positions
 	private final int LEFT = 0;
 	private final int MIDDLE = 1;
 	private final int MIDDLE_RIGHT = 4;
@@ -55,6 +59,8 @@ public class MainGUI extends JFrame {
 	private final int TOP = 0;
 	private final int MIDDLE_BOTTOM = 3;
 	private final int BOTTOM = 4;
+	
+	// Colors
 	private final Color MISSION_COLOR = new Color(60,61,64);
 	public final static Color ROCKET_COLOR = new Color(71,72,75);
 	private final Color TEXT_COLOR = new Color(240, 240, 240);
@@ -62,46 +68,62 @@ public class MainGUI extends JFrame {
 
 	private Container contentPane;
 
+	// Top of the window: JMenus
 	private JPanel topBanner = new JPanel();
 	private JPanel infoPanel = new JPanel();
 	private JMenuBar menuBar = new JMenuBar();
+	
+	
+	
+	// Inside the JMenu File
 	private JMenu fileMenu = new JMenu("File");
-	private JMenu helpMenu = new JMenu("Help");
-
 	private JMenuItem newSimulationItem = new JMenuItem("New");
 	private JMenuItem importSimulationItem = new JMenuItem("Import");
 	private JMenuItem exportSimulationItem = new JMenuItem("Export");
 	private JMenuItem exitItem = new JMenuItem("Exit");
 
+	// Inside the JMenu Help
+	private JMenu helpMenu = new JMenu("Help");
 	private JMenuItem simulationHelpItem = new JMenuItem("Open Help...");
 
-	// stage panels
+	// Stage panels
 	private StagePanel stagePanel1 = new StagePanel(1, 32);
 	private StagePanel stagePanel2 = new StagePanel(2,6);
 
-	// payload panel
+	// Payload panel
 	private PayloadPanel payloadPanel;
 
-	// space centers panel
+	// Space centers panel
 	private SpaceCentersPanel spaceCentersPanel = new SpaceCentersPanel();
 
+	// Mission name and Description
 	private JTextField missionNameField = new JTextField("");
 	private JTextField missionDescriptionField = new JTextField("");
+	
 	private JTextPane errorTextPane = new JTextPane();
+	
+	// Orbit and destination
 	private JTextField orbitField;
 	private JComboBox<String> destinationMenu;
 
 	private JFileChooser fileChooser = new JFileChooser("./");
 
-	//the lowest and highest orbits possible
+	// The lowest and highest orbits possible
 	private final int ORBIT_MIN = 200;
 	private final int ORBIT_MAX = 36000;
 
+	/**
+	 * Constructor of the MainGUI window.
+	 * @param title the title of the window.
+	 */
 	public MainGUI(String title) {
 		super(title);
 		init();
 	}
 
+	/**
+	 * Initializes the JFrame.
+	 */
 	public void init() {
 		contentPane = getContentPane();
 		contentPane.setBackground(new Color(61, 62, 64));
@@ -304,8 +326,8 @@ public class MainGUI extends JFrame {
 		setVisible(true);
 	}
 
+	
 	private SimulationManager createManager() throws BadValueException, IllegalArgumentException {
-
 		// payload data
 		String payloadMass = payloadPanel.getMassInput();
 		if (payloadMass.equals("")) {

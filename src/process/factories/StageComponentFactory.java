@@ -7,13 +7,13 @@ import data.rocket.Tank;
 
 /**
  * Factory that create various parts for a stage object.
- *
- * @author Benjamin P
- * @version 22.03.13 (1.0.0)
+ * 
  * @see data.rocket.Propellant
  * @see data.rocket.Tank
  * @see data.rocket.RocketEngine
- * @since 11.02.22
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.11
  */
 public class StageComponentFactory {
 

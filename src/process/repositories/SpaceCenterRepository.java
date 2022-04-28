@@ -7,8 +7,8 @@ import java.util.Set;
  * Class containing repository for space centers information.
  *
  * @author Benjamin P
- * @version 22.03.13 (1.0.0)
- * @since 14.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.14
  */
 public class SpaceCenterRepository {
 

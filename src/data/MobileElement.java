@@ -4,11 +4,11 @@ import data.coordinate.CartesianCoordinate;
 
 /**
  * Class that contains a coordinate, a mass and a velocity of a MobileElement.
- *
- * @author Benjamin P
- * @version 22.04.05 (1.0.1)
+ * 
  * @see data.coordinate.CartesianCoordinate
- * @since 06/03/22
+ * @author Benjamin P
+ * @version 22.04.28
+ * @since 22.03.06
  */
 public class MobileElement {
 

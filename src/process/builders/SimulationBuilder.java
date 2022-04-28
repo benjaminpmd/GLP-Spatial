@@ -16,9 +16,10 @@ import java.util.HashMap;
  * Class that build the simulation manager to use. Featuring an overload of the build method, it allows to build a manager
  * from imported file or user input.
  *
- * @version 22.03.18 (1.0.0)
  * @see process.management.SimulationManager
- * @since 18.03.22
+ * @author Benjamin P
+ * @version 22.04.28 (1.0.0)
+ * @since 22.03.18
  */
 public class SimulationBuilder {
 

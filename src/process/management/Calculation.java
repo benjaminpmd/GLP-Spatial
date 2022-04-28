@@ -11,8 +11,8 @@ import data.rocket.Stage;
  * Class that contains all methods for calculs of masses, accelerations, accelerations and trajectories.
  *
  * @author Benjamin P
- * @version 22.04.26
- * @since 17.02.22
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.17
  */
 public class Calculation {
 

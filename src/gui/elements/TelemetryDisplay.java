@@ -10,37 +10,58 @@ import process.management.SimulationManager;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+/**
+ * Class containing methods allowing the telemetrics of the rocket to be drawn in {@link gui.SimulationGUI}.
+ *
+ * @see gui.SimulationGUI
+ * @author Lucas L
+ * @version 22.04.28 (1.0.0)
+ * @since 22.02.22
+ */
 public class TelemetryDisplay extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
+	// Relative position of the centers of both arcs
 	private CartesianCoordinate speedArcCircleCenterCoordinate = new CartesianCoordinate();
 	private CartesianCoordinate altitudeArcCircleCenterCoordinate = new CartesianCoordinate();
 	
+	// Relative position of the unit of both arcs
 	private CartesianCoordinate speedUnitNameCoordinate = new CartesianCoordinate();
 	private CartesianCoordinate altitudeUnitNameCoordinate = new CartesianCoordinate();
 	
+	// Angles of both arcs
 	private final int maxArcCircleAngle = 180;
 	private final int startArcCircleAngle = 0;
 	
+	// Radius of both arcs
 	private int arcCircleRadius = 50;
 	
+	// Default angles
 	private double speedCurrentAngle = 25.0;
 	private double altitudeCurrentAngle = 45.0;
 	
+	// Unit names
 	private String speedUnitName = "Speed (km/h)";
 	private String altitudeUnitName = "Altitude (km)";
 	
+	// Default speed values
 	private String speedMinUnit = "0";
 	private String speedMaxUnit = "41400";
 	
+	// Default altitude values
 	private String altitudeMinUnit = speedMinUnit;
 	private int altitudeMax;
 	private String altitudeMaxUnit;
 	
-	private PaintStrategy paintStrategy;
+	// Displaying and management
+	private final PaintStrategy paintStrategy;
 	private final SimulationManager manager;
 	
+	/**
+	 * Defines all the datas needed to draw the telemetrics.
+	 * @param manager contains a part of the required datas, regarding the data interval used in both arcs
+	 */
 	public TelemetryDisplay(SimulationManager manager) {
 		super();
 		this.manager = manager;
@@ -67,6 +88,11 @@ public class TelemetryDisplay extends JPanel {
 		altitudeMaxUnit = String.valueOf(altitudeMax/1000);
 	}
 	
+	/**
+     * Draws the telemetrics using an array of data from {@link SimulationManager} at t=0
+     *
+     * @see SimulationManager
+     */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
