@@ -69,40 +69,37 @@ public class HelpGUI extends JFrame {
         JTextArea payload = new JTextArea("The equipment carried by a rocket, satellite, or spacecraft that will fulfill the goal of the mission."
                 + " The payload on a rocket or a launcher is the artificial satellite or the space probe it has to put into orbit.");
 
-        JLabel centreLabel = new JLabel("Spatial centre");
+        JLabel centreLabel = new JLabel("Space center");
         JTextArea centre = new JTextArea("Geographic zone from which launchers depart."
                 + " They generally are situated on the equator in order to make the most of Earth's rotation speed.");
 
-        JLabel scheduleLabel = new JLabel("Schedule");
-        JTextArea schedule = new JTextArea("When creating a launch, you can schedule it with UTC time.");
-
-
-        JLabel launcherLabel = new JLabel("Launcher");
-        JTextArea launcher = new JTextArea("You can choose the parameters of two stages of the launcher.");
+        JLabel launcherLabel = new JLabel("Rocket");
+        JTextArea launcher = new JTextArea("You can choose the parameters of two stages of the rocket.");
 
         JLabel stageLabel = new JLabel("Stage");
         JTextArea stage = new JTextArea("There are two in a rocket. They both have engines and fuel tanks."
-                + " The first, which is also the greatest, is discarded at a certain time of the launch : when its tanks are empty."
-                + " That is when the second comes in handy. All the following stats have to be chosen separatly for each stage.");
+                + " The first, which is also the largest, is discarded at a certain time of the launch : when its tanks are empty."
+                + " That is when the second comes in handy. All the following stats have to be chosen separately for each stage.");
 
-        JLabel propergolLabel = new JLabel("Propergol (fuel)");
-        JTextArea propergol = new JTextArea("Mix of a combustive (oxidant) and a combustible (reducer). "
-                + "The chemical reaction that occurs is an oxidation-reduction. "
-                + "You can choose its volume in litres, its density in kg/L, and its temperature in °C.");
+        JLabel propergolLabel = new JLabel("Ergol (fuel)");
+        JTextArea propergol = new JTextArea("Fuel used by the engine(s) to power the stages. "
+                + "You can choose its volume in litres, its density in kg/L.");
 
         JLabel nbEnginesLabel = new JLabel("Number of engines");
         JTextArea nbEngines = new JTextArea("Between 1 and 32 for the first stage. "
-                + "Between 1 and 5 for the second stage. "
-                + "Bring the combustive and the combustible together and propels the rocket.");
+                + "Between 1 and 5 for the second stage.");
 
         JLabel thrustLabel = new JLabel("Engine thrust");
-        JTextArea thrust = new JTextArea("force exerted by gas acceleration on the opposite direction of the progress.");
+        JTextArea thrust = new JTextArea("Force exerted by gas acceleration on the opposite direction of the progress.");
 
         JLabel ratioLabel = new JLabel("Thrust to weight ratio");
-        JTextArea ratio = new JTextArea("ratio of the engine thrust (Newton) to the engine weight (kg), gives the engine efficiency.");
+        JTextArea ratio = new JTextArea("Ratio of the engine thrust (Newton) to the engine weight (kg), gives the engine efficiency.");
+
+        JLabel exhaustLabel = new JLabel("Exhaust Velocity");
+        JTextArea exhaust = new JTextArea("Velocity of the gas at the exit of the nozzle.");
 
         JLabel ispLabel = new JLabel("ISP : Specific impulse");
-        JTextArea isp = new JTextArea("duration in seconds of a 1 ton-force thrust. "
+        JTextArea isp = new JTextArea("Duration in seconds of a 1 ton-force thrust. "
                 + " As an exemple, chemical engines that use the hydrogen-oxygen couple can produce a 1 ton-force thrust for 460 seconds.");
 
         JLabel missionNameLabel = new JLabel();
@@ -134,16 +131,6 @@ public class HelpGUI extends JFrame {
         centre.setLineWrap(true);
         centre.setEditable(false);
         leftPanel.add(centre);
-
-
-        scheduleLabel.setForeground(TEXT_COLOR);
-        leftPanel.add(scheduleLabel);
-        schedule.setForeground(TEXT_COLOR);
-        schedule.setBackground(TEXT_BACKGROUND_COLOR);
-        schedule.setBorder(border);
-        schedule.setLineWrap(true);
-        schedule.setEditable(false);
-        leftPanel.add(schedule);
 
         //Middle panel
         missionNameLabel.setForeground(TEXT_COLOR);
@@ -216,6 +203,14 @@ public class HelpGUI extends JFrame {
         ratio.setEditable(false);
         rightPanel.add(ratio);
 
+        exhaustLabel.setForeground(TEXT_COLOR);
+        rightPanel.add(exhaustLabel);
+        exhaust.setForeground(TEXT_COLOR);
+        exhaust.setBackground(TEXT_BACKGROUND_COLOR);
+        exhaust.setBorder(border);
+        exhaust.setLineWrap(true);
+        exhaust.setEditable(false);
+        rightPanel.add(exhaust);
 
         ispLabel.setForeground(TEXT_COLOR);
         rightPanel.add(ispLabel);

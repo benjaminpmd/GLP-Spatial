@@ -425,7 +425,7 @@ public class MainGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new MainGUI("Space Simulation");
+            new MainGUI(getTitle());
             setVisible(false);
             dispose();
         }
