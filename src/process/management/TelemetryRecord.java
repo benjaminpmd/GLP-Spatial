@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Class containing all the processes required to record and store the acceleration and velocity values of the rocket during the simulation.
- * Used in {@link ChartPanel} and {@link SimulationGUI}.
+ * Used in {@link gui.elements.ChartsPanel} and {@link gui.SimulationGUI}.
  *
  * @author Lucas L
  * @version 22.04.28 (1.0.0)

@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Class containing methods allowing the telemetrics of the rocket to be drawn in {@link gui.SimulationGUI}.
+ * Class containing methods allowing the telemetries of the rocket to be drawn in {@link gui.SimulationGUI}.
  *
  * @author Lucas L
  * @version 22.04.28 (1.0.0)

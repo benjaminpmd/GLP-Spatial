@@ -17,7 +17,7 @@ import java.io.IOException;
 /**
  * Class containing methods allowing all the different drawable elements to be drawn in {@link gui.SimulationGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.SimulationGUI
  * @since 22.02.22

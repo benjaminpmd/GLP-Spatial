@@ -149,7 +149,7 @@ public class SimulationManager {
     public boolean hasCrashed() {
         double distance = Math.abs(calculation.calculateDistance(rocket.getCartesianCoordinate(), nearestObject.getCartesianCoordinate()));
 
-        if (distance < nearestObject.getRadius() - 10) {
+        if (distance < nearestObject.getRadius()-10) {
             rocketConfig = 6;
             return true;
         } else return false;
@@ -279,7 +279,7 @@ public class SimulationManager {
                 rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(-10));
 
             } else {
-                rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(-20));
+                rocket.getCartesianCoordinate().setSelfAngle(Math.toRadians(0));
             }
         }
 

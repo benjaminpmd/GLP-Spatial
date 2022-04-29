@@ -30,8 +30,8 @@ public class CelestialObjectRepository {
     /**
      * Register a value in the repository.
      *
-     * @param name  {@link String} the name of the celestial object.
-     * @param value {@link String}[] with the first value as the radius of the object, and the second one, the weight of the object.
+     * @param name  The name of the celestial object.
+     * @param value [] with the first value as the radius of the object, and the second one, the weight of the object.
      */
     public void register(String name, String[] value) {
         if (!values.containsKey(name)) {

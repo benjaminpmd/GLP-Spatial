@@ -8,9 +8,9 @@ import java.util.Set;
 
 /**
  * Class containing a panel with pre-made buttons. Allows the user to choose the launch site.
- * Used in {@link MainGUI}.
+ * Used in {@link gui.MainGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.MainGUI
  * @since 22.02.11
@@ -46,7 +46,7 @@ public class SpaceCentersPanel extends JPanel {
     }
 
     /**
-     * Used in {@link MainGUI}
+     * Used in {@link gui.MainGUI}
      *
      * @return the currently selected Center
      * @see gui.MainGUI

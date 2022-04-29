@@ -61,7 +61,7 @@ public class SpaceCenterBuilder {
     /**
      * Build a space center registered in the {@link process.repositories.SpaceCenterRepository}.
      *
-     * @param name {@link String} the name of the space center
+     * @param name The name of the space center
      * @return {@link SpaceCenter}
      */
     public SpaceCenter buildSpaceCenter(String name) {

@@ -115,7 +115,7 @@ public class Calculation {
      */
     public double calculatePressureAtAltitude(double altitude, double temperature) {
 
-        return Constants.AIR_PRESSURE_SEA_LEVEL * Math.pow((1 - ((0.0065 * altitude) / (temperature + (0.0065 * altitude) + Constants.ABSOLUTE_ZERO))), 5.257);
+        return Constants.AIR_PRESSURE_SEA_LEVEL * Math.pow((1 - ((0.0065 * altitude) / (temperature + (0.0065 * altitude) - Constants.ABSOLUTE_ZERO))), 5.257);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Calculation {
      */
     public double calculateAirDensity(double altitude) {
 
-        double T = calculateTemperatureAtAltitude(altitude) + Constants.ABSOLUTE_ZERO;
+        double T = calculateTemperatureAtAltitude(altitude) - Constants.ABSOLUTE_ZERO;
         double pd = calculatePressureAtAltitude(altitude, T) * 100;
         return (pd / (Constants.AIR_CONSTANT * T));
     }
@@ -211,7 +211,7 @@ public class Calculation {
     /**
      * Calculs the mass of the rocket
      *
-     * @param rocket the rocket to take for calculs.
+     * @param rocket The rocket to take for calculs.
      * @return The total mass of the rocket.
      */
     public double calculateRocketMass(Rocket rocket) {

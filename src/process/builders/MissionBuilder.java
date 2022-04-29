@@ -22,11 +22,11 @@ public class MissionBuilder {
     /**
      * Method that builds and returns a Mission.
      *
-     * @param name            {@link String} the name, in case the user has not inserted anything, the default text
+     * @param name            The name, in case the user has not inserted anything, the default text
      *                        "Name your mission here" will be replaced by a default mission name based on the current time.
-     * @param spaceCenterName {@link String} the name of the space center.
-     * @param destinationName {@link String} name of the object destination.
-     * @param orbit           {@link String} the orbit targeted.
+     * @param spaceCenterName The name of the space center.
+     * @param destinationName Name of the destination object.
+     * @param orbit           The orbit targeted.
      * @return {@link Mission}
      */
     public Mission buildMission(String name, String description, String spaceCenterName, String destinationName, int orbit) {

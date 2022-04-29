@@ -18,7 +18,7 @@ import java.io.File;
  * Class containing all the processes required for the displaying of the software's second window. This is where the user can witness the simulation, by consulting all the different panels placed at their disposal.
  * Is opened by using {@link MainGUI} first.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.MainGUI
  * @since 22.02.22

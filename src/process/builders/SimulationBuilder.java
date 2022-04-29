@@ -1,6 +1,5 @@
 package process.builders;
 
-import config.SimConfig;
 import data.coordinate.CartesianCoordinate;
 import data.mission.Mission;
 import data.mission.SpaceCenter;
@@ -28,14 +27,6 @@ public class SimulationBuilder {
     private final CelestialObjectBuilder celestialObjectBuilder;
     private final SpaceCenterBuilder spaceCenterBuilder;
     private final RocketBuilder rocketBuilder;
-
-    public SimulationBuilder() {
-        celestialObjectBuilder = new CelestialObjectBuilder(SimConfig.CELESTIAL_OBJECTS_PATH);
-        spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
-
-        rocketBuilder = new RocketBuilder();
-        missionBuilder = new MissionBuilder();
-    }
 
     public SimulationBuilder(CelestialObjectBuilder celestialObjectBuilder, SpaceCenterBuilder spaceCenterBuilder) {
         this.celestialObjectBuilder = celestialObjectBuilder;

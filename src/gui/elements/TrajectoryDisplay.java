@@ -18,7 +18,7 @@ import java.util.ConcurrentModificationException;
 /**
  * Class containing methods allowing the trajectory of the rocket to be drawn in {@link gui.SimulationGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.SimulationGUI
  * @since 22.02.22
@@ -98,6 +98,7 @@ public class TrajectoryDisplay extends JPanel {
         }
 
         CelestialObject destination = manager.getCelestialObjects().get(manager.getMission().getDestinationName());
+        // printing a line departing from the rocket and going to the orbit of the destination if the distance is correct
         if ((!destination.getName().equals("Earth"))) {
             int distance = (int) calculation.calculateDistance(manager.getRocket().getCartesianCoordinate(), destination.getCartesianCoordinate());
             distance -= destination.getRadius();

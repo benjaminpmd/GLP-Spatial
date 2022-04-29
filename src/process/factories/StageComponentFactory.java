@@ -20,7 +20,7 @@ public class StageComponentFactory {
     /**
      * Creates a new propellant object.
      *
-     * @param density {@link Double} the density of the propellant in kg.L^-1.
+     * @param density The density of the propellant in kg.L^-1.
      * @return {@link Propellant}
      */
     public static Propellant createPropellant(double density) {
@@ -31,8 +31,8 @@ public class StageComponentFactory {
     /**
      * Creates a new Tank object.
      *
-     * @param propellant {@link Propellant} the propellant to be used.
-     * @param capacity   {@link Integer} the total volume capacity of the tank in L.
+     * @param propellant The propellant to be used.
+     * @param capacity   The total volume capacity of the tank in L.
      * @return {@link Tank}
      */
     public static Tank createTank(Propellant propellant, int capacity) {
@@ -43,10 +43,10 @@ public class StageComponentFactory {
     /**
      * Create an engine with and calculates its performances.
      *
-     * @param thrust          {@link Double} the mass output of the engine (kg.s^-1).
-     * @param thrustRatio     {@link Double} the ratio thrust/weight of the engine.
-     * @param isp             {@link Integer} the Specific impulse of the engine.
-     * @param exhaustVelocity {@link Integer} the speed of the gas at the exit of the nozzle.
+     * @param thrust          The mass output of the engine (kg.s^-1).
+     * @param thrustRatio     The ratio thrust/weight of the engine.
+     * @param isp             The Specific impulse of the engine.
+     * @param exhaustVelocity The speed of the gas at the exit of the nozzle.
      * @return {@link RocketEngine}
      */
     public static RocketEngine createRocketEngine(double thrust, double thrustRatio, int isp, int exhaustVelocity) {

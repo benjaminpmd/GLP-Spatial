@@ -6,9 +6,9 @@ import java.util.HashMap;
 
 /**
  * Class containing all the required elements to create a JPanel that displays every characteristic of the Stage which the user has to choose, making the rocket able to take off.
- * Used in {@link MainGUI}.
+ * Used in {@link gui.MainGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.MainGUI
  * @since 22.02.11

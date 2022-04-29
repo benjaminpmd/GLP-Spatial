@@ -28,7 +28,7 @@ import java.util.Map.Entry;
  * Class containing all the processes required for the displaying of the software's main window. This is where the user configures the mission and all the parameters of its associated rocket.
  * Leads to the Simulation window {@link SimulationGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @since 22.02.11
  */

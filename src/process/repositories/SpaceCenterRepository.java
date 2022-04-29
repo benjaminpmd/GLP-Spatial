@@ -42,8 +42,8 @@ public class SpaceCenterRepository {
     /**
      * Get the information about a specific space center.
      *
-     * @param name {@link String} the name of the space center you want the information about.
-     * @return {@link Integer} the degree angle from -180 to 180 where the space center is located.
+     * @param name The name of the space center you want the information about.
+     * @return The degree angle from -180 to 180 where the space center is located.
      * @throws IllegalArgumentException if the name is not in the repository.
      */
     public int getValue(String name) throws IllegalArgumentException {

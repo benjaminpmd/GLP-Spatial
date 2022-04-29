@@ -36,7 +36,7 @@ public class CelestialObjectBuilder {
     /**
      * Constructor of the CelestialObjectBuilder.
      *
-     * @param filePath {@link String} the path of the CSV file where the celestials object data are stored.
+     * @param filePath The path of the CSV file where the celestials object data are stored.
      */
     public CelestialObjectBuilder(String filePath) {
 
@@ -67,7 +67,7 @@ public class CelestialObjectBuilder {
     /**
      * Build a celestial object registered in the {@link process.repositories.CelestialObjectRepository}.
      *
-     * @param name {@link String} the name of the celestial object you want to build.
+     * @param name The name of the celestial object you want to build.
      * @return {@link CelestialObject}
      */
     public CelestialObject buildCelestialObject(String name) {

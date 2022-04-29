@@ -6,10 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Class containing a panel with pre-made buttons. Allows the user to choose the type of payload which is associated with the rocket.
- * Used in {@link MainGUI}.
+ * Allows the user to choose the type of payload which is associated with the rocket.
+ * Used in {@link gui.MainGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see gui.MainGUI
  * @since 22.02.11

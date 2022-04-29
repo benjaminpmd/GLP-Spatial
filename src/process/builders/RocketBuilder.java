@@ -33,10 +33,10 @@ public class RocketBuilder {
     /**
      * Build method for the rocket.
      *
-     * @param firstStageParam     {@link HashMap} a HashMap object that contains the values for tankCapacity, propellantDensity, propellantTemperature, propellantTemperature, engineNb, engineThrust, engineThrustRatio and isp of the first stage.
-     * @param secondStageParam    {@link HashMap} a HashMap object that contains the values for tankCapacity, propellantDensity, propellantTemperature, propellantTemperature, engineNb, engineThrust, engineThrustRatio and isp of the second stage.
-     * @param payloadMass         {@link Integer} an integer that represent the mass of the payload in kg.
-     * @param cartesianCoordinate {@link CartesianCoordinate} the cartesian coordinate of the rocket.
+     * @param firstStageParam     A HashMap object that contains the values for capacity, density, engineNb, engineNb, thrust, thrustRatio, isp and exhaustVelocity of the first stage.
+     * @param secondStageParam    A HashMap object that contains the values for capacity, density, engineNb, engineNb, thrust, thrustRatio, isp and exhaustVelocity of the second stage.
+     * @param payloadMass         An integer that represent the mass of the payload in kg.
+     * @param cartesianCoordinate The cartesian coordinate of the rocket.
      * @return {@link data.rocket.Rocket}
      */
     public Rocket buildRocket(HashMap<String, String> firstStageParam, HashMap<String, String> secondStageParam, int payloadMass, CartesianCoordinate cartesianCoordinate) {

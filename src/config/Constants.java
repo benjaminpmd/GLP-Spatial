@@ -11,7 +11,7 @@ public class Constants {
 
     // universal constants
     public static final double GRAVITATIONAL_CONST = 6.67408 * Math.pow(10, -11);
-    public static final double ABSOLUTE_ZERO = 273.15;
+    public static final double ABSOLUTE_ZERO = -273.15;
 
     // Earth values
     public static final double GRAVITY = 9.80066;

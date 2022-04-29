@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Class containing methods allowing both the acceleration and velocity data charts of the rocket to be drawn.
  * Used in {@link gui.SimulationGUI}.
  *
- * @author Alice Mabille
+ * @author Alice M
  * @version 22.04.28 (1.0.0)
  * @see process.management.TelemetryRecord
  * @see gui.SimulationGUI
