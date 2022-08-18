@@ -1,6 +1,6 @@
 package config;
 
-import java.awt.Dimension;
+import java.awt.*;
 
 /**
  * Class containing all the constants and paths used for the simulation configuration.
@@ -43,7 +43,7 @@ public class SimConfig {
     public static final int DELTA_TIME = 1;
 
     // Relative path of all the files and directories used in the project
-    public static final String CENTERS_PATH = "./src/config/centers.csv";
-    public static final String CELESTIAL_OBJECTS_PATH = "./src/config/celestialObjects.csv";
-    public static final String IMAGE_PATH = "./src/images/";
+    public static final String CENTERS_PATH = "./assets/csv/centers.csv";
+    public static final String CELESTIAL_OBJECTS_PATH = "./assets/csv/celestialObjects.csv";
+    public static final String IMAGE_PATH = "./assets/img/";
 }

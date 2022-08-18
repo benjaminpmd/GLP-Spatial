@@ -22,9 +22,8 @@ public class SpaceCentersPanel extends JPanel {
     // Datas
     private final SpaceCenterRepository repo = SpaceCenterRepository.getInstance();
     private final Set<String> centersSet = repo.getKeys();
-    private JList<String> list;
-
     private final JLabel centersLabel = new JLabel("Launch sites");
+    private JList<String> list;
 
     /**
      * Builds a JPanel that displays every registered launch sites to be selected by the user.

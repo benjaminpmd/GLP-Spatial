@@ -27,10 +27,9 @@ public class ChartsPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private final TelemetryRecord telemetryRecord;
-    private ArrayList<Integer> dataArray = new ArrayList<Integer>();
     private final ChartPanel chartPanel;
-
     private final String title;
+    private ArrayList<Integer> dataArray = new ArrayList<Integer>();
 
     /**
      * Draws a graph using an array of data from {@link process.management.SimulationManager} at t=0, so it will probably be empty until you call the update() and repaint() methods.

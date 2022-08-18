@@ -32,12 +32,12 @@ public class TrajectoryDisplay extends JPanel {
     // Algorithmical configuration
     private final SimulationManager manager;
     private final PaintStrategy paintStrategy;
+    private final Calculation calculation = new Calculation();
     // Graphical configuration
     private int scale = SimConfig.DEFAULT_SCALE;
     private boolean lock = false;
     private int centerX = SimConfig.GRAPHIC_CENTER_X;
     private int centerY = SimConfig.GRAPHIC_CENTER_Y;
-    private final Calculation calculation = new Calculation();
 
     public TrajectoryDisplay(SimulationManager manager) {
         super();

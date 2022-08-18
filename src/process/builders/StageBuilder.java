@@ -41,7 +41,7 @@ public class StageBuilder {
         RocketEngine rocketEngine = StageComponentFactory.createRocketEngine(engineThrust, engineThrustRatio, engineIsp, exhaustVelocity);
 
         // To get the area to use to calculate material weight on the stage, we represent the tank as a sphere
-        double radius = Math.pow(((tankCapacity / Math.PI) * (3/4)), (1.0 / 3.0));
+        double radius = Math.pow(((tankCapacity / Math.PI) * (3 / 4)), (1.0 / 3.0));
         // using 40.5kg as the mass (in kg.m^-2 +3mm large) of the used material to build the rocket, it corresponds to a light aluminium
         double mass = (40.5 * (4 * Math.PI * Math.pow(radius, 2))) + rocketEngine.getMass() * engineNb;
 

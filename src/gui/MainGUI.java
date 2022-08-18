@@ -57,7 +57,6 @@ public class MainGUI extends JFrame {
     private final SpaceCenterBuilder spaceCenterBuilder = new SpaceCenterBuilder(SimConfig.CENTERS_PATH);
     private final SimulationBuilder simulationBuilder = new SimulationBuilder(celestialObjectBuilder, spaceCenterBuilder);
     private final FileManager fileManager = new FileManager(celestialObjectBuilder, spaceCenterBuilder);
-    private Container contentPane;
     // Top of the window: JMenus
     private final JPanel topBanner = new JPanel();
     private final JPanel infoPanel = new JPanel();
@@ -74,18 +73,19 @@ public class MainGUI extends JFrame {
     // Stage panels
     private final StagePanel stagePanel1 = new StagePanel(1, 32);
     private final StagePanel stagePanel2 = new StagePanel(2, 6);
-    // Payload panel
-    private PayloadPanel payloadPanel;
     // Space centers panel
     private final SpaceCentersPanel spaceCentersPanel = new SpaceCentersPanel();
     // Mission name and Description
     private final JTextField missionNameField = new JTextField("");
     private final JTextField missionDescriptionField = new JTextField("");
     private final JTextPane errorTextPane = new JTextPane();
+    private final JFileChooser fileChooser = new JFileChooser("./");
+    private Container contentPane;
+    // Payload panel
+    private PayloadPanel payloadPanel;
     // Orbit and destination
     private JTextField orbitField;
     private JComboBox<String> destinationMenu;
-    private final JFileChooser fileChooser = new JFileChooser("./");
 
     /**
      * Constructor of the MainGUI window.

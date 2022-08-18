@@ -28,9 +28,6 @@ public class StagePanel extends JPanel {
     private final JTextField engineThrustField = new JTextField();
     private final JTextField ispField = new JTextField();
     private final JTextField exhaustVelocityField = new JTextField();
-
-    // JLabel used
-    private JLabel titleLabel;
     private final JLabel capacityLabel = new JLabel("Propellant Volume (L)");
     private final JLabel densityLabel = new JLabel("Propellant density (kg.L^-1)");
     private final JLabel exhaustVelocityLabel = new JLabel("Exhaust Velocity (m.s^-1)");
@@ -38,7 +35,8 @@ public class StagePanel extends JPanel {
     private final JLabel thrustToWeightLabel = new JLabel("Thrust To Weight");
     private final JLabel engineThrustLabel = new JLabel("Engine Thrust (kg.m.s^-2)");
     private final JLabel ispLabel = new JLabel("ISP (s)");
-
+    // JLabel used
+    private JLabel titleLabel;
     //JSlider
     private JSlider engNumSlider;
 

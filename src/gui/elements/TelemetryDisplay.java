@@ -33,9 +33,6 @@ public class TelemetryDisplay extends JPanel {
     private final CartesianCoordinate altitudeUnitNameCoordinate = new CartesianCoordinate();
     // Radius of both arcs
     private final int arcCircleRadius = 50;
-    // Default angles
-    private double speedCurrentAngle = 25.0;
-    private double altitudeCurrentAngle = 45.0;
     // Unit names
     private final String speedUnitName = "Speed (km/h)";
     private final String altitudeUnitName = "Altitude (km)";
@@ -46,6 +43,9 @@ public class TelemetryDisplay extends JPanel {
     private final String altitudeMinUnit = speedMinUnit;
     private final int altitudeMax;
     private final String altitudeMaxUnit;
+    // Default angles
+    private double speedCurrentAngle = 25.0;
+    private double altitudeCurrentAngle = 45.0;
 
     /**
      * Defines all the datas needed to draw the telemetrics.
