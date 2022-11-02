@@ -1,6 +1,6 @@
 # GLP-Spatial
 
-Ce projet est réalisé par Alice MABILLE, Lucas LENAERT Benjamin PAUMARD, étudiants en deuxième année de licence
+Ce projet est réalisé par Alice MABILLE, Lucas LENAERT et Benjamin PAUMARD, étudiants en deuxième année de licence
 informatique à CY Cergy Paris Université. Ce projet met en application les connaissances acquises dans l'UE Génie
 Logiciel.
 
@@ -11,7 +11,7 @@ planète du système solaire.
 
 ## Installation
 
-> Cette application requiert [Java 11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html) où une version supérieur.
+> Cette application requiert [Java 11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html) ou une version supérieure.
 
 Deux version sont disponibles [ici](https://github.com/benjaminpmd/GLP-Spatial/releases) :
 * Une version JAR
